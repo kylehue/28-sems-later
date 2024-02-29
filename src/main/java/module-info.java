@@ -3,4 +3,5 @@ module samplegame {
     requires javafx.controls;
     
     opens main;
+    opens scenes.game;
 }

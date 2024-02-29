@@ -4,9 +4,11 @@ import javafx.animation.AnimationTimer;
 
 public class GameLoop {
     private double deltaTime = 0;
+    private AnimationTimer timer;
     
-    public void startLoop() {
-        AnimationTimer timer = new AnimationTimer() {
+    private void maybeCreateTimer() {
+        if (this.timer != null) return;
+        this.timer = new AnimationTimer() {
             private long lastUpdate = 0;
             
             @Override
@@ -17,7 +19,15 @@ public class GameLoop {
                 lastUpdate = now;
             }
         };
-        timer.start();
+    }
+    
+    public void startLoop() {
+        this.maybeCreateTimer();
+        this.timer.start();
+    }
+    
+    public void pauseLoop() {
+        this.timer.stop();
     }
     
     public void update(double deltaTime) {
