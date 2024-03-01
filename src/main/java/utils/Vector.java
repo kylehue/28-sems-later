@@ -20,6 +20,18 @@ public class Vector {
         return y;
     }
     
+    public Vector set(double x, double y) {
+        this.setX(x);
+        this.setY(y);
+        return this;
+    }
+    
+    public Vector set(Vector vector) {
+        this.setX(vector.getX());
+        this.setY(vector.getY());
+        return this;
+    }
+    
     public Vector setX(double x) {
         this.x = x;
         return this;
