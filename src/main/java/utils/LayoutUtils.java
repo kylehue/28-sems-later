@@ -2,6 +2,7 @@ package utils;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -40,6 +41,14 @@ public class LayoutUtils {
             columnConstraints.setPrefWidth(Region.USE_COMPUTED_SIZE);
             columnConstraints.setMaxWidth(Region.USE_COMPUTED_SIZE);
             gridPane.getColumnConstraints().add(columnConstraints);
+        }
+    }
+    
+    public static Image loadImage(String url) {
+        try {
+            return new Image(LayoutUtils.class.getResource(url).toURI().toString());
+        } catch (Exception e) {
+            throw new Error(e);
         }
     }
 }

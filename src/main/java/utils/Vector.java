@@ -20,27 +20,44 @@ public class Vector {
         return y;
     }
     
-    public void setX(double x) {
+    public Vector setX(double x) {
         this.x = x;
+        return this;
     }
     
-    public void setY(double y) {
+    public Vector setY(double y) {
         this.y = y;
+        return this;
     }
     
-    public void add(double x, double y) {
+    public Vector add(double x, double y) {
         this.x += x;
         this.y += y;
+        return this;
     }
     
-    public void add(Vector vector) {
+    public Vector subtract(double x, double y) {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+    
+    public Vector subtract(Vector vector) {
+        this.x -= vector.getX();
+        this.y -= vector.getY();
+        return this;
+    }
+    
+    public Vector add(Vector vector) {
         this.x += vector.getX();
         this.y += vector.getY();
+        return this;
     }
     
-    public void scale(double scalar) {
+    public Vector scale(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
+        return this;
     }
     
     public double getMagnitude() {

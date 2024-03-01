@@ -49,12 +49,20 @@ public class GameScene extends GameApplicationScene {
         this.keyHandler.registerKey("right", KeyCode.D);
     }
     
+    public GameLoop getGameLoop() {
+        return gameLoop;
+    }
+    
     public KeyHandler getKeyHandler() {
         return keyHandler;
     }
     
     public GraphicsContext getGraphicsContext() {
         return graphicsContext;
+    }
+    
+    public World getWorld() {
+        return world;
     }
     
     public void startGame() {
