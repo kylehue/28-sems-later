@@ -4,6 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import main.GameApplication;
+import map.Map;
 import scenes.GameApplicationScene;
 import event.KeyHandler;
 import event.MouseHandler;

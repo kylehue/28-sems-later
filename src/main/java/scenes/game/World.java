@@ -6,6 +6,7 @@ import entity.Player;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
+import map.CityMap;
 import utils.Camera;
 import utils.GameUtils;
 
@@ -17,6 +18,7 @@ public class World {
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Bullet> bullets = new ArrayList<>();
     private final Camera camera;
+    private final CityMap cityMap = new CityMap();
     
     public World(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -34,6 +36,8 @@ public class World {
     
     public void render(GraphicsContext ctx) {
         this.camera.begin();
+        
+        cityMap.render(ctx);
         
         for (Zombie zombie : zombies) {
             zombie.render(ctx);
