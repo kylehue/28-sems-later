@@ -25,10 +25,6 @@ public class Player extends Entity {
     
     public Player(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
-        
-        Canvas canvas = gameApplication.getGameScene().getGraphicsContext().getCanvas();
-        this.getPosition().setX(canvas.getWidth() / 2);
-        this.getPosition().setY(canvas.getHeight() / 2);
     }
     
     public void render(GraphicsContext ctx) {

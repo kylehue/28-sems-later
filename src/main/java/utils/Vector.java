@@ -8,28 +8,15 @@ public class Vector {
     }
     
     public Vector(double x, double y) {
-        this.setX(x);
-        this.setY(y);
+        this.set(x, y);
     }
     
     public double getX() {
-        return x;
+        return this.x;
     }
     
     public double getY() {
-        return y;
-    }
-    
-    public Vector set(double x, double y) {
-        this.setX(x);
-        this.setY(y);
-        return this;
-    }
-    
-    public Vector set(Vector vector) {
-        this.setX(vector.getX());
-        this.setY(vector.getY());
-        return this;
+        return this.y;
     }
     
     public Vector setX(double x) {
@@ -42,9 +29,25 @@ public class Vector {
         return this;
     }
     
+    public Vector set(double x, double y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+    
+    public Vector set(Vector vector) {
+        this.set(vector.getX(), vector.getY());
+        return this;
+    }
+    
     public Vector add(double x, double y) {
         this.x += x;
         this.y += y;
+        return this;
+    }
+    
+    public Vector add(Vector vector) {
+        this.add(vector.getX(), vector.getY());
         return this;
     }
     
@@ -55,14 +58,7 @@ public class Vector {
     }
     
     public Vector subtract(Vector vector) {
-        this.x -= vector.getX();
-        this.y -= vector.getY();
-        return this;
-    }
-    
-    public Vector add(Vector vector) {
-        this.x += vector.getX();
-        this.y += vector.getY();
+        this.subtract(vector.getX(), vector.getY());
         return this;
     }
     
@@ -84,15 +80,19 @@ public class Vector {
         return this.getAngle(vector.getX(), vector.getY());
     }
     
+    public void setMagnitude(double magnitude) {
+        double currentMagnitude = this.getMagnitude();
+        currentMagnitude = currentMagnitude == 0 ? 0.00001 : currentMagnitude;
+        this.x /= currentMagnitude * magnitude;
+        this.y /= currentMagnitude * magnitude;
+    }
+    
     public double getMagnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
     
-    public void setMagnitude(double magnitude) {
-        double currentMagnitude = this.getMagnitude();
-        currentMagnitude = currentMagnitude == 0 ? 0.000001 : currentMagnitude; // limit
-        this.x /= currentMagnitude * magnitude;
-        this.y /= currentMagnitude * magnitude;
+    public void normalize() {
+        this.setMagnitude(1);
     }
     
     public double getDistanceFrom(double x, double y) {
@@ -101,10 +101,6 @@ public class Vector {
     
     public double getDistanceFrom(Vector vector) {
         return this.getDistanceFrom(vector.getX(), vector.getY());
-    }
-    
-    public void normalize() {
-        this.setMagnitude(1);
     }
     
     public Vector clone() {
