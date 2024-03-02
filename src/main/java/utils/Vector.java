@@ -72,6 +72,18 @@ public class Vector {
         return this;
     }
     
+    public double heading() {
+        return Math.atan2(this.getY(), this.getX());
+    }
+    
+    public double heading(double x, double y) {
+        return Math.atan2(y - this.getY(), x - this.getX());
+    }
+    
+    public double heading(Vector vector) {
+        return this.heading(vector.getX(), vector.getY());
+    }
+    
     public double getMagnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
@@ -89,5 +101,13 @@ public class Vector {
     
     public Vector clone() {
         return new Vector(this.x, this.y);
+    }
+    
+    @Override
+    public String toString() {
+        return "Vector{" +
+            "x=" + x +
+            ", y=" + y +
+            '}';
     }
 }

@@ -7,12 +7,15 @@ import main.GameApplication;
 import scenes.GameApplicationScene;
 import utils.GameLoop;
 import utils.KeyHandler;
+import utils.MouseHandler;
+import utils.Vector;
 
 public class GameScene extends GameApplicationScene {
     private final Canvas canvas = new Canvas();
     private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
     private final GameLoop gameLoop;
     private final KeyHandler keyHandler;
+    private final MouseHandler mouseHandler;
     private World world;
     
     public GameScene(GameApplication gameApplication, String sceneId) {
@@ -47,6 +50,9 @@ public class GameScene extends GameApplicationScene {
         this.keyHandler.registerKey("left", KeyCode.A);
         this.keyHandler.registerKey("right", KeyCode.RIGHT);
         this.keyHandler.registerKey("right", KeyCode.D);
+        
+        // Set up mouse handler
+        this.mouseHandler = new MouseHandler(this.getScene());
     }
     
     public GameLoop getGameLoop() {
@@ -55,6 +61,10 @@ public class GameScene extends GameApplicationScene {
     
     public KeyHandler getKeyHandler() {
         return keyHandler;
+    }
+    
+    public MouseHandler getMouseHandler() {
+        return mouseHandler;
     }
     
     public GraphicsContext getGraphicsContext() {

@@ -69,11 +69,19 @@ public class Camera {
         );
     }
     
+    public Vector screenToWorld(Vector vector) {
+        return this.screenToWorld(vector.getX(), vector.getY());
+    }
+    
     public Vector worldToScreen(double x, double y) {
         return new Vector(
             (x - this.viewport.left) * (this.viewport.scaleX),
             (y - this.viewport.top) * (this.viewport.scaleY)
         );
+    }
+    
+    public Vector worldToScreen(Vector vector) {
+        return this.worldToScreen(vector.getX(), vector.getY());
     }
     
     private static class Viewport {

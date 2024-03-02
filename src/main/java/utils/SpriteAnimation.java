@@ -16,6 +16,7 @@ public class SpriteAnimation {
     private int fps = 12;
     
     private boolean horizontallyFlipped = false;
+    private boolean verticallyFlipped = false;
     
     // x, y, w, h in canvas
     private double x = 0;
@@ -51,9 +52,9 @@ public class SpriteAnimation {
             this.tileWidth,
             this.tileHeight,
             x - (horizontallyFlipped ? -width / 2 : width / 2),
-            y - this.height / 2,
+            y - (verticallyFlipped ? -height / 2 : height / 2),
             horizontallyFlipped ? -width : width,
-            height
+            verticallyFlipped ? -height : height
         );
     }
     
@@ -77,8 +78,12 @@ public class SpriteAnimation {
         this.height = height;
     }
     
-    public void setHorizontallyFlipped(boolean v) {
-        this.horizontallyFlipped = v;
+    public void setHorizontallyFlipped(boolean horizontallyFlipped) {
+        this.horizontallyFlipped = horizontallyFlipped;
+    }
+    
+    public void setVerticallyFlipped(boolean verticallyFlipped) {
+        this.verticallyFlipped = verticallyFlipped;
     }
     
     public void setTileSize(double tileWidth, double tileHeight) {
@@ -118,6 +123,10 @@ public class SpriteAnimation {
     
     public boolean isHorizontallyFlipped() {
         return horizontallyFlipped;
+    }
+    
+    public boolean isVerticallyFlipped() {
+        return verticallyFlipped;
     }
     
     /**
