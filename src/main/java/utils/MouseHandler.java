@@ -17,6 +17,13 @@ public class MouseHandler {
             );
         });
         
+        scene.setOnMouseDragged(event -> {
+            this.position.set(
+                event.getSceneX(),
+                event.getSceneY()
+            );
+        });
+        
         scene.setOnMousePressed(event -> {
             if (event.isPrimaryButtonDown()) {
                 mouseLeftPressed.set(true);

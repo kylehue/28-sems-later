@@ -5,17 +5,23 @@ import sprites.GunSprite;
 import sprites.PlayerSprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import main.GameApplication;
 import utils.KeyHandler;
 import utils.Vector;
+
+import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
     private final GameApplication gameApplication;
     private final double speed = 4;
     private final PlayerSprite bodySprite = new PlayerSprite();
     private final GunSprite gunSprite = new GunSprite();
-    private boolean lastMovementIsToLeft = false;
+    private double health = 0;
+    private double angleToMouse = 0;
+    private boolean isFacingOnLeftSide = false;
+    private long lastShootTime = 0;
+    private int fireRateInMillis = 250;
+    private boolean isShooting = false;
     
     public Player(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -23,7 +29,6 @@ public class Player extends Entity {
         Canvas canvas = gameApplication.getGameScene().getGraphicsContext().getCanvas();
         this.getPosition().setX(canvas.getWidth() / 2);
         this.getPosition().setY(canvas.getHeight() / 2);
-        
     }
     
     public void render(GraphicsContext ctx) {
@@ -44,28 +49,65 @@ public class Player extends Entity {
         
         // render gun
         ctx.save();
-        GameScene gameScene = this.gameApplication.getGameScene();
-        Vector mouseInWorld = gameScene.getWorld().getCamera().screenToWorld(
-            gameScene.getMouseHandler().getPosition()
-        );
-        double angleToMouse = this.getPosition().heading(mouseInWorld);
-        boolean isOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
         ctx.translate(
-            getPosition().getX() + (isOnLeftSide ? -3 : 3),
-            getPosition().getY() - 5
+            getPosition().getX(),
+            getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
         this.gunSprite.render(ctx);
         ctx.restore();
         this.gunSprite.nextFrame();
-        this.gunSprite.setPosition(12, 0);
-        this.gunSprite.setVerticallyFlipped(isOnLeftSide);
+        this.gunSprite.setPosition(15, 0);
     }
     
     public void update() {
         this.getPosition().add(this.getVelocity());
         this.handleMovements();
-        this.handleAnimations();
+        this.handleSpriteAnimations();
+        this.updateAngleToMouse();
+        
+        if (this.gameApplication.getGameScene().getMouseHandler().isMouseLeftPressed()) {
+            this.shoot();
+            isShooting = true;
+            this.gunSprite.setFPS(30);
+        } else {
+            isShooting = false;
+            this.gunSprite.setFPS(12);
+        }
+    }
+    
+    public void setHealth(double health) {
+        this.health = health;
+    }
+    
+    public double getHealth() {
+        return health;
+    }
+    
+    public void shoot() {
+        long timeNow = System.nanoTime();
+        if (timeNow - lastShootTime > TimeUnit.MILLISECONDS.toNanos(fireRateInMillis)) {
+            double offset = 30;
+            this.gameApplication.getGameScene().getWorld().spawnBullet(
+                this.getPosition().getX() + Math.cos(this.angleToMouse) * offset,
+                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset,
+                this.angleToMouse
+            );
+            lastShootTime = System.nanoTime();
+        }
+    }
+    
+    public void setFireRateInMillis(int fireRateInMillis) {
+        this.fireRateInMillis = fireRateInMillis;
+    }
+    
+    public void updateAngleToMouse() {
+        GameScene gameScene = this.gameApplication.getGameScene();
+        Vector mouseInWorld = gameScene.getWorld().getCamera().screenToWorld(
+            gameScene.getMouseHandler().getPosition()
+        );
+        this.angleToMouse = this.getPosition().heading(mouseInWorld);
+        this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
     private void handleMovements() {
@@ -79,11 +121,9 @@ public class Player extends Entity {
         if (leftPressed || rightPressed) {
             if (leftPressed) {
                 this.getVelocity().setX(-1 * speed);
-                lastMovementIsToLeft = true;
             }
             if (rightPressed) {
                 this.getVelocity().setX(1 * speed);
-                lastMovementIsToLeft = false;
             }
         } else {
             this.getVelocity().setX(0);
@@ -108,13 +148,24 @@ public class Player extends Entity {
         }
     }
     
-    private void handleAnimations() {
+    private void handleSpriteAnimations() {
+        if (isShooting) {
+            this.gunSprite.set(GunSprite.Animation.Shoot);
+        } else {
+            this.gunSprite.set(GunSprite.Animation.Idle);
+        }
+        
         if (this.getVelocity().getX() == 0 && this.getVelocity().getY() == 0) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
+            
+            if (isShooting) {
+                this.bodySprite.set(PlayerSprite.Animation.Shoot);
+            }
         } else {
             this.bodySprite.set(PlayerSprite.Animation.Walk);
         }
         
-        this.bodySprite.setHorizontallyFlipped(lastMovementIsToLeft);
+        this.bodySprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
+        this.gunSprite.setVerticallyFlipped(this.isFacingOnLeftSide);
     }
 }

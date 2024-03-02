@@ -95,6 +95,14 @@ public class Vector {
         this.y /= currentMagnitude * magnitude;
     }
     
+    public double getDistanceFrom(double x, double y) {
+        return Math.sqrt(Math.pow(x - this.getX(), 2) + Math.pow(y - this.getY(), 2));
+    }
+    
+    public double getDistanceFrom(Vector vector) {
+        return this.getDistanceFrom(vector.getX(), vector.getY());
+    }
+    
     public void normalize() {
         this.setMagnitude(1);
     }
