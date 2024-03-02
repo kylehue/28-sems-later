@@ -1,7 +1,7 @@
 package scenes.game;
 
 import entity.Bullet;
-import entity.Enemy;
+import entity.Zombie;
 import entity.Player;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class World {
     private final GameApplication gameApplication;
     private final Player player;
-    private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Bullet> bullets = new ArrayList<>();
     private final Camera camera;
     
@@ -25,18 +25,18 @@ public class World {
         
         Canvas canvas = gameApplication.getGameScene().getGraphicsContext().getCanvas();
         for (int i = 0; i < 50; i++) {
-            Enemy enemy = new Enemy(gameApplication);
+            Zombie enemy = new Zombie(gameApplication);
             enemy.getPosition().setX(GameUtils.random(0, canvas.getWidth()));
             enemy.getPosition().setY(GameUtils.random(0, canvas.getHeight()));
-            enemies.add(enemy);
+            zombies.add(enemy);
         }
     }
     
     public void render(GraphicsContext ctx) {
         this.camera.begin();
         
-        for (Enemy enemy : enemies) {
-            enemy.render(ctx);
+        for (Zombie zombie : zombies) {
+            zombie.render(ctx);
         }
         
         for (Bullet bullet : bullets) {
@@ -53,8 +53,8 @@ public class World {
         
         player.update();
         
-        for (Enemy enemy : enemies) {
-            // enemy.update();
+        for (Zombie zombie : zombies) {
+            zombie.update();
         }
         
         for (Bullet bullet : bullets) {

@@ -101,12 +101,12 @@ public class Player extends Entity {
         this.fireRateInMillis = fireRateInMillis;
     }
     
-    public void updateAngleToMouse() {
+    private void updateAngleToMouse() {
         GameScene gameScene = this.gameApplication.getGameScene();
         Vector mouseInWorld = gameScene.getWorld().getCamera().screenToWorld(
             gameScene.getMouseHandler().getPosition()
         );
-        this.angleToMouse = this.getPosition().heading(mouseInWorld);
+        this.angleToMouse = this.getPosition().getAngle(mouseInWorld);
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     

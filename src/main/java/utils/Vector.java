@@ -72,16 +72,16 @@ public class Vector {
         return this;
     }
     
-    public double heading() {
+    public double getAngle() {
         return Math.atan2(this.getY(), this.getX());
     }
     
-    public double heading(double x, double y) {
+    public double getAngle(double x, double y) {
         return Math.atan2(y - this.getY(), x - this.getX());
     }
     
-    public double heading(Vector vector) {
-        return this.heading(vector.getX(), vector.getY());
+    public double getAngle(Vector vector) {
+        return this.getAngle(vector.getX(), vector.getY());
     }
     
     public double getMagnitude() {
