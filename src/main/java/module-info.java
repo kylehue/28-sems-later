@@ -4,4 +4,5 @@ module samplegame {
     
     opens main;
     opens scenes.game;
+    opens utils;
 }

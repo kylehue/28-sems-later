@@ -2,7 +2,7 @@ package utils;
 
 import javafx.animation.AnimationTimer;
 
-public class GameLoop {
+public class AnimationLoop {
     private double deltaTime = 0;
     private AnimationTimer timer;
     private int frameCount = 0;

@@ -5,15 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import main.GameApplication;
 import scenes.GameApplicationScene;
-import utils.GameLoop;
-import utils.KeyHandler;
-import utils.MouseHandler;
-import utils.Vector;
+import event.KeyHandler;
+import event.MouseHandler;
+import utils.AnimationLoop;
 
 public class GameScene extends GameApplicationScene {
     private final Canvas canvas = new Canvas();
     private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    private final GameLoop gameLoop;
+    private final AnimationLoop animationLoop;
     private final KeyHandler keyHandler;
     private final MouseHandler mouseHandler;
     private World world;
@@ -23,7 +22,7 @@ public class GameScene extends GameApplicationScene {
         
         // Set up game loop
         GameScene $this = this;
-        this.gameLoop = new GameLoop() {
+        this.animationLoop = new AnimationLoop() {
             @Override
             public void render() {
                 $this.render();
@@ -55,8 +54,8 @@ public class GameScene extends GameApplicationScene {
         this.mouseHandler = new MouseHandler(this.getScene());
     }
     
-    public GameLoop getGameLoop() {
-        return gameLoop;
+    public AnimationLoop getGameLoop() {
+        return animationLoop;
     }
     
     public KeyHandler getKeyHandler() {
@@ -80,11 +79,11 @@ public class GameScene extends GameApplicationScene {
             this.world = new World(this.getGameApplication());
         }
         
-        this.gameLoop.startLoop();
+        this.animationLoop.startLoop();
     }
     
     public void pauseGame() {
-        this.gameLoop.pauseLoop();
+        this.animationLoop.pauseLoop();
     }
     
     public void render() {

@@ -1,8 +1,9 @@
-package utils;
+package event;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
+import utils.Vector;
 
 public class MouseHandler {
     private final BooleanProperty mouseLeftPressed = new SimpleBooleanProperty(false);

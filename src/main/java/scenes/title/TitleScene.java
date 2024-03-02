@@ -1,17 +1,12 @@
 package scenes.title;
 
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import main.GameApplication;
 import scenes.GameApplicationScene;
-import scenes.game.GameScene;
 import utils.LayoutUtils;
 
 public class TitleScene extends GameApplicationScene {

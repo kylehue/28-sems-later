@@ -6,7 +6,7 @@ import sprites.PlayerSprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
-import utils.KeyHandler;
+import event.KeyHandler;
 import utils.Vector;
 
 import java.util.concurrent.TimeUnit;
