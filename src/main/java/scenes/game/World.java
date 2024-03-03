@@ -60,7 +60,16 @@ public class World {
         ArrayList<Entity> entities = new ArrayList<>();
         entities.add(player);
         entities.addAll(zombies);
-        entities.sort((a, b) -> (int) (a.getPosition().getY() - b.getPosition().getY()));
+        
+        // TODO: project requirements application: apply insertion sort
+        entities.sort((a, b) -> {
+            double ay = a.getPosition().getY();
+            double by = b.getPosition().getY();
+            if (ay < by) return -1;
+            else if (ay > by) return 1;
+            return 0;
+        });
+        
         for (Entity entity : entities) {
             entity.render(ctx);
         }
