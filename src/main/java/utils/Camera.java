@@ -3,6 +3,7 @@ package utils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+// https://github.com/robashton/camera/blob/master/camera.js
 public class Camera {
     private final GraphicsContext context;
     private double distance = 1000;

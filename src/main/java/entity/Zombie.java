@@ -1,19 +1,26 @@
 package entity;
 
+import colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import sprites.ZombieSprite;
+import utils.GameUtils;
+import utils.Quadtree;
 
 public class Zombie extends Entity {
     private final GameApplication gameApplication;
     private final ZombieSprite sprite = new ZombieSprite();
     private boolean isFacingOnLeftSide = false;
     private double angleToPlayer = 0;
-    private double speed = Math.random() + 0.5;
+    private double speed = GameUtils.random(1, 2);
+    private CircleCollider collider = new CircleCollider();
     
     public Zombie(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
         this.sprite.randomizeFirstFrame();
+        this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
+            this.collider
+        );
     }
     
     public void render(GraphicsContext ctx) {
@@ -32,9 +39,19 @@ public class Zombie extends Entity {
     }
     
     public void update() {
-        this.getPosition().add(this.getVelocity());
+        this.getPosition().set(collider.getPosition());
         this.handleMovements();
         this.updateAngleToPlayer();
+        
+        this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
+            this.collider,
+            new Quadtree.Bounds(
+                this.collider.getPosition().getX() - 9,
+                this.collider.getPosition().getY() - 12,
+                18,
+                25
+            )
+        );
     }
     
     private void updateAngleToPlayer() {
@@ -44,7 +61,11 @@ public class Zombie extends Entity {
     }
     
     private void handleMovements() {
-        this.getVelocity().setX(Math.cos(angleToPlayer) * speed);
-        this.getVelocity().setY(Math.sin(angleToPlayer) * speed);
+        this.collider.getVelocity().setX(Math.cos(angleToPlayer) * speed);
+        this.collider.getVelocity().setY(Math.sin(angleToPlayer) * speed);
+    }
+    
+    public CircleCollider getCollider() {
+        return collider;
     }
 }

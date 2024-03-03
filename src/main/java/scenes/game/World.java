@@ -1,6 +1,9 @@
 package scenes.game;
 
+import colliders.Collider;
+import colliders.ColliderWorld;
 import entity.Bullet;
+import entity.Entity;
 import entity.Zombie;
 import entity.Player;
 import javafx.scene.canvas.Canvas;
@@ -9,50 +12,77 @@ import main.GameApplication;
 import map.CityMap;
 import utils.Camera;
 import utils.GameUtils;
+import utils.Quadtree;
 
 import java.util.ArrayList;
 
 public class World {
     private final GameApplication gameApplication;
-    private final Player player;
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Bullet> bullets = new ArrayList<>();
     private final Camera camera;
     private final CityMap cityMap = new CityMap();
+    private final Quadtree<Collider> quadtree;
+    private final ColliderWorld colliderWorld = new ColliderWorld();
+    private Player player;
     
     public World(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
+        this.quadtree = new Quadtree<>(
+            new Quadtree.Bounds(
+                -cityMap.getTotalWidth() / 2,
+                -cityMap.getTotalHeight() / 2,
+                cityMap.getTotalWidth(),
+                cityMap.getTotalHeight()
+            )
+        );
+        this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
+    }
+    
+    public void setup() {
         this.player = new Player(gameApplication);
-        
-        Canvas canvas = gameApplication.getGameScene().getGraphicsContext().getCanvas();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 130; i++) {
             Zombie enemy = new Zombie(gameApplication);
-            enemy.getPosition().setX(GameUtils.random(0, canvas.getWidth()));
-            enemy.getPosition().setY(GameUtils.random(0, canvas.getHeight()));
+            enemy.getCollider().getPosition().set(
+                GameUtils.random(-cityMap.getTotalWidth() / 2, cityMap.getTotalWidth() / 2),
+                GameUtils.random(-cityMap.getTotalHeight() / 2, cityMap.getTotalHeight() / 2)
+            );
             zombies.add(enemy);
         }
     }
     
     public void render(GraphicsContext ctx) {
         this.camera.begin();
-        
         cityMap.render(ctx);
         
-        for (Zombie zombie : zombies) {
-            zombie.render(ctx);
+        // render entities according to y position
+        ArrayList<Entity> entities = new ArrayList<>();
+        entities.add(player);
+        entities.addAll(zombies);
+        entities.sort((a, b) -> (int) (a.getPosition().getY() - b.getPosition().getY()));
+        for (Entity entity : entities) {
+            entity.render(ctx);
         }
         
         for (Bullet bullet : bullets) {
             bullet.render(ctx);
         }
         
-        player.render(ctx);
-        
+        // this.renderMeta(ctx);
         this.camera.end();
     }
     
+    public void renderMeta(GraphicsContext ctx) {
+        this.getQuadtree().render(ctx);
+        player.getCollider().render(ctx);
+        for (Zombie zombie : zombies) {
+            zombie.getCollider().render(ctx);
+        }
+    }
+    
     public void update() {
+        this.getQuadtree().clear();
         this.handleBulletDisposal();
         
         player.update();
@@ -67,6 +97,15 @@ public class World {
         
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(700);
+        colliderWorld.update();
+    }
+    
+    public Quadtree<Collider> getQuadtree() {
+        return quadtree;
+    }
+    
+    public ColliderWorld getColliderWorld() {
+        return colliderWorld;
     }
     
     public Player getPlayer() {

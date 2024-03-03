@@ -1,6 +1,12 @@
 package utils;
 
 public abstract class GameUtils {
+    private static int idAccumulator = 0;
+    
+    public static String generateId() {
+        return "#" + (GameUtils.idAccumulator++);
+    }
+    
     public static double random(double min, double max) {
         return Math.random() * (max - min) + min;
     }

@@ -77,7 +77,9 @@ public class GameScene extends GameApplicationScene {
     
     public void startGame() {
         if (this.world == null) {
+            // TODO: how can we assign the world to this.world BEFORE creating it?
             this.world = new World(this.getGameApplication());
+            this.world.setup();
         }
         
         this.animationLoop.startLoop();

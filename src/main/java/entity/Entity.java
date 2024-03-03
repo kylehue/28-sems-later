@@ -1,5 +1,6 @@
 package entity;
 
+import javafx.scene.canvas.GraphicsContext;
 import utils.Vector;
 
 public abstract class Entity {
@@ -12,5 +13,10 @@ public abstract class Entity {
     
     public Vector getVelocity() {
         return velocity;
+    }
+    
+    // to be overridden
+    public void render(GraphicsContext ctx) {
+    
     }
 }

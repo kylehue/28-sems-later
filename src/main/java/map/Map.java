@@ -26,13 +26,18 @@ public abstract class Map {
         registeredTiles.put(tileId, tileLocation);
     }
     
+    public double getTotalWidth() {
+        return (mapMatrix[0] == null ? 0 : mapMatrix[0].length) * this.tileWidth;
+    }
+    
+    public double getTotalHeight() {
+        return mapMatrix.length * this.tileHeight;
+    }
+    
     public void render(GraphicsContext ctx) {
         if (this.tileSheet == null) {
             throw new Error("Tile sheet is not found. Please make sure that you have set the tile sheet using setTileSheet().");
         }
-        
-        double mapWidth = (mapMatrix[0] == null ? 0 : mapMatrix[0].length) * this.tileWidth;
-        double mapHeight = mapMatrix.length * this.tileHeight;
         
         for (int rowIndex = 0; rowIndex < mapMatrix.length; rowIndex++) {
             String[] tilesRow = mapMatrix[rowIndex];
@@ -48,8 +53,8 @@ public abstract class Map {
                     tileLocation.row() * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight,
-                    columnIndex * this.tileWidth - (mapWidth / 2),
-                    rowIndex * this.tileHeight - (mapHeight / 2),
+                    columnIndex * this.tileWidth - (this.getTotalWidth() / 2),
+                    rowIndex * this.tileHeight - (this.getTotalHeight() / 2),
                     this.tileWidth,
                     this.tileHeight
                 );

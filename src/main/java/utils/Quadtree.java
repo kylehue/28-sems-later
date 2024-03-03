@@ -1,24 +1,29 @@
 package utils;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Paint;
+
 import java.util.HashSet;
 
 // https://github.com/timohausmann/quadtree-js/blob/master/quadtree.js
-public class Quadtree {
+public class Quadtree<T> {
     private final Bounds bounds;
     private int maxObjects = 10;
-    private int maxLevels = 10;
+    private int maxLevels = 4;
     private int level = 0;
     
-    private final HashSet<Bounds> objects = new HashSet<>();
-    private Subnodes subnodes = null;
+    private final HashSet<QObject<T>> objects = new HashSet<>();
+    private Subnodes<T> subnodes = null;
     
     public Quadtree(Bounds bounds) {
         this.bounds = bounds;
+        this.maxLevels = (int) Math.pow(this.bounds.width + this.bounds.height, 0.15);
     }
     
     public Quadtree(Bounds bounds, int maxObjects) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
+        this.maxLevels = (int) Math.pow(this.bounds.width + this.bounds.height, 0.15);
     }
     
     public Quadtree(Bounds bounds, int maxObjects, int maxLevels) {
@@ -34,6 +39,37 @@ public class Quadtree {
         this.level = level;
     }
     
+    public void render(GraphicsContext ctx) {
+        for (QObject<T> obj : this.objects) {
+            ctx.beginPath();
+            ctx.setStroke(Paint.valueOf("blue"));
+            ctx.strokeRect(
+                obj.position.getX(),
+                obj.position.getY(),
+                obj.width,
+                obj.height
+            );
+            ctx.closePath();
+        }
+        
+        ctx.beginPath();
+        ctx.setStroke(Paint.valueOf("red"));
+        ctx.strokeRect(
+            this.bounds.position.getX(),
+            this.bounds.position.getY(),
+            this.bounds.width,
+            this.bounds.height
+        );
+        ctx.closePath();
+        
+        if (this.subnodes != null) {
+            this.subnodes.topLeft.render(ctx);
+            this.subnodes.topRight.render(ctx);
+            this.subnodes.bottomLeft.render(ctx);
+            this.subnodes.bottomRight.render(ctx);
+        }
+    }
+    
     /**
      * Splits the node into 4 sub-nodes.
      */
@@ -44,8 +80,8 @@ public class Quadtree {
         double subWidth = this.bounds.width / 2;
         double subHeight = this.bounds.height / 2;
         
-        this.subnodes = new Subnodes(
-            new Quadtree(
+        this.subnodes = new Subnodes<T>(
+            new Quadtree<T>(
                 new Bounds(
                     x,
                     y,
@@ -56,7 +92,7 @@ public class Quadtree {
                 this.maxLevels,
                 nextLevel
             ),
-            new Quadtree(
+            new Quadtree<T>(
                 new Bounds(
                     x + subWidth,
                     y,
@@ -67,7 +103,7 @@ public class Quadtree {
                 this.maxLevels,
                 nextLevel
             ),
-            new Quadtree(
+            new Quadtree<T>(
                 new Bounds(
                     x,
                     y + subHeight,
@@ -78,7 +114,7 @@ public class Quadtree {
                 this.maxLevels,
                 nextLevel
             ),
-            new Quadtree(
+            new Quadtree<T>(
                 new Bounds(
                     x + subWidth,
                     y + subHeight,
@@ -92,7 +128,7 @@ public class Quadtree {
         );
     }
     
-    private Quadtree getSubnode(SubnodeLocation subnodeLocation) {
+    private Quadtree<T> getSubnode(SubnodeLocation subnodeLocation) {
         return switch (subnodeLocation) {
             case SubnodeLocation.TOP_LEFT -> this.subnodes.topLeft;
             case SubnodeLocation.TOP_RIGHT -> this.subnodes.topRight;
@@ -143,20 +179,20 @@ public class Quadtree {
      * exceeds the capacity, it will split and add all
      * objects to their corresponding sub-nodes.
      */
-    public void insert(Bounds bounds) {
-        int i = 0;
-        
+    public void insert(T quadtreeObject, Bounds bounds) {
         // If we have sub-nodes, call insert on matching sub-nodes
         if (this.subnodes != null) {
             HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(bounds);
             for (SubnodeLocation subnodeLocation : subnodeLocations) {
-                getSubnode(subnodeLocation).insert(bounds);
+                getSubnode(subnodeLocation).insert(quadtreeObject, bounds);
             }
             return;
         }
         
         // otherwise, store object here
-        this.objects.add(bounds);
+        this.objects.add(
+            new QObject<>(quadtreeObject, bounds)
+        );
         
         // Max objects reached
         if (this.objects.size() > this.maxObjects && this.level < this.maxLevels) {
@@ -164,10 +200,15 @@ public class Quadtree {
             this.split();
             
             // Add all objects to their corresponding sub-node
-            for (Bounds object : this.objects) {
-                HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(object);
+            for (QObject<T> _quadtreeObject : this.objects) {
+                HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(
+                    _quadtreeObject
+                );
                 for (SubnodeLocation subnodeLocation : subnodeLocations) {
-                    getSubnode(subnodeLocation).insert(object);
+                    getSubnode(subnodeLocation).insert(
+                        _quadtreeObject.object,
+                        _quadtreeObject
+                    );
                 }
             }
             
@@ -179,9 +220,9 @@ public class Quadtree {
     /**
      * Return all objects that could collide with the given object.
      */
-    public HashSet<Bounds> retrieve(Bounds bounds) {
+    public HashSet<QObject<T>> retrieve(Bounds bounds) {
         HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(bounds);
-        HashSet<Bounds> returnObjects = new HashSet<>(this.objects);
+        HashSet<QObject<T>> returnObjects = new HashSet<>(this.objects);
         
         // If we have sub-nodes, retrieve their objects
         if (this.subnodes != null) {
@@ -191,6 +232,15 @@ public class Quadtree {
         }
         
         return returnObjects;
+    }
+    
+    public HashSet<QObject<T>> retrieve(
+        double x,
+        double y,
+        double width,
+        double height
+    ) {
+        return this.retrieve(new Bounds(x, y, width, height));
     }
     
     /**
@@ -214,17 +264,17 @@ public class Quadtree {
         BOTTOM_RIGHT
     }
     
-    public static class Subnodes {
-        public final Quadtree topLeft;
-        public final Quadtree topRight;
-        public final Quadtree bottomLeft;
-        public final Quadtree bottomRight;
+    public static class Subnodes<T> {
+        public final Quadtree<T> topLeft;
+        public final Quadtree<T> topRight;
+        public final Quadtree<T> bottomLeft;
+        public final Quadtree<T> bottomRight;
         
         public Subnodes(
-            Quadtree topLeft,
-            Quadtree topRight,
-            Quadtree bottomLeft,
-            Quadtree bottomRight
+            Quadtree<T> topLeft,
+            Quadtree<T> topRight,
+            Quadtree<T> bottomLeft,
+            Quadtree<T> bottomRight
         ) {
             this.topLeft = topLeft;
             this.topRight = topRight;
@@ -245,6 +295,25 @@ public class Quadtree {
             this.position.set(x, y);
             this.width = width;
             this.height = height;
+        }
+    }
+    
+    public static class QObject<T> extends Bounds {
+        public final T object;
+        
+        public QObject(T object, double x, double y, double width, double height) {
+            super(x, y, width, height);
+            this.object = object;
+        }
+        
+        public QObject(T object, Bounds bounds) {
+            super(
+                bounds.position.getX(),
+                bounds.position.getY(),
+                bounds.width,
+                bounds.height
+            );
+            this.object = object;
         }
     }
 }

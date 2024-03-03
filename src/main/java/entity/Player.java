@@ -1,5 +1,6 @@
 package entity;
 
+import colliders.CircleCollider;
 import scenes.game.GameScene;
 import sprites.GunSprite;
 import sprites.PlayerSprite;
@@ -7,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import event.KeyHandler;
+import utils.Quadtree;
 import utils.Vector;
 
 import java.util.concurrent.TimeUnit;
@@ -22,9 +24,14 @@ public class Player extends Entity {
     private long lastShootTime = 0;
     private int fireRateInMillis = 250;
     private boolean isShooting = false;
+    private CircleCollider collider = new CircleCollider();
     
     public Player(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
+        this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
+            this.collider
+        );
+        this.collider.setStatic(true);
     }
     
     public void render(GraphicsContext ctx) {
@@ -57,7 +64,7 @@ public class Player extends Entity {
     }
     
     public void update() {
-        this.getPosition().add(this.getVelocity());
+        this.getPosition().set(collider.getPosition());
         this.handleMovements();
         this.handleSpriteAnimations();
         this.updateAngleToMouse();
@@ -70,6 +77,20 @@ public class Player extends Entity {
             isShooting = false;
             this.gunSprite.setFPS(12);
         }
+        
+        this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
+            this.collider,
+            new Quadtree.Bounds(
+                this.collider.getPosition().getX() - 9,
+                this.collider.getPosition().getY() - 12,
+                18,
+                25
+            )
+        );
+    }
+    
+    public CircleCollider getCollider() {
+        return collider;
     }
     
     public void setHealth(double health) {
@@ -116,31 +137,31 @@ public class Player extends Entity {
         // x
         if (leftPressed || rightPressed) {
             if (leftPressed) {
-                this.getVelocity().setX(-1 * speed);
+                this.collider.getVelocity().setX(-1 * speed);
             }
             if (rightPressed) {
-                this.getVelocity().setX(1 * speed);
+                this.collider.getVelocity().setX(1 * speed);
             }
         } else {
-            this.getVelocity().setX(0);
+            this.collider.getVelocity().setX(0);
         }
         
         // y
         if (upPressed || downPressed) {
             if (upPressed) {
-                this.getVelocity().setY(-1 * speed);
+                this.collider.getVelocity().setY(-1 * speed);
             }
             if (downPressed) {
-                this.getVelocity().setY(1 * speed);
+                this.collider.getVelocity().setY(1 * speed);
             }
         } else {
-            this.getVelocity().setY(0);
+            this.collider.getVelocity().setY(0);
         }
         
         // fix speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
-            this.getVelocity().normalize();
-            this.getVelocity().scale(speed);
+            this.collider.getVelocity().normalize();
+            this.collider.getVelocity().scale(speed);
         }
     }
     
@@ -151,7 +172,7 @@ public class Player extends Entity {
             this.gunSprite.set(GunSprite.Animation.Idle);
         }
         
-        if (this.getVelocity().getX() == 0 && this.getVelocity().getY() == 0) {
+        if (this.collider.getVelocity().getX() == 0 && this.collider.getVelocity().getY() == 0) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
             if (isShooting) {
