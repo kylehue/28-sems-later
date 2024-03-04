@@ -50,6 +50,7 @@ public class GameScene extends GameApplicationScene {
         this.keyHandler.registerKey("left", KeyCode.A);
         this.keyHandler.registerKey("right", KeyCode.RIGHT);
         this.keyHandler.registerKey("right", KeyCode.D);
+        this.keyHandler.registerKey("dash", KeyCode.SPACE);
         
         // Set up mouse handler
         this.mouseHandler = new MouseHandler(this.getScene());

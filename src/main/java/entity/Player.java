@@ -23,7 +23,10 @@ public class Player extends Entity {
     private boolean isFacingOnLeftSide = false;
     private long lastShootTime = 0;
     private int fireRateInMillis = 250;
+    private long lastDashTime = 0;
+    private int dashRateInMillis = 2000;
     private boolean isShooting = false;
+    private boolean isDashing = false;
     private CircleCollider collider = new CircleCollider();
     
     public Player(GameApplication gameApplication) {
@@ -133,6 +136,7 @@ public class Player extends Entity {
         boolean downPressed = keyHandler.isKeyPressed("down");
         boolean leftPressed = keyHandler.isKeyPressed("left");
         boolean rightPressed = keyHandler.isKeyPressed("right");
+        boolean dashPressed = keyHandler.isKeyPressed("dash");
         
         // x
         if (leftPressed || rightPressed) {
@@ -163,6 +167,28 @@ public class Player extends Entity {
             this.collider.getVelocity().normalize();
             this.collider.getVelocity().scale(speed);
         }
+
+        long timeNow = System.nanoTime();
+
+        if (!isDashing && dashPressed && timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis)){
+            Vector dashVelocity = new Vector();
+
+            if(upPressed) {
+                dashVelocity.setY(-100);
+            } else if(downPressed){
+               dashVelocity.setY(100);
+            }
+            if(leftPressed){
+                dashVelocity.setX(-100);
+            }else if(rightPressed){
+                dashVelocity.setX(100);
+            }
+
+            this.collider.getVelocity().add(dashVelocity);
+            isDashing = true;
+        }
+
+
     }
     
     private void handleSpriteAnimations() {
