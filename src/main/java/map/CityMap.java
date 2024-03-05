@@ -31,7 +31,7 @@ public class CityMap extends Map {
             " "
         ));
         this.setTileSize(32, 32);
-        this.registerTile("0", Map.TileLocation.create(0, 0));
+        this.registerTile("0", Map.TileLocation.create(0, 0), 90);
         this.registerTile("1", Map.TileLocation.create(4, 0));
     }
 }

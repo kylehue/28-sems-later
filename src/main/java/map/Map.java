@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public abstract class Map {
     private final HashMap<String, TileLocation> registeredTiles = new HashMap<>();
+    private final HashMap<String, Integer> registeredTileAngles = new HashMap<>();
     private Image tileSheet = null;
     private String[][] mapMatrix = {};
     private double tileWidth = 0;
@@ -24,6 +25,12 @@ public abstract class Map {
     
     public void registerTile(String tileId, TileLocation tileLocation) {
         registeredTiles.put(tileId, tileLocation);
+        this.registeredTileAngles.put(tileId, 0);
+    }
+    
+    public void registerTile(String tileId, TileLocation tileLocation, int angleInDegrees) {
+        this.registerTile(tileId, tileLocation);
+        this.registeredTileAngles.put(tileId, angleInDegrees);
     }
     
     public double getTotalWidth() {
@@ -46,6 +53,12 @@ public abstract class Map {
                 TileLocation tileLocation = registeredTiles.get(tileId);
                 if (tileLocation == null) continue;
                 
+                int tileAngle = this.registeredTileAngles.get(tileId);
+                double x = columnIndex * this.tileWidth - (this.getTotalWidth() / 2);
+                double y = rowIndex * this.tileHeight - (this.getTotalHeight() / 2);
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(tileAngle);
                 ctx.beginPath();
                 ctx.drawImage(
                     this.tileSheet,
@@ -53,18 +66,23 @@ public abstract class Map {
                     tileLocation.row() * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight,
-                    columnIndex * this.tileWidth - (this.getTotalWidth() / 2),
-                    rowIndex * this.tileHeight - (this.getTotalHeight() / 2),
+                    -this.tileWidth,
+                    -this.tileHeight,
                     this.tileWidth,
                     this.tileHeight
                 );
                 ctx.closePath();
+                ctx.restore();
             }
         }
     }
     
     public void setMapMatrix(String[][] mapMatrix) {
         this.mapMatrix = mapMatrix;
+    }
+    
+    public void setMapMatrix(String mapMatrixString, String separator) {
+        this.mapMatrix = Map.parseStringMatrix(mapMatrixString, separator);
     }
     
     public static String[][] parseStringMatrix(String stringMatrix, String separator) {
