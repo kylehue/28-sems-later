@@ -186,8 +186,8 @@ public class Player extends Entity {
         
         // if not moving but dashed, just follow the mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
-            dashVelocity.setX(Math.cos(angleToMouse) * dashSpeed);
-            dashVelocity.setY(Math.sin(angleToMouse) * dashSpeed);
+            dashVelocity.setX(Math.cos(Math.PI + angleToMouse) * (dashSpeed + speed));
+            dashVelocity.setY(Math.sin(Math.PI + angleToMouse) * (dashSpeed + speed));
         }
         
         lastDashTime = timeNow;
