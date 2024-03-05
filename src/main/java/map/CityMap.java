@@ -8,10 +8,10 @@ public class CityMap extends Map {
         this.setMapMatrix(Map.parseStringMatrix(
             """
                 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-                0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
-                0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
-                0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
-                0 0 0 0 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
+                0 1 1 1 0 0 1 1 1 0 0 9 3 3 3 3 3 A 1 0 0 1 1 1 0 0 1 1 1 0
+                0 1 1 1 0 0 1 1 1 0 0 7 6 6 6 6 6 8 1 0 0 1 1 1 0 0 1 1 1 0
+                0 1 1 1 0 0 1 1 1 0 0 7 6 6 6 6 6 8 1 0 0 1 1 1 0 0 1 1 1 0
+                0 0 0 0 0 0 1 1 1 0 0 2 3 3 5 3 3 4 1 0 0 1 1 1 0 0 1 1 1 0
                 0 0 0 0 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
                 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
                 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 1 1 1 0
@@ -98,6 +98,15 @@ public class CityMap extends Map {
         ));
         this.setTileSize(32, 32);
         this.registerTile("0", Map.TileLocation.create(0, 0));
-        this.registerTile("1", Map.TileLocation.create(0, 1),90);
+        this.registerTile("1", Map.TileLocation.create(0, 1));
+        this.registerTile("2", Map.TileLocation.create(1,0));
+        this.registerTile("3", Map.TileLocation.create(1,2));
+        this.registerTile("4", Map.TileLocation.create(1,1));
+        this.registerTile("5", Map.TileLocation.create(1,5));
+        this.registerTile("6", Map.TileLocation.create(1,9));
+        this.registerTile("7", Map.TileLocation.create(1,7));
+        this.registerTile("8", Map.TileLocation.create(1,6));
+        this.registerTile("9", Map.TileLocation.create(2,0));
+        this.registerTile("A", Map.TileLocation.create(2,1));
     }
 }
