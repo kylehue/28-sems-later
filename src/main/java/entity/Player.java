@@ -55,11 +55,12 @@ public class Player extends Entity {
             this.collider
         );
         this.collider.setStatic(true);
+        dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
     }
     
     public void render(GraphicsContext ctx) {
         // render dash smoke
-        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength("dash")) {
+        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength(DashSprite.Animation.Default.name())) {
             ctx.save();
             ctx.translate(
                 dashPosition.getX(),
@@ -70,7 +71,7 @@ public class Player extends Entity {
             ctx.restore();
             this.dashSprite.nextFrame();
             this.dashSprite.setPosition(
-                -this.dashSprite.getWidth() / 2,
+                0,
                 -this.dashSprite.getHeight() / 2
             );
         }

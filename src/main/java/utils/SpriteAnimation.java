@@ -115,6 +115,10 @@ public class SpriteAnimation {
         return frameAccumulator;
     }
     
+    public void setFrameAccumulator(int frameAccumulator) {
+        this.frameAccumulator = frameAccumulator;
+    }
+    
     public double getX() {
         return x;
     }
