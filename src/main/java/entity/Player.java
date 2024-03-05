@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
     // basic characteristics
-    private final double speed = 4;
+    private final double speed = 2.5;
     private double health = 0;
     
     // shoot

@@ -107,7 +107,7 @@ public class World {
         }
         
         this.camera.moveTo(player.getPosition());
-        this.camera.zoomTo(700);
+        this.camera.zoomTo(500);
         colliderWorld.update(deltaTime);
     }
     

@@ -12,7 +12,7 @@ public class Zombie extends Entity {
     private final ZombieSprite sprite = new ZombieSprite();
     private boolean isFacingOnLeftSide = false;
     private double angleToPlayer = 0;
-    private double speed = GameUtils.random(1, 2);
+    private double speed = GameUtils.random(0.2, 0.8);
     private CircleCollider collider = new CircleCollider();
     
     public Zombie(GameApplication gameApplication) {
