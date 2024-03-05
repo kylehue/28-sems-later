@@ -9,7 +9,6 @@ public class AnimationLoop {
     private AnimationTimer timer;
     private int frameCount = 0;
     private long lastUpdate = 0;
-    private int fps = 24;
     
     private void maybeCreateTimer() {
         if (this.timer != null) return;
@@ -17,21 +16,13 @@ public class AnimationLoop {
             
             @Override
             public void handle(long now) {
-                deltaTime = (now - lastUpdate) / 1e9 * fps;
+                deltaTime = (now - lastUpdate) / 1e9;
                 update(deltaTime);
                 render();
                 frameCount++;
                 lastUpdate = now;
             }
         };
-    }
-    
-    public int getFPS() {
-        return fps;
-    }
-    
-    public void setFPS(int fps) {
-        this.fps = fps;
     }
     
     public void startLoop() {
