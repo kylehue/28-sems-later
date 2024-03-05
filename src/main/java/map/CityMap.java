@@ -4,7 +4,7 @@ import utils.LayoutUtils;
 
 public class CityMap extends Map {
     public CityMap() {
-        this.setTileSheet(LayoutUtils.loadImage("/sprites/Character-and-Zombie.png"));
+        this.setTileSheet(LayoutUtils.loadImage("/sprites/Terrains.png"));
         this.setMapMatrix(Map.parseStringMatrix(
             """
                 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -31,7 +31,7 @@ public class CityMap extends Map {
             " "
         ));
         this.setTileSize(32, 32);
-        this.registerTile("0", Map.TileLocation.create(0, 0), 90);
-        this.registerTile("1", Map.TileLocation.create(4, 0));
+        this.registerTile("0", Map.TileLocation.create(0, 0));
+        this.registerTile("1", Map.TileLocation.create(0, 1),90);
     }
 }

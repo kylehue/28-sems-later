@@ -66,8 +66,8 @@ public abstract class Map {
                     tileLocation.row() * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight,
-                    -this.tileWidth,
-                    -this.tileHeight,
+                    -this.tileWidth / 2,
+                    -this.tileHeight / 2,
                     this.tileWidth,
                     this.tileHeight
                 );
