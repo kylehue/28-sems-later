@@ -10,7 +10,7 @@ public class SpriteAnimation {
     private Image spriteSheet;
     private double tileWidth = -1;
     private double tileHeight = -1;
-    private int accumulator = 0;
+    private int frameAccumulator = 0;
     private int framesElapsed = 0;
     private String currentAnimation;
     private int fps = 12;
@@ -43,7 +43,7 @@ public class SpriteAnimation {
             throw new Error("The animation '" + currentAnimation + "' does not exist. Please make sure that it's been registered;");
         }
         
-        int accumulatorFixed = accumulator % tileLocations.length;
+        int accumulatorFixed = frameAccumulator % tileLocations.length;
         TileLocation tileLocation = tileLocations[accumulatorFixed];
         ctx.drawImage(
             this.spriteSheet,
@@ -61,7 +61,7 @@ public class SpriteAnimation {
     public void nextFrame() {
         int targetFrameCount = 60 / fps;
         if (framesElapsed % targetFrameCount != 0) return;
-        this.accumulator++;
+        this.frameAccumulator++;
     }
     
     public void setFPS(int fps) {
@@ -69,7 +69,7 @@ public class SpriteAnimation {
     }
     
     public void randomizeFirstFrame() {
-        this.accumulator = (int) GameUtils.random(0, 10);
+        this.frameAccumulator = (int) GameUtils.random(0, 10);
     }
     
     public void setPosition(double x, double y) {
@@ -99,6 +99,20 @@ public class SpriteAnimation {
     
     public void setAnimation(String animationName) {
         currentAnimation = animationName;
+    }
+    
+    public int getFrameLength(String animationName) {
+        TileLocation[] tileLocations = registeredAnimations.get(currentAnimation);
+        return tileLocations.length;
+    }
+    
+    public int getCurrentFrameNumber(String animationName) {
+        TileLocation[] tileLocations = registeredAnimations.get(currentAnimation);
+        return frameAccumulator % tileLocations.length;
+    }
+    
+    public int getFrameAccumulator() {
+        return frameAccumulator;
     }
     
     public double getX() {
@@ -131,6 +145,10 @@ public class SpriteAnimation {
     
     public boolean isVerticallyFlipped() {
         return verticallyFlipped;
+    }
+    
+    public void resetFrames() {
+        this.frameAccumulator = 0;
     }
     
     /**

@@ -86,19 +86,20 @@ public class Vector {
         return this.getAngle(vector.getX(), vector.getY());
     }
     
-    public void setMagnitude(double magnitude) {
+    public Vector setMagnitude(double magnitude) {
         double currentMagnitude = this.getMagnitude();
         currentMagnitude = currentMagnitude == 0 ? 0.00001 : currentMagnitude;
         this.x /= currentMagnitude * magnitude;
         this.y /= currentMagnitude * magnitude;
+        return this;
     }
     
     public double getMagnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
     
-    public void normalize() {
-        this.setMagnitude(1);
+    public Vector normalize() {
+        return this.setMagnitude(1);
     }
     
     public double getDistanceFrom(double x, double y) {
@@ -107,6 +108,24 @@ public class Vector {
     
     public double getDistanceFrom(Vector vector) {
         return this.getDistanceFrom(vector.getX(), vector.getY());
+    }
+    
+    public Vector lerp(double x, double y, double weightX, double weightY) {
+        this.x = weightX * (x - this.x) + this.x;
+        this.y = weightY * (y - this.y) + this.y;
+        return this;
+    }
+    
+    public Vector lerp(double x, double y, double weight) {
+        return this.lerp(x, y, weight, weight);
+    }
+    
+    public Vector lerp(Vector vector, double weight) {
+        return this.lerp(vector.getX(), vector.getY(), weight);
+    }
+    
+    public Vector lerp(Vector vector, double weightX, double weightY) {
+        return this.lerp(vector.getX(), vector.getY(), weightX, weightY);
     }
     
     public Vector clone() {

@@ -2,9 +2,9 @@ package entity;
 
 import colliders.CircleCollider;
 import scenes.game.GameScene;
+import sprites.DashSprite;
 import sprites.GunSprite;
 import sprites.PlayerSprite;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import event.KeyHandler;
@@ -14,20 +14,40 @@ import utils.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
-    private final GameApplication gameApplication;
+    // basic characteristics
     private final double speed = 4;
-    private final PlayerSprite bodySprite = new PlayerSprite();
-    private final GunSprite gunSprite = new GunSprite();
     private double health = 0;
-    private double angleToMouse = 0;
-    private boolean isFacingOnLeftSide = false;
+    
+    // shoot
     private long lastShootTime = 0;
     private int fireRateInMillis = 250;
+    
+    // dash
     private long lastDashTime = 0;
-    private int dashRateInMillis = 2000;
-    private boolean isShooting = false;
-    private boolean isDashing = false;
-    private CircleCollider collider = new CircleCollider();
+    private int dashRateInMillis = 1000;
+    private double dashSpeed = 5;
+    private double dashSpeedFadeRate = 0.1;
+    private final Vector dashPosition = new Vector();
+    private final Vector dashVelocity = new Vector();
+    
+    // control flags
+    private boolean upPressed = false;
+    private boolean downPressed = false;
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
+    private boolean dashPressed = false;
+    private boolean shootPressed = false;
+    
+    // misc
+    private final GameApplication gameApplication;
+    private final CircleCollider collider = new CircleCollider();
+    private boolean isFacingOnLeftSide = false;
+    private double angleToMouse = 0;
+    
+    // sprites
+    private final PlayerSprite bodySprite = new PlayerSprite();
+    private final GunSprite gunSprite = new GunSprite();
+    private final DashSprite dashSprite = new DashSprite();
     
     public Player(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -38,12 +58,22 @@ public class Player extends Entity {
     }
     
     public void render(GraphicsContext ctx) {
-        /*// guide
-        ctx.beginPath();
-        ctx.setFill(Color.web("green"));
-        double radius = 30;
-        ctx.fillOval(getPosition().getX() - radius, getPosition().getY() - radius, radius * 2, radius * 2);
-        ctx.closePath();*/
+        // render dash smoke
+        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength("dash")) {
+            ctx.save();
+            ctx.translate(
+                dashPosition.getX(),
+                dashPosition.getY()
+            );
+            ctx.rotate(Math.toDegrees(dashVelocity.getAngle()) - 90);
+            this.dashSprite.render(ctx);
+            ctx.restore();
+            this.dashSprite.nextFrame();
+            this.dashSprite.setPosition(
+                -this.dashSprite.getWidth() / 2,
+                -this.dashSprite.getHeight() / 2
+            );
+        }
         
         // render body
         this.bodySprite.render(ctx);
@@ -68,20 +98,19 @@ public class Player extends Entity {
     
     public void update(double deltaTime) {
         collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
-        this.getPosition().set(collider.getPosition());
+        this.handleControls();
         this.handleMovements();
         this.handleSpriteAnimations();
         this.updateAngleToMouse();
         
-        if (this.gameApplication.getGameScene().getMouseHandler().isMouseLeftPressed()) {
+        if (shootPressed) {
             this.shoot();
-            isShooting = true;
             this.gunSprite.setFPS(30);
         } else {
-            isShooting = false;
             this.gunSprite.setFPS(12);
         }
         
+        // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             this.collider,
             new Quadtree.Bounds(
@@ -131,15 +160,54 @@ public class Player extends Entity {
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
-    private void handleMovements() {
-        KeyHandler keyHandler = gameApplication.getGameScene().getKeyHandler();
-        boolean upPressed = keyHandler.isKeyPressed("up");
-        boolean downPressed = keyHandler.isKeyPressed("down");
-        boolean leftPressed = keyHandler.isKeyPressed("left");
-        boolean rightPressed = keyHandler.isKeyPressed("right");
-        boolean dashPressed = keyHandler.isKeyPressed("dash");
+    private void dash() {
+        long timeNow = System.nanoTime();
+        boolean isCoolDownOver = timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis);
+        if (!isCoolDownOver) return;
         
-        // x
+        if (upPressed) {
+            dashVelocity.setY(-dashSpeed);
+        } else if (downPressed) {
+            dashVelocity.setY(dashSpeed);
+        }
+        
+        if (leftPressed) {
+            dashVelocity.setX(-dashSpeed);
+        } else if (rightPressed) {
+            dashVelocity.setX(dashSpeed);
+        }
+        
+        // fix dash speed in diagonal movement
+        if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
+            dashVelocity.normalize();
+            dashVelocity.scale(dashSpeed);
+        }
+        
+        // if not moving but dashed, just follow the mouse
+        if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
+            dashVelocity.setX(Math.cos(angleToMouse) * dashSpeed);
+            dashVelocity.setY(Math.sin(angleToMouse) * dashSpeed);
+        }
+        
+        lastDashTime = timeNow;
+        this.dashSprite.resetFrames();
+        this.dashPosition.set(this.getPosition());
+    }
+    
+    private void handleControls() {
+        KeyHandler keyHandler = gameApplication.getGameScene().getKeyHandler();
+        this.upPressed = keyHandler.isKeyPressed("up");
+        this.downPressed = keyHandler.isKeyPressed("down");
+        this.leftPressed = keyHandler.isKeyPressed("left");
+        this.rightPressed = keyHandler.isKeyPressed("right");
+        this.dashPressed = keyHandler.isKeyPressed("dash");
+        this.shootPressed = gameApplication.getGameScene().getMouseHandler().isMouseLeftPressed();
+    }
+    
+    private void handleMovements() {
+        this.getPosition().set(collider.getPosition());
+        
+        // x controls
         if (leftPressed || rightPressed) {
             if (leftPressed) {
                 this.collider.getVelocity().setX(-1 * speed);
@@ -151,7 +219,7 @@ public class Player extends Entity {
             this.collider.getVelocity().setX(0);
         }
         
-        // y
+        // y controls
         if (upPressed || downPressed) {
             if (upPressed) {
                 this.collider.getVelocity().setY(-1 * speed);
@@ -168,32 +236,17 @@ public class Player extends Entity {
             this.collider.getVelocity().normalize();
             this.collider.getVelocity().scale(speed);
         }
-
-        long timeNow = System.nanoTime();
-
-        if (!isDashing && dashPressed && timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis)){
-            Vector dashVelocity = new Vector();
-
-            if(upPressed) {
-                dashVelocity.setY(-100);
-            } else if(downPressed){
-               dashVelocity.setY(100);
-            }
-            if(leftPressed){
-                dashVelocity.setX(-100);
-            }else if(rightPressed){
-                dashVelocity.setX(100);
-            }
-
-            this.collider.getVelocity().add(dashVelocity);
-            isDashing = true;
+        
+        // dash
+        dashVelocity.lerp(0, 0, dashSpeedFadeRate);
+        this.collider.getVelocity().add(dashVelocity);
+        if (dashPressed) {
+            this.dash();
         }
-
-
     }
     
     private void handleSpriteAnimations() {
-        if (isShooting) {
+        if (shootPressed) {
             this.gunSprite.set(GunSprite.Animation.Shoot);
         } else {
             this.gunSprite.set(GunSprite.Animation.Idle);
@@ -202,7 +255,7 @@ public class Player extends Entity {
         if (this.collider.getVelocity().getX() == 0 && this.collider.getVelocity().getY() == 0) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
-            if (isShooting) {
+            if (shootPressed) {
                 this.bodySprite.set(PlayerSprite.Animation.Shoot);
             }
         } else {
