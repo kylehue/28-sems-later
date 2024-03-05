@@ -68,6 +68,12 @@ public class Vector {
         return this;
     }
     
+    public Vector divide(double divisor) {
+        this.x /= divisor;
+        this.y /= divisor;
+        return this;
+    }
+    
     public double getAngle() {
         return Math.atan2(this.getY(), this.getX());
     }

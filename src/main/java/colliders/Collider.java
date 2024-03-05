@@ -45,7 +45,7 @@ public abstract class Collider {
         return velocity;
     }
     
-    protected void update() {
+    protected void update(double deltaTime) {
         this.position.add(this.velocity);
     }
     

@@ -96,6 +96,6 @@ public class GameScene extends GameApplicationScene {
     }
     
     public void update(double deltaTime) {
-        world.update();
+        world.update(deltaTime);
     }
 }

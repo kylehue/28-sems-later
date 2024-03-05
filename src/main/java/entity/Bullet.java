@@ -38,8 +38,9 @@ public class Bullet extends Entity {
         ctx.restore();
     }
     
-    public void update() {
+    public void update(double deltaTime) {
         this.getPosition().add(this.getVelocity());
+        this.getPosition().add(this.getVelocity().clone().scale(deltaTime));
         this.handleMovement();
     }
     

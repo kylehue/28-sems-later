@@ -38,7 +38,8 @@ public class Zombie extends Entity {
         this.sprite.nextFrame();
     }
     
-    public void update() {
+    public void update(double deltaTime) {
+        collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
         this.getPosition().set(collider.getPosition());
         this.handleMovements();
         this.updateAngleToPlayer();

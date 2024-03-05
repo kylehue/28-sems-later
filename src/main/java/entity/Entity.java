@@ -19,4 +19,9 @@ public abstract class Entity {
     public void render(GraphicsContext ctx) {
     
     }
+    
+    // to be overridden
+    public void update(double deltaTime) {
+    
+    }
 }

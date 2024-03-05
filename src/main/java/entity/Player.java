@@ -66,7 +66,8 @@ public class Player extends Entity {
         this.gunSprite.setPosition(15, 0);
     }
     
-    public void update() {
+    public void update(double deltaTime) {
+        collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
         this.getPosition().set(collider.getPosition());
         this.handleMovements();
         this.handleSpriteAnimations();

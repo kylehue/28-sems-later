@@ -42,11 +42,13 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        for (int i = 0; i < 130; i++) {
+        for (int i = 0; i < 200; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
-                GameUtils.random(-cityMap.getTotalWidth() / 2, cityMap.getTotalWidth() / 2),
-                GameUtils.random(-cityMap.getTotalHeight() / 2, cityMap.getTotalHeight() / 2)
+                // GameUtils.random(-cityMap.getTotalWidth() / 2, cityMap.getTotalWidth() / 2),
+                // GameUtils.random(-cityMap.getTotalHeight() / 2, cityMap.getTotalHeight() / 2)
+                0,
+                0
             );
             zombies.add(enemy);
         }
@@ -90,23 +92,23 @@ public class World {
         }
     }
     
-    public void update() {
+    public void update(double deltaTime) {
         this.getQuadtree().clear();
         this.handleBulletDisposal();
         
-        player.update();
+        player.update(deltaTime);
         
         for (Zombie zombie : zombies) {
-            zombie.update();
+            zombie.update(deltaTime);
         }
         
         for (Bullet bullet : bullets) {
-            bullet.update();
+            bullet.update(deltaTime);
         }
         
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(700);
-        colliderWorld.update();
+        colliderWorld.update(deltaTime);
     }
     
     public Quadtree<Collider> getQuadtree() {

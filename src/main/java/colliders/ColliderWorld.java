@@ -34,10 +34,10 @@ public class ColliderWorld {
         this.quadtree = quadtree;
     }
     
-    public void update() {
+    public void update(double deltaTime) {
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
-            colliderA.update();
+            colliderA.update(deltaTime);
             
             // If there's a quadtree, use it
             ArrayList<Collider> otherColliders;
