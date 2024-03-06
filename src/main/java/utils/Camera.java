@@ -49,17 +49,17 @@ public class Camera {
     }
     
     public void zoomTo(double z) {
-        this.distance = z;
+        this.distance = GameUtils.lerp(this.distance, z, 0.15);
         this.updateViewport();
     }
     
     public void moveTo(double x, double y) {
-        this.position.set(x, y);
+        this.position.lerp(x, y, 0.15);
         this.updateViewport();
     }
     
     public void moveTo(Vector vector) {
-        this.position.set(vector);
+        this.moveTo(vector.getX(), vector.getY());
         this.updateViewport();
     }
     
