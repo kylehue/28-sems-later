@@ -93,6 +93,7 @@ public class GameScene extends GameApplicationScene {
     public void render() {
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         world.render(graphicsContext);
+        graphicsContext.setImageSmoothing(false);
     }
     
     public void update(double deltaTime) {
