@@ -6,12 +6,11 @@ import entity.Bullet;
 import entity.Entity;
 import entity.Zombie;
 import entity.Player;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import map.CityMap;
+import map.Map;
 import utils.Camera;
-import utils.GameUtils;
 import utils.Quadtree;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class World {
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Bullet> bullets = new ArrayList<>();
     private final Camera camera;
-    private final CityMap cityMap = new CityMap();
+    private final Map map = new CityMap();
     private final Quadtree<Collider> quadtree;
     private final ColliderWorld colliderWorld = new ColliderWorld();
     private Player player;
@@ -30,10 +29,10 @@ public class World {
         this.gameApplication = gameApplication;
         this.quadtree = new Quadtree<>(
             new Quadtree.Bounds(
-                -cityMap.getTotalWidth() / 2,
-                -cityMap.getTotalHeight() / 2,
-                cityMap.getTotalWidth(),
-                cityMap.getTotalHeight()
+                -map.getTotalWidth() / 2,
+                -map.getTotalHeight() / 2,
+                map.getTotalWidth(),
+                map.getTotalHeight()
             )
         );
         this.colliderWorld.setQuadtree(this.quadtree);
@@ -55,13 +54,27 @@ public class World {
     }
     
     public void render(GraphicsContext ctx) {
+        double renderDistanceOffset = 50;
+        
         this.camera.begin();
-        cityMap.render(ctx);
+        map.render(ctx);
         
         // render entities according to y position
         ArrayList<Entity> entities = new ArrayList<>();
         entities.add(player);
         entities.addAll(zombies);
+        
+        // exclude entities that are not in viewport
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            Entity entity = entities.get(i);
+            boolean isInViewport = this.camera.isInViewport(
+                entity.getPosition(),
+                renderDistanceOffset
+            );
+            if (!isInViewport) {
+                entities.remove(i);
+            }
+        }
         
         // TODO: project requirements application: apply insertion sort
         entities.sort((a, b) -> {
@@ -77,7 +90,13 @@ public class World {
         }
         
         for (Bullet bullet : bullets) {
-            bullet.render(ctx);
+            boolean isInViewport = this.camera.isInViewport(
+                bullet.getPosition(),
+                renderDistanceOffset
+            );
+            if (isInViewport) {
+                bullet.render(ctx);
+            }
         }
         
         // this.renderMeta(ctx);
@@ -109,6 +128,14 @@ public class World {
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(500);
         colliderWorld.update(deltaTime);
+        
+        this.map.setViewport(
+            camera.getViewport().getTop(),
+            camera.getViewport().getBottom(),
+            camera.getViewport().getLeft(),
+            camera.getViewport().getRight()
+        );
+        this.map.setRenderTileViewportOffset(2, 2);
     }
     
     public Quadtree<Collider> getQuadtree() {

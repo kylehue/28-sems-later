@@ -78,11 +78,6 @@ public class Player extends Entity {
         
         // render body
         this.bodySprite.render(ctx);
-        this.bodySprite.nextFrame();
-        this.bodySprite.setPosition(
-            getPosition().getX(),
-            getPosition().getY()
-        );
         
         // render gun
         ctx.save();
@@ -93,8 +88,6 @@ public class Player extends Entity {
         ctx.rotate(Math.toDegrees(angleToMouse));
         this.gunSprite.render(ctx);
         ctx.restore();
-        this.gunSprite.nextFrame();
-        this.gunSprite.setPosition(15, 0);
     }
     
     public void update(double deltaTime) {
@@ -161,7 +154,7 @@ public class Player extends Entity {
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
-    private void dash() {
+    public void dash() {
         long timeNow = System.nanoTime();
         boolean isCoolDownOver = timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis);
         if (!isCoolDownOver) return;
@@ -184,7 +177,7 @@ public class Player extends Entity {
             dashVelocity.scale(dashSpeed);
         }
         
-        // if not moving but dashed, just follow the mouse
+        // if not moving, just dash away from mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
             dashVelocity.setX(Math.cos(Math.PI + angleToMouse) * (dashSpeed + speed));
             dashVelocity.setY(Math.sin(Math.PI + angleToMouse) * (dashSpeed + speed));
@@ -265,5 +258,13 @@ public class Player extends Entity {
         
         this.bodySprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
         this.gunSprite.setVerticallyFlipped(this.isFacingOnLeftSide);
+        
+        this.gunSprite.nextFrame();
+        this.gunSprite.setPosition(15, 0);
+        this.bodySprite.nextFrame();
+        this.bodySprite.setPosition(
+            getPosition().getX(),
+            getPosition().getY()
+        );
     }
 }

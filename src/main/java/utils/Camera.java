@@ -85,14 +85,69 @@ public class Camera {
         return this.worldToScreen(vector.getX(), vector.getY());
     }
     
-    private static class Viewport {
-        public double left = 0;
-        public double right = 0;
-        public double top = 0;
-        public double bottom = 0;
-        public double width = 0;
-        public double height = 0;
-        public double scaleX = 1;
-        public double scaleY = 1;
+    public Viewport getViewport() {
+        return viewport;
+    }
+    
+    public boolean isInViewport(double x, double y, double offset) {
+        return x >= this.viewport.left - offset &&
+            x <= this.viewport.right + offset &&
+            y >= this.viewport.top - offset &&
+            y <= this.viewport.bottom + offset;
+    }
+    
+    public boolean isInViewport(double x, double y) {
+        return this.isInViewport(x, y, 0);
+    }
+    
+    public boolean isInViewport(Vector vector, double offset) {
+        return this.isInViewport(vector.getX(), vector.getY(), offset);
+    }
+    
+    public boolean isInViewport(Vector vector) {
+        return this.isInViewport(vector, 0);
+    }
+    
+    public static class Viewport {
+        private double left = 0;
+        private double right = 0;
+        private double top = 0;
+        private double bottom = 0;
+        private double width = 0;
+        private double height = 0;
+        private double scaleX = 1;
+        private double scaleY = 1;
+        
+        public double getLeft() {
+            return left;
+        }
+        
+        public double getRight() {
+            return right;
+        }
+        
+        public double getTop() {
+            return top;
+        }
+        
+        public double getBottom() {
+            return bottom;
+        }
+        
+        public double getWidth() {
+            return width;
+        }
+        
+        public double getHeight() {
+            return height;
+        }
+        
+        public double getScaleX() {
+            return scaleX;
+        }
+        
+        public double getScaleY() {
+            return scaleY;
+        }
     }
 }

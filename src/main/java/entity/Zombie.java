@@ -8,12 +8,17 @@ import utils.GameUtils;
 import utils.Quadtree;
 
 public class Zombie extends Entity {
-    private final GameApplication gameApplication;
-    private final ZombieSprite sprite = new ZombieSprite();
-    private boolean isFacingOnLeftSide = false;
-    private double angleToPlayer = 0;
+    // basic characteristics
     private double speed = GameUtils.random(0.2, 0.8);
+    
+    // sprite
+    private final ZombieSprite sprite = new ZombieSprite();
+    
+    // misc
+    private final GameApplication gameApplication;
     private CircleCollider collider = new CircleCollider();
+    private double angleToPlayer = 0;
+    private boolean isFacingOnLeftSide = false;
     
     public Zombie(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -24,26 +29,16 @@ public class Zombie extends Entity {
     }
     
     public void render(GraphicsContext ctx) {
-        /*ctx.beginPath();
-        ctx.setFill(Color.web("red"));
-        double radius = 20;
-        ctx.fillOval(getPosition().getX() - radius, getPosition().getY() - radius, radius * 2, radius * 2);
-        ctx.closePath();*/
         this.sprite.render(ctx);
-        this.sprite.setPosition(
-            getPosition().getX(),
-            getPosition().getY()
-        );
-        this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
-        this.sprite.nextFrame();
     }
     
     public void update(double deltaTime) {
         collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
-        this.getPosition().set(collider.getPosition());
         this.handleMovements();
+        this.handleSprite();
         this.updateAngleToPlayer();
         
+        // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             this.collider,
             new Quadtree.Bounds(
@@ -61,7 +56,17 @@ public class Zombie extends Entity {
         this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
     }
     
+    private void handleSprite() {
+        this.sprite.setPosition(
+            getPosition().getX(),
+            getPosition().getY()
+        );
+        this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
+        this.sprite.nextFrame();
+    }
+    
     private void handleMovements() {
+        this.getPosition().set(collider.getPosition());
         this.collider.getVelocity().setX(Math.cos(angleToPlayer) * speed);
         this.collider.getVelocity().setY(Math.sin(angleToPlayer) * speed);
     }
