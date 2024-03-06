@@ -39,6 +39,14 @@ public abstract class Map {
         this.tileHeight = tileHeight;
     }
     
+    public double getTileWidth() {
+        return tileWidth;
+    }
+    
+    public double getTileHeight() {
+        return tileHeight;
+    }
+    
     public void registerTile(String tileId, TileLocation tileLocation) {
         registeredTiles.put(tileId, tileLocation);
         this.registeredTileAngles.put(tileId, 0);

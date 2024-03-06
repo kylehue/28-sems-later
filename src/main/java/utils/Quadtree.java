@@ -9,34 +9,33 @@ import java.util.HashSet;
 public class Quadtree<T> {
     private final Bounds bounds;
     private int maxObjects = 10;
-    private int maxLevels = 4;
-    private int level = 0;
+    private double minWidth = 100;
+    private double minHeight = 100;
     
     private final HashSet<QObject<T>> objects = new HashSet<>();
     private Subnodes<T> subnodes = null;
     
     public Quadtree(Bounds bounds) {
         this.bounds = bounds;
-        this.maxLevels = (int) Math.pow(this.bounds.width + this.bounds.height, 0.15);
     }
     
     public Quadtree(Bounds bounds, int maxObjects) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
-        this.maxLevels = (int) Math.pow(this.bounds.width + this.bounds.height, 0.15);
     }
     
-    public Quadtree(Bounds bounds, int maxObjects, int maxLevels) {
+    public Quadtree(Bounds bounds, int maxObjects, double minSize) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
-        this.maxLevels = maxLevels;
+        this.minWidth = minSize;
+        this.minHeight = minSize;
     }
     
-    public Quadtree(Bounds bounds, int maxObjects, int maxLevels, int level) {
+    public Quadtree(Bounds bounds, int maxObjects, double minWidth, double minHeight) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
-        this.maxLevels = maxLevels;
-        this.level = level;
+        this.minWidth = minWidth;
+        this.minHeight = minHeight;
     }
     
     public void render(GraphicsContext ctx) {
@@ -74,7 +73,6 @@ public class Quadtree<T> {
      * Splits the node into 4 sub-nodes.
      */
     private void split() {
-        int nextLevel = this.level + 1;
         double x = this.bounds.position.getX();
         double y = this.bounds.position.getY();
         double subWidth = this.bounds.width / 2;
@@ -89,8 +87,8 @@ public class Quadtree<T> {
                     subHeight
                 ),
                 this.maxObjects,
-                this.maxLevels,
-                nextLevel
+                this.minWidth,
+                this.minHeight
             ),
             new Quadtree<T>(
                 new Bounds(
@@ -100,8 +98,8 @@ public class Quadtree<T> {
                     subHeight
                 ),
                 this.maxObjects,
-                this.maxLevels,
-                nextLevel
+                this.minWidth,
+                this.minHeight
             ),
             new Quadtree<T>(
                 new Bounds(
@@ -111,8 +109,8 @@ public class Quadtree<T> {
                     subHeight
                 ),
                 this.maxObjects,
-                this.maxLevels,
-                nextLevel
+                this.minWidth,
+                this.minHeight
             ),
             new Quadtree<T>(
                 new Bounds(
@@ -122,8 +120,8 @@ public class Quadtree<T> {
                     subHeight
                 ),
                 this.maxObjects,
-                this.maxLevels,
-                nextLevel
+                this.minWidth,
+                this.minHeight
             )
         );
     }
@@ -195,7 +193,11 @@ public class Quadtree<T> {
         );
         
         // Max objects reached
-        if (this.objects.size() > this.maxObjects && this.level < this.maxLevels) {
+        if (
+            this.objects.size() > this.maxObjects &&
+                this.bounds.width / 2 > this.minWidth &&
+                this.bounds.height / 2 > this.minHeight
+        ) {
             // Split if we don't already have sub-nodes
             this.split();
             

@@ -29,11 +29,13 @@ public class World {
         this.gameApplication = gameApplication;
         this.quadtree = new Quadtree<>(
             new Quadtree.Bounds(
-                -map.getTotalWidth() / 2,
-                -map.getTotalHeight() / 2,
+                -map.getTotalWidth() / 2 - map.getTileWidth() / 2,
+                -map.getTotalHeight() / 2 - map.getTileHeight() / 2,
                 map.getTotalWidth(),
                 map.getTotalHeight()
-            )
+            ),
+            12,
+            30
         );
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
@@ -99,7 +101,7 @@ public class World {
             }
         }
         
-        // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         this.camera.end();
     }
     
