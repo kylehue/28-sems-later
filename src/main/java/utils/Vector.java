@@ -132,6 +132,14 @@ public class Vector {
         return new Vector(this.x, this.y);
     }
     
+    public double dot(double x, double y) {
+        return this.x * x + this.y * y;
+    }
+    
+    public double dot(Vector vector) {
+        return this.dot(vector.getX(), vector.getY());
+    }
+    
     @Override
     public String toString() {
         return "Vector{" +

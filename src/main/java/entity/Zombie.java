@@ -9,7 +9,7 @@ import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private double speed = GameUtils.random(0.2, 0.8);
+    private double speed = GameUtils.random(0.2, 1);
     
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();

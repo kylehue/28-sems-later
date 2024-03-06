@@ -11,6 +11,7 @@ import main.GameApplication;
 import map.CityMap;
 import map.Map;
 import utils.Camera;
+import utils.GameUtils;
 import utils.Quadtree;
 
 import java.util.ArrayList;
@@ -46,10 +47,8 @@ public class World {
         for (int i = 0; i < 200; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
-                // GameUtils.random(-cityMap.getTotalWidth() / 2, cityMap.getTotalWidth() / 2),
-                // GameUtils.random(-cityMap.getTotalHeight() / 2, cityMap.getTotalHeight() / 2)
-                0,
-                0
+                GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
+                GameUtils.random(-map.getTotalHeight() / 2, map.getTotalHeight() / 2)
             );
             zombies.add(enemy);
         }
