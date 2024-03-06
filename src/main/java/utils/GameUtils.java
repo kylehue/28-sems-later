@@ -18,4 +18,8 @@ public abstract class GameUtils {
     public static double map(double n, double fromMin, double fromMax, double toMin, double toMax) {
         return (n - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
     }
+    
+    public static double lerp(double start, double stop, double weight) {
+        return weight * (stop - start) + start;
+    }
 }
