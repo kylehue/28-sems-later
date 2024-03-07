@@ -61,9 +61,6 @@ public class Player extends Entity {
         this.collider.addVertex(4, -12);
         this.collider.addVertex(9, 22);
         this.collider.addVertex(-9, 16);
-        this.collider.addVertex(-26, -15);
-        this.collider.addVertex(0, 0);
-        this.collider.addVertex(-26, 15);
         
         this.collider.setStatic(true);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
