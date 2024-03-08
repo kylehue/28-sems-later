@@ -58,6 +58,7 @@ public class Player extends Entity {
         );
         
         this.collider.setStatic(true);
+        this.collider.setRadius(5);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
     }
     
@@ -86,7 +87,7 @@ public class Player extends Entity {
         ctx.save();
         ctx.translate(
             getPosition().getX(),
-            getPosition().getY()
+            getPosition().getY() - this.collider.getRadius()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
         this.gunSprite.render(ctx);
@@ -266,7 +267,7 @@ public class Player extends Entity {
         this.bodySprite.nextFrame();
         this.bodySprite.setPosition(
             getPosition().getX(),
-            getPosition().getY()
+            getPosition().getY() - this.collider.getRadius()
         );
     }
 }

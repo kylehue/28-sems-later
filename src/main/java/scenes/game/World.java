@@ -36,10 +36,11 @@ public class World {
                 map.getTotalHeight()
             ),
             12,
-            30
+            15
         );
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
+        this.map.setRenderTileViewportOffset(2, 2);
     }
     
     public void setup() {
@@ -100,7 +101,7 @@ public class World {
             }
         }
         
-        this.renderMeta(ctx);
+        // this.renderMeta(ctx);
         this.camera.end();
     }
     
@@ -136,7 +137,6 @@ public class World {
             camera.getViewport().getLeft(),
             camera.getViewport().getRight()
         );
-        this.map.setRenderTileViewportOffset(2, 2);
     }
     
     public Quadtree<Collider> getQuadtree() {

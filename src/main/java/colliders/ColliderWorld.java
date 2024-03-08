@@ -8,7 +8,7 @@ import java.util.HashSet;
 public class ColliderWorld {
     private final ArrayList<Collider> colliders = new ArrayList<>();
     private Quadtree<Collider> quadtree = null;
-    private int updateIterationCount = 4;
+    private int updateIterationCount = 1;
     
     public ColliderWorld() {
     

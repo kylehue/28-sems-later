@@ -26,6 +26,7 @@ public class Zombie extends Entity {
         this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
             this.collider
         );
+        this.collider.setRadius(5);
     }
     
     public void render(GraphicsContext ctx) {
@@ -58,7 +59,7 @@ public class Zombie extends Entity {
     private void handleSprite() {
         this.sprite.setPosition(
             getPosition().getX(),
-            getPosition().getY()
+            getPosition().getY() - this.collider.getRadius()
         );
         this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
         this.sprite.nextFrame();
