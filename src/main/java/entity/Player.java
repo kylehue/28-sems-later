@@ -135,9 +135,10 @@ public class Player extends Entity {
         long timeNow = System.nanoTime();
         if (timeNow - lastShootTime > TimeUnit.MILLISECONDS.toNanos(fireRateInMillis)) {
             double offset = 30;
+            double gunAlignmentOffset = 10;
             this.gameApplication.getGameScene().getWorld().spawnBullet(
                 this.getPosition().getX() + Math.cos(this.angleToMouse) * offset,
-                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset,
+                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset - gunAlignmentOffset,
                 this.angleToMouse
             );
             lastShootTime = System.nanoTime();
