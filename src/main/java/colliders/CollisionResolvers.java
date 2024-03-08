@@ -20,26 +20,26 @@ public abstract class CollisionResolvers {
         if (distance < circleA.getRadius() + circleB.getRadius()) {
             double overlap = distance - circleA.getRadius() - circleB.getRadius();
             double angle = circleA.getPosition().getAngle(circleB.getPosition());
+            
+            Vector newVelocityA = circleB.getVelocity().clone();
+            Vector newVelocityB = circleA.getVelocity().clone().subtract(circleB.getVelocity()).add(newVelocityA);
+            
             if (!circleA.isStatic()) {
                 int div = circleB.isStatic() ? 1 : 2;
                 circleA.getPosition().add(
                     Math.cos(angle) * overlap / div,
                     Math.sin(angle) * overlap / div
                 );
-                circleB.getVelocity().scale(
-                    circleA.getVelocity().getMagnitude()
-                );
+                circleA.getVelocity().set(newVelocityA.divide(div));
             }
-            
+
             if (!circleB.isStatic()) {
                 int div = circleA.isStatic() ? 1 : 2;
                 circleB.getPosition().subtract(
                     Math.cos(angle) * overlap / div,
                     Math.sin(angle) * overlap / div
                 );
-                circleA.getVelocity().scale(
-                    circleB.getVelocity().getMagnitude()
-                );
+                circleB.getVelocity().set(newVelocityB.divide(div));
             }
         }
     }
@@ -243,7 +243,7 @@ public abstract class CollisionResolvers {
                     circle.getVelocity().getMagnitude()
                 );
             }
-            
+
             if (!polygon.isStatic()) {
                 int div = circle.isStatic() ? 1 : 2;
                 polygon.getPosition().subtract(mtv.divide(div));
