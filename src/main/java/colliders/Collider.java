@@ -4,13 +4,30 @@ import javafx.scene.canvas.GraphicsContext;
 import utils.GameUtils;
 import utils.Vector;
 
+import java.util.HashSet;
+
 public abstract class Collider {
     private final String id = GameUtils.generateId();
-    private Vector position = new Vector();
-    private Vector velocity = new Vector();
+    private final Vector position = new Vector();
+    private final Vector oldPosition = new Vector();
+    private final Vector velocity = new Vector();
+    private final Vector oldVelocity = new Vector();
     private boolean isStatic = false;
     private double width = 15;
     private double height = 25;
+    private final HashSet<String> contacts = new HashSet<>();
+    
+    protected HashSet<String> getContacts() {
+        return contacts;
+    }
+    
+    public boolean isCollidingWith(Collider collider) {
+        return contacts.contains(collider.getId());
+    }
+    
+    public boolean isColliding() {
+        return !contacts.isEmpty();
+    }
     
     public void setBoundSize(double width, double height) {
         this.width = width;
@@ -41,12 +58,26 @@ public abstract class Collider {
         return position;
     }
     
+    public Vector getOldPosition() {
+        return oldPosition;
+    }
+    
     public Vector getVelocity() {
         return velocity;
     }
     
-    protected void update(double deltaTime) {
+    public Vector getOldVelocity() {
+        return oldVelocity;
+    }
+    
+    protected void update(double deltaTime, ColliderWorld world) {
+        Vector oldVelocity = this.velocity.clone();
+        Vector oldPosition = this.position.clone();
         this.position.add(this.velocity);
+        this.position.add(this.velocity.clone().scale(deltaTime));
+        this.velocity.divide(world.getUpdateIterationCount());
+        this.oldVelocity.set(oldVelocity);
+        this.oldPosition.set(oldPosition);
     }
     
     // to be overridden

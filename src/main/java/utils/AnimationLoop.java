@@ -8,7 +8,7 @@ public class AnimationLoop {
     private double deltaTime = 0;
     private AnimationTimer timer;
     private int frameCount = 0;
-    private long lastUpdate = 0;
+    private long lastUpdate = System.nanoTime();
     
     private void maybeCreateTimer() {
         if (this.timer != null) return;

@@ -1,6 +1,8 @@
 package entity;
 
 import colliders.CircleCollider;
+import colliders.Collider;
+import colliders.CircleCollider;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -54,6 +56,7 @@ public class Player extends Entity {
         this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
             this.collider
         );
+        
         this.collider.setStatic(true);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
     }
@@ -91,7 +94,6 @@ public class Player extends Entity {
     }
     
     public void update(double deltaTime) {
-        collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
         this.handleControls();
         this.handleMovements();
         this.handleSpriteAnimations();
@@ -116,7 +118,7 @@ public class Player extends Entity {
         );
     }
     
-    public CircleCollider getCollider() {
+    public Collider getCollider() {
         return collider;
     }
     

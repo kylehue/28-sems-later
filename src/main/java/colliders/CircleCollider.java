@@ -17,6 +17,14 @@ public class CircleCollider extends Collider {
     
     }
     
+    public double getRadius() {
+        return radius;
+    }
+    
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+    
     @Override
     public void render(GraphicsContext ctx) {
         ctx.beginPath();
@@ -32,25 +40,16 @@ public class CircleCollider extends Collider {
     
     @Override
     public void resolveCollision(Collider otherCollider) {
-        if (otherCollider instanceof CircleCollider otherCircleCollider) {
-            double distance = this.getPosition().getDistanceFrom(otherCollider.getPosition());
-            
-            if (distance < this.radius + otherCircleCollider.radius) {
-                double overlap = distance - this.radius - otherCircleCollider.radius;
-                double angle = this.getPosition().getAngle(otherCollider.getPosition());
-                
-                if (!this.isStatic()) {
-                    this.getVelocity().add(
-                        Math.cos(angle) * overlap / 2,
-                        Math.sin(angle) * overlap / 2
-                    );
-                }
-                
-                otherCircleCollider.getVelocity().subtract(
-                    Math.cos(angle) * overlap / (this.isStatic() ? 1 : 2),
-                    Math.sin(angle) * overlap / (this.isStatic() ? 1 : 2)
-                );
-            }
+        if (otherCollider instanceof CircleCollider) {
+            CollisionResolvers.circleToCircle(
+                this,
+                (CircleCollider) otherCollider
+            );
+        } else if (otherCollider instanceof PolygonCollider) {
+            CollisionResolvers.circleToPolygon(
+                this,
+                (PolygonCollider) otherCollider
+            );
         }
     }
 }
