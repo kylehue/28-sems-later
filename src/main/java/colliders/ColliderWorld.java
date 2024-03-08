@@ -8,7 +8,7 @@ import java.util.HashSet;
 public class ColliderWorld {
     private final ArrayList<Collider> colliders = new ArrayList<>();
     private Quadtree<Collider> quadtree = null;
-    private int updateIterationCount = 1;
+    private int updateIterationCount = 4;
     
     public ColliderWorld() {
     
@@ -48,6 +48,7 @@ public class ColliderWorld {
             HashSet<String> pairs = new HashSet<>();
             for (Collider colliderA : this.colliders) {
                 colliderA.update(deltaTime, this);
+                colliderA.getVelocity().divide(updateIterationCount);
                 
                 // If there's a quadtree, use it
                 ArrayList<Collider> otherColliders;

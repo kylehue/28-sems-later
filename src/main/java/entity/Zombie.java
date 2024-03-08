@@ -9,7 +9,7 @@ import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private double speed = GameUtils.random(0.2, 1);
+    private double speed = GameUtils.random(0.5, 1);
     
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
@@ -33,7 +33,6 @@ public class Zombie extends Entity {
     }
     
     public void update(double deltaTime) {
-        collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
         this.handleMovements();
         this.handleSprite();
         this.updateAngleToPlayer();

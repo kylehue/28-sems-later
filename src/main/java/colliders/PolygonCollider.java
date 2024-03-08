@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 public class PolygonCollider extends Collider {
     private final ArrayList<Vector> vertices = new ArrayList<>();
+    private double angle = 0;
     
     public PolygonCollider() {
     }
@@ -28,6 +29,21 @@ public class PolygonCollider extends Collider {
     
     public void addVertex(Vector vertex) {
         this.vertices.add(vertex);
+    }
+    
+    public void setAngle(double angle) {
+        double d = angle - this.angle;
+        for (Vector vertex : vertices) {
+            double x = vertex.getX() * Math.cos(d) - vertex.getY() * Math.sin(d);
+            double y = vertex.getX() * Math.sin(d) + vertex.getY() * Math.cos(d);
+            vertex.set(x, y);
+        }
+        
+        this.angle = angle;
+    }
+    
+    public double getAngle() {
+        return angle;
     }
     
     @Override

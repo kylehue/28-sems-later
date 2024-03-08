@@ -2,7 +2,7 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
-import colliders.PolygonCollider;
+import colliders.CircleCollider;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -42,7 +42,7 @@ public class Player extends Entity {
     
     // misc
     private final GameApplication gameApplication;
-    private final PolygonCollider collider = new PolygonCollider();
+    private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
     private double angleToMouse = 0;
     
@@ -56,11 +56,6 @@ public class Player extends Entity {
         this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
             this.collider
         );
-        
-        this.collider.addVertex(-9, -16);
-        this.collider.addVertex(4, -12);
-        this.collider.addVertex(9, 22);
-        this.collider.addVertex(-9, 16);
         
         this.collider.setStatic(true);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
@@ -99,7 +94,6 @@ public class Player extends Entity {
     }
     
     public void update(double deltaTime) {
-        collider.getPosition().add(collider.getVelocity().clone().scale(deltaTime));
         this.handleControls();
         this.handleMovements();
         this.handleSpriteAnimations();

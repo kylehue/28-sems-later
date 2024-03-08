@@ -22,4 +22,8 @@ public abstract class GameUtils {
     public static double lerp(double start, double stop, double weight) {
         return weight * (stop - start) + start;
     }
+    
+    public static double clamp(double n, double min, double max) {
+        return Math.max(min, Math.min(max, n));
+    }
 }
