@@ -30,7 +30,7 @@ public class GameScene extends GameApplicationScene {
             }
             
             @Override
-            public void update(double deltaTime) {
+            public void update(float deltaTime) {
                 $this.update(deltaTime);
             }
         };
@@ -96,7 +96,7 @@ public class GameScene extends GameApplicationScene {
         graphicsContext.setImageSmoothing(false);
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         world.update(deltaTime);
     }
 }

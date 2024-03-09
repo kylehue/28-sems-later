@@ -11,13 +11,13 @@ public abstract class Map {
     private final HashMap<String, Integer> registeredTileAngles = new HashMap<>();
     private Image tileSheet = null;
     private String[][] mapMatrix = {};
-    private double tileWidth = 0;
-    private double tileHeight = 0;
+    private float tileWidth = 0;
+    private float tileHeight = 0;
     private Viewport viewport = null;
     private int renderTileViewportOffsetX = 0;
     private int renderTileViewportOffsetY = 0;
     
-    public void setViewport(double top, double bottom, double left, double right) {
+    public void setViewport(float top, float bottom, float left, float right) {
         this.viewport = new Viewport(top, bottom, left, right);
     }
     
@@ -34,16 +34,16 @@ public abstract class Map {
         this.tileSheet = tileSheet;
     }
     
-    public void setTileSize(double tileWidth, double tileHeight) {
+    public void setTileSize(float tileWidth, float tileHeight) {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
     }
     
-    public double getTileWidth() {
+    public float getTileWidth() {
         return tileWidth;
     }
     
-    public double getTileHeight() {
+    public float getTileHeight() {
         return tileHeight;
     }
     
@@ -57,11 +57,11 @@ public abstract class Map {
         this.registeredTileAngles.put(tileId, angleInDegrees);
     }
     
-    public double getTotalWidth() {
+    public float getTotalWidth() {
         return (mapMatrix[0] == null ? 0 : mapMatrix[0].length) * this.tileWidth;
     }
     
-    public double getTotalHeight() {
+    public float getTotalHeight() {
         return mapMatrix.length * this.tileHeight;
     }
     
@@ -104,8 +104,8 @@ public abstract class Map {
                 if (tileLocation == null) continue;
                 
                 int tileAngle = this.registeredTileAngles.get(tileId);
-                double x = columnIndex * this.tileWidth - (this.getTotalWidth() / 2);
-                double y = rowIndex * this.tileHeight - (this.getTotalHeight() / 2);
+                float x = columnIndex * this.tileWidth - (this.getTotalWidth() / 2);
+                float y = rowIndex * this.tileHeight - (this.getTotalHeight() / 2);
                 ctx.save();
                 ctx.translate(x, y);
                 ctx.rotate(tileAngle);
@@ -154,7 +154,7 @@ public abstract class Map {
         }
     }
     
-    public record Viewport(double top, double bottom, double left, double right) {
+    public record Viewport(float top, float bottom, float left, float right) {
     
     }
 }

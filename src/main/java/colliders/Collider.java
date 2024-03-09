@@ -45,19 +45,19 @@ public abstract class Collider {
         return velocity;
     }
 
-    protected void update(double deltaTime, ColliderWorld world) {
+    protected void update(float deltaTime, ColliderWorld world) {
         this.position.add(this.velocity);
         this.position.add(this.velocity.clone().scale(deltaTime));
         this.velocity.divide(world.getUpdateIterationCount());
     }
     
     // to be overridden
-    public double getWidth() {
+    public float getWidth() {
         return 0;
     }
     
     // to be overridden
-    public double getHeight() {
+    public float getHeight() {
         return 0;
     }
     

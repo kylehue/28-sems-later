@@ -8,8 +8,8 @@ import java.util.HashMap;
 public class SpriteAnimation {
     private final HashMap<String, TileLocation[]> registeredAnimations = new HashMap<>();
     private Image spriteSheet;
-    private double tileWidth = -1;
-    private double tileHeight = -1;
+    private float tileWidth = -1;
+    private float tileHeight = -1;
     private int frameAccumulator = 0;
     private int framesElapsed = 0;
     private String currentAnimation;
@@ -19,10 +19,10 @@ public class SpriteAnimation {
     private boolean verticallyFlipped = false;
     
     // x, y, w, h in canvas
-    private double x = 0;
-    private double y = 0;
-    private double width = -1;
-    private double height = -1;
+    private float x = 0;
+    private float y = 0;
+    private float width = -1;
+    private float height = -1;
     
     public SpriteAnimation() {
     }
@@ -72,12 +72,12 @@ public class SpriteAnimation {
         this.frameAccumulator = (int) GameUtils.random(0, 10);
     }
     
-    public void setPosition(double x, double y) {
+    public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
     }
     
-    public void setSize(double width, double height) {
+    public void setSize(float width, float height) {
         this.width = width;
         this.height = height;
     }
@@ -90,7 +90,7 @@ public class SpriteAnimation {
         this.verticallyFlipped = verticallyFlipped;
     }
     
-    public void setTileSize(double tileWidth, double tileHeight) {
+    public void setTileSize(float tileWidth, float tileHeight) {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
         if (this.width == -1) this.width = this.tileWidth;
@@ -119,27 +119,27 @@ public class SpriteAnimation {
         this.frameAccumulator = frameAccumulator;
     }
     
-    public double getX() {
+    public float getX() {
         return x;
     }
     
-    public double getY() {
+    public float getY() {
         return y;
     }
     
-    public double getWidth() {
+    public float getWidth() {
         return width;
     }
     
-    public double getHeight() {
+    public float getHeight() {
         return height;
     }
     
-    public double getTileWidth() {
+    public float getTileWidth() {
         return tileWidth;
     }
     
-    public double getTileHeight() {
+    public float getTileHeight() {
         return tileHeight;
     }
     

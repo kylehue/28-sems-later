@@ -5,7 +5,7 @@ import javafx.animation.AnimationTimer;
 import java.util.concurrent.TimeUnit;
 
 public class AnimationLoop {
-    private double deltaTime = 0;
+    private float deltaTime = 0;
     private AnimationTimer timer;
     private int frameCount = 0;
     private long lastUpdate = System.nanoTime();
@@ -16,7 +16,7 @@ public class AnimationLoop {
             
             @Override
             public void handle(long now) {
-                deltaTime = (now - lastUpdate) / 1e9;
+                deltaTime = (now - lastUpdate) / 1e9f;
                 update(deltaTime);
                 render();
                 frameCount++;
@@ -42,11 +42,11 @@ public class AnimationLoop {
         return lastUpdate;
     }
     
-    public double getDeltaTime() {
+    public float getDeltaTime() {
         return deltaTime;
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
     }
     
     public void render() {

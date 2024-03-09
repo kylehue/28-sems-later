@@ -8,10 +8,10 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
-        double distance = circleA
+        float distance = circleA
             .getPosition()
             .getDistanceFrom(circleB.getPosition());
-        double radiusSum = circleA.getRadius() + circleB.getRadius();
+        float radiusSum = circleA.getRadius() + circleB.getRadius();
         boolean isColliding = distance <= radiusSum;
         
         if (!isColliding) {
@@ -24,10 +24,13 @@ public abstract class CollisionResolvers {
         circleB.getContacts().add(circleA.getId());
         
         // Resolve collision
-        double overlap = distance - radiusSum;
-        double angle = circleA.getPosition().getAngle(circleB.getPosition());
+        float overlap = distance - radiusSum;
+        float angle = circleA.getPosition().getAngle(circleB.getPosition());
         
-        Vector displacement = new Vector(Math.cos(angle), Math.sin(angle));
+        Vector displacement = new Vector(
+            (float) Math.cos(angle),
+            (float) Math.sin(angle)
+        );
         displacement.scale(overlap);
         if (!circleA.isStatic()) {
             int div = circleB.isStatic() ? 1 : 2;
@@ -53,7 +56,7 @@ public abstract class CollisionResolvers {
         
         // Perform separating axis theorem (polygon axes)
         Vector mtv = null;
-        double minOverlap = Double.MAX_VALUE;
+        float minOverlap = Float.MAX_VALUE;
         for (int i = 0; i < vertexCount; i++) {
             // Pair 2 points that will act as the line
             Vector pointA = polygon.getVertices()
@@ -78,17 +81,17 @@ public abstract class CollisionResolvers {
             
             // Get projection of circle to normal axis
             Vector normalLineDiff = normalPointB.clone().subtract(normalPointA);
-            double normalLineLength = normalPointA.getDistanceFrom(normalPointB);
-            double circleDot = circle.getPosition().clone().subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
-            double circleMin = circleDot - circle.getRadius();
-            double circleMax = circleDot + circle.getRadius();
+            float normalLineLength = normalPointA.getDistanceFrom(normalPointB);
+            float circleDot = circle.getPosition().clone().subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
+            float circleMin = circleDot - circle.getRadius();
+            float circleMax = circleDot + circle.getRadius();
             
             // Get projection of each vertex in a polygon to normal axis
-            double polygonMin = Double.MAX_VALUE;
-            double polygonMax = -Double.MAX_VALUE;
+            float polygonMin = Float.MAX_VALUE;
+            float polygonMax = -Float.MAX_VALUE;
             for (Vector vertex : polygon.getVertices()) {
                 Vector vertexTransformed = vertex.clone().add(polygon.getPosition());
-                double vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
+                float vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
                 polygonMin = Math.min(vertexDot, polygonMin);
                 polygonMax = Math.max(vertexDot, polygonMax);
             }
@@ -106,7 +109,7 @@ public abstract class CollisionResolvers {
             }
             
             // Calculate overlap
-            double overlap = polygonMax - circleMin;
+            float overlap = polygonMax - circleMin;
             if (overlap < minOverlap) {
                 minOverlap = overlap;
                 mtv = normalLineDiff.normalize().scale(overlap);
@@ -121,12 +124,12 @@ public abstract class CollisionResolvers {
         
         // Get closest the point of polygon to circle
         Vector closestVectorToCircle = null;
-        double minDistance = Double.MAX_VALUE;
+        float minDistance = Float.MAX_VALUE;
         for (Vector vertex : polygon.getVertices()) {
             Vector transformedVertex = vertex.clone().add(
                 polygon.getPosition()
             );
-            double distance = transformedVertex.getDistanceFrom(
+            float distance = transformedVertex.getDistanceFrom(
                 circle.getPosition()
             );
             if (distance < minDistance) {
@@ -143,17 +146,17 @@ public abstract class CollisionResolvers {
         
         // Get projection of circle to axis
         Vector lineDiff = pointB.clone().subtract(pointA);
-        double lineLength = pointA.getDistanceFrom(pointB);
-        double circleDot = circle.getPosition().clone().subtract(pointA).dot(lineDiff) / lineLength;
-        double circleMin = circleDot - circle.getRadius();
-        double circleMax = circleDot + circle.getRadius();
+        float lineLength = pointA.getDistanceFrom(pointB);
+        float circleDot = circle.getPosition().clone().subtract(pointA).dot(lineDiff) / lineLength;
+        float circleMin = circleDot - circle.getRadius();
+        float circleMax = circleDot + circle.getRadius();
         
         // Get projection of each vertex in a polygon to axis
-        double polygonMin = Double.MAX_VALUE;
-        double polygonMax = -Double.MAX_VALUE;
+        float polygonMin = Float.MAX_VALUE;
+        float polygonMax = -Float.MAX_VALUE;
         for (Vector vertex : polygon.getVertices()) {
             Vector vertexTransformed = vertex.clone().add(polygon.getPosition());
-            double vertexDot = vertexTransformed.subtract(pointA).dot(lineDiff) / lineLength;
+            float vertexDot = vertexTransformed.subtract(pointA).dot(lineDiff) / lineLength;
             polygonMin = Math.min(vertexDot, polygonMin);
             polygonMax = Math.max(vertexDot, polygonMax);
         }
@@ -175,7 +178,7 @@ public abstract class CollisionResolvers {
         polygon.getContacts().add(circle.getId());
         
         // Calculate overlap
-        double overlap = polygonMax - circleMin;
+        float overlap = polygonMax - circleMin;
         if (overlap < minOverlap) {
             minOverlap = overlap;
             mtv = lineDiff.normalize().scale(overlap);
@@ -201,7 +204,7 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
-        double minOverlap = Double.MAX_VALUE;
+        float minOverlap = Float.MAX_VALUE;
         boolean swapped = false;
         for (int i = 0; i < polygonA.getVertices().size(); i++) {
             // Pair 2 points that will act as the line
@@ -227,22 +230,22 @@ public abstract class CollisionResolvers {
             
             // Get projection of polygonA to normal
             Vector normalLineDiff = normalPointB.clone().subtract(normalPointA);
-            double normalLineLength = normalPointA.getDistanceFrom(normalPointB);
-            double polygonAMin = Double.MAX_VALUE;
-            double polygonAMax = -Double.MAX_VALUE;
+            float normalLineLength = normalPointA.getDistanceFrom(normalPointB);
+            float polygonAMin = Float.MAX_VALUE;
+            float polygonAMax = -Float.MAX_VALUE;
             for (Vector vertex : polygonA.getVertices()) {
                 Vector vertexTransformed = vertex.clone().add(polygonA.getPosition());
-                double vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
+                float vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
                 polygonAMin = Math.min(vertexDot, polygonAMin);
                 polygonAMax = Math.max(vertexDot, polygonAMax);
             }
             
             // Get projection of polygonB to normal
-            double polygonBMin = Double.MAX_VALUE;
-            double polygonBMax = -Double.MAX_VALUE;
+            float polygonBMin = Float.MAX_VALUE;
+            float polygonBMax = -Float.MAX_VALUE;
             for (Vector vertex : polygonB.getVertices()) {
                 Vector vertexTransformed = vertex.clone().add(polygonB.getPosition());
-                double vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
+                float vertexDot = vertexTransformed.subtract(normalPointA).dot(normalLineDiff) / normalLineLength;
                 polygonBMin = Math.min(vertexDot, polygonBMin);
                 polygonBMax = Math.max(vertexDot, polygonBMax);
             }
@@ -258,7 +261,7 @@ public abstract class CollisionResolvers {
             }
             
             // Calculate overlap
-            double overlap = Math.min(polygonAMax, polygonBMax) - Math.max(polygonAMin, polygonBMin);
+            float overlap = Math.min(polygonAMax, polygonBMax) - Math.max(polygonAMin, polygonBMin);
             if (overlap < minOverlap) {
                 minOverlap = overlap;
             }
@@ -284,7 +287,7 @@ public abstract class CollisionResolvers {
         
         Vector displacement = polygonB.getPosition()
             .clone().subtract(polygonA.getPosition());
-        double displacementLength = displacement.getMagnitude();
+        float displacementLength = displacement.getMagnitude();
         displacement.scale(minOverlap).divide(displacementLength);
         if (!polygonA.isStatic()) {
             int div = polygonB.isStatic() ? 1 : 2;

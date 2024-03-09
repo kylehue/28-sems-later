@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
     // basic characteristics
-    private final double speed = 2.5;
-    private double health = 0;
+    private final float speed = 2.5f;
+    private float health = 0;
     
     // shoot
     private long lastShootTime = 0;
@@ -28,8 +28,8 @@ public class Player extends Entity {
     // dash
     private long lastDashTime = 0;
     private int dashRateInMillis = 1000;
-    private double dashSpeed = 5;
-    private double dashSpeedFadeRate = 0.1;
+    private float dashSpeed = 5;
+    private float dashSpeedFadeRate = 0.1f;
     private final Vector dashPosition = new Vector();
     private final Vector dashVelocity = new Vector();
     
@@ -45,7 +45,7 @@ public class Player extends Entity {
     private final GameApplication gameApplication;
     private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
-    private double angleToMouse = 0;
+    private float angleToMouse = 0;
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
@@ -95,7 +95,7 @@ public class Player extends Entity {
         ctx.restore();
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         this.handleControls();
         this.handleMovements();
         this.handleSpriteAnimations();
@@ -112,8 +112,8 @@ public class Player extends Entity {
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             collider,
             new Quadtree.Bounds(
-                collider.getPosition().getX() - collider.getWidth() / 2,
-                collider.getPosition().getY() - collider.getHeight() / 2,
+                collider.getPosition().getX() - collider.getWidth() / 2f,
+                collider.getPosition().getY() - collider.getHeight() / 2f,
                 collider.getWidth(),
                 collider.getHeight()
             )
@@ -124,21 +124,21 @@ public class Player extends Entity {
         return collider;
     }
     
-    public void setHealth(double health) {
+    public void setHealth(float health) {
         this.health = health;
     }
     
-    public double getHealth() {
+    public float getHealth() {
         return health;
     }
     
     public void shoot() {
         long timeNow = System.nanoTime();
         if (timeNow - lastShootTime > TimeUnit.MILLISECONDS.toNanos(fireRateInMillis)) {
-            double offset = 30;
+            float offset = 30;
             this.gameApplication.getGameScene().getWorld().spawnBullet(
-                this.getPosition().getX() + Math.cos(this.angleToMouse) * offset,
-                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset,
+                (float) (this.getPosition().getX() + Math.cos(this.angleToMouse) * offset),
+                (float) (this.getPosition().getY() + Math.sin(this.angleToMouse) * offset),
                 this.angleToMouse
             );
             lastShootTime = System.nanoTime();
@@ -183,8 +183,8 @@ public class Player extends Entity {
         
         // if not moving, just dash away from mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
-            dashVelocity.setX(Math.cos(Math.PI + angleToMouse) * (dashSpeed + speed));
-            dashVelocity.setY(Math.sin(Math.PI + angleToMouse) * (dashSpeed + speed));
+            dashVelocity.setX((float) (Math.cos(Math.PI + angleToMouse) * (dashSpeed + speed)));
+            dashVelocity.setY((float) (Math.sin(Math.PI + angleToMouse) * (dashSpeed + speed)));
         }
         
         lastDashTime = timeNow;
@@ -208,7 +208,7 @@ public class Player extends Entity {
         );
         
         // x controls
-        double acceleration = 0.15;
+        float acceleration = 0.15f;
         if (leftPressed || rightPressed) {
             if (leftPressed) {
                 this.collider.getVelocity().lerpX(-1 * speed, acceleration);

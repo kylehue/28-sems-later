@@ -9,8 +9,8 @@ import java.util.HashSet;
 public class Quadtree<T> {
     private final Bounds bounds;
     private int maxObjects = 10;
-    private double minWidth = 100;
-    private double minHeight = 100;
+    private float minWidth = 100;
+    private float minHeight = 100;
     
     private final HashSet<QObject<T>> objects = new HashSet<>();
     private Subnodes<T> subnodes = null;
@@ -24,14 +24,14 @@ public class Quadtree<T> {
         this.maxObjects = maxObjects;
     }
     
-    public Quadtree(Bounds bounds, int maxObjects, double minSize) {
+    public Quadtree(Bounds bounds, int maxObjects, float minSize) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
         this.minWidth = minSize;
         this.minHeight = minSize;
     }
     
-    public Quadtree(Bounds bounds, int maxObjects, double minWidth, double minHeight) {
+    public Quadtree(Bounds bounds, int maxObjects, float minWidth, float minHeight) {
         this.bounds = bounds;
         this.maxObjects = maxObjects;
         this.minWidth = minWidth;
@@ -73,10 +73,10 @@ public class Quadtree<T> {
      * Splits the node into 4 sub-nodes.
      */
     private void split() {
-        double x = this.bounds.position.getX();
-        double y = this.bounds.position.getY();
-        double subWidth = this.bounds.width / 2;
-        double subHeight = this.bounds.height / 2;
+        float x = this.bounds.position.getX();
+        float y = this.bounds.position.getY();
+        float subWidth = this.bounds.width / 2;
+        float subHeight = this.bounds.height / 2;
         
         this.subnodes = new Subnodes<T>(
             new Quadtree<T>(
@@ -141,8 +141,8 @@ public class Quadtree<T> {
      */
     public HashSet<SubnodeLocation> getNodeLocation(Bounds bounds) {
         HashSet<SubnodeLocation> locations = new HashSet<>();
-        double verticalMidpoint = this.bounds.position.getX() + (this.bounds.width / 2);
-        double horizontalMidpoint = this.bounds.position.getY() + (this.bounds.height / 2);
+        float verticalMidpoint = this.bounds.position.getX() + (this.bounds.width / 2);
+        float horizontalMidpoint = this.bounds.position.getY() + (this.bounds.height / 2);
         
         boolean startIsNorth = bounds.position.getY() < horizontalMidpoint;
         boolean startIsWest = bounds.position.getX() < verticalMidpoint;
@@ -237,10 +237,10 @@ public class Quadtree<T> {
     }
     
     public HashSet<QObject<T>> retrieve(
-        double x,
-        double y,
-        double width,
-        double height
+        float x,
+        float y,
+        float width,
+        float height
     ) {
         return this.retrieve(new Bounds(x, y, width, height));
     }
@@ -287,13 +287,13 @@ public class Quadtree<T> {
     
     public static class Bounds {
         public final Vector position = new Vector();
-        public double width = 0;
-        public double height = 0;
+        public float width = 0;
+        public float height = 0;
         
         public Bounds() {
         }
         
-        public Bounds(double x, double y, double width, double height) {
+        public Bounds(float x, float y, float width, float height) {
             this.position.set(x, y);
             this.width = width;
             this.height = height;
@@ -303,7 +303,7 @@ public class Quadtree<T> {
     public static class QObject<T> extends Bounds {
         public final T object;
         
-        public QObject(T object, double x, double y, double width, double height) {
+        public QObject(T object, float x, float y, float width, float height) {
             super(x, y, width, height);
             this.object = object;
         }

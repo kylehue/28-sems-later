@@ -6,10 +6,10 @@ import javafx.scene.canvas.GraphicsContext;
 // https://github.com/robashton/camera/blob/master/camera.js
 public class Camera {
     private final GraphicsContext context;
-    private double distance = 1000;
+    private float distance = 1000;
     private Vector position = new Vector();
-    private double fieldOfView = Math.PI / 4;
-    private double aspectRatio = 0;
+    private float fieldOfView = (float) (Math.PI / 4f);
+    private float aspectRatio = 0;
     private Viewport viewport = new Viewport();
     
     public Camera(GraphicsContext context) {
@@ -37,24 +37,24 @@ public class Camera {
     
     public void updateViewport() {
         Canvas canvas = this.context.getCanvas();
-        this.aspectRatio = canvas.getWidth() / canvas.getHeight();
-        this.viewport.width = this.distance * Math.tan(this.fieldOfView);
+        this.aspectRatio = (float) (canvas.getWidth() / canvas.getHeight());
+        this.viewport.width = (float) (this.distance * Math.tan(this.fieldOfView));
         this.viewport.height = this.viewport.width / this.aspectRatio;
-        this.viewport.left = this.position.getX() - (this.viewport.width / 2.0);
-        this.viewport.top = this.position.getY() - (this.viewport.height / 2.0);
+        this.viewport.left = (float) (this.position.getX() - (this.viewport.width / 2.0));
+        this.viewport.top = (float) (this.position.getY() - (this.viewport.height / 2.0));
         this.viewport.right = this.viewport.left + this.viewport.width;
         this.viewport.bottom = this.viewport.top + this.viewport.height;
-        this.viewport.scaleX = canvas.getWidth() / this.viewport.width;
-        this.viewport.scaleY = canvas.getHeight() / this.viewport.height;
+        this.viewport.scaleX = (float) (canvas.getWidth() / this.viewport.width);
+        this.viewport.scaleY = (float) (canvas.getHeight() / this.viewport.height);
     }
     
-    public void zoomTo(double z) {
-        this.distance = GameUtils.lerp(this.distance, z, 0.15);
+    public void zoomTo(float z) {
+        this.distance = GameUtils.lerp(this.distance, z, 0.15f);
         this.updateViewport();
     }
     
-    public void moveTo(double x, double y) {
-        this.position.lerp(x, y, 0.15);
+    public void moveTo(float x, float y) {
+        this.position.lerp(x, y, 0.15f);
         this.updateViewport();
     }
     
@@ -63,7 +63,7 @@ public class Camera {
         this.updateViewport();
     }
     
-    public Vector screenToWorld(double x, double y) {
+    public Vector screenToWorld(float x, float y) {
         return new Vector(
             (x / this.viewport.scaleX) + this.viewport.left,
             (y / this.viewport.scaleY) + this.viewport.top
@@ -74,7 +74,7 @@ public class Camera {
         return this.screenToWorld(vector.getX(), vector.getY());
     }
     
-    public Vector worldToScreen(double x, double y) {
+    public Vector worldToScreen(float x, float y) {
         return new Vector(
             (x - this.viewport.left) * (this.viewport.scaleX),
             (y - this.viewport.top) * (this.viewport.scaleY)
@@ -89,18 +89,18 @@ public class Camera {
         return viewport;
     }
     
-    public boolean isInViewport(double x, double y, double offset) {
+    public boolean isInViewport(float x, float y, float offset) {
         return x >= this.viewport.left - offset &&
             x <= this.viewport.right + offset &&
             y >= this.viewport.top - offset &&
             y <= this.viewport.bottom + offset;
     }
     
-    public boolean isInViewport(double x, double y) {
+    public boolean isInViewport(float x, float y) {
         return this.isInViewport(x, y, 0);
     }
     
-    public boolean isInViewport(Vector vector, double offset) {
+    public boolean isInViewport(Vector vector, float offset) {
         return this.isInViewport(vector.getX(), vector.getY(), offset);
     }
     
@@ -109,44 +109,44 @@ public class Camera {
     }
     
     public static class Viewport {
-        private double left = 0;
-        private double right = 0;
-        private double top = 0;
-        private double bottom = 0;
-        private double width = 0;
-        private double height = 0;
-        private double scaleX = 1;
-        private double scaleY = 1;
+        private float left = 0;
+        private float right = 0;
+        private float top = 0;
+        private float bottom = 0;
+        private float width = 0;
+        private float height = 0;
+        private float scaleX = 1;
+        private float scaleY = 1;
         
-        public double getLeft() {
+        public float getLeft() {
             return left;
         }
         
-        public double getRight() {
+        public float getRight() {
             return right;
         }
         
-        public double getTop() {
+        public float getTop() {
             return top;
         }
         
-        public double getBottom() {
+        public float getBottom() {
             return bottom;
         }
         
-        public double getWidth() {
+        public float getWidth() {
             return width;
         }
         
-        public double getHeight() {
+        public float getHeight() {
             return height;
         }
         
-        public double getScaleX() {
+        public float getScaleX() {
             return scaleX;
         }
         
-        public double getScaleY() {
+        public float getScaleY() {
             return scaleY;
         }
     }

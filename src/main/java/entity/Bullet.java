@@ -9,13 +9,13 @@ import utils.Vector;
 
 public class Bullet extends Entity {
     private final GameApplication gameApplication;
-    private double angle = 0;
-    private double speed = 10;
-    private double maxDistance = 300;
+    private float angle = 0;
+    private float speed = 10;
+    private float maxDistance = 300;
     private Vector initialPosition = new Vector();
     private final BulletSprite sprite = new BulletSprite();
     
-    public Bullet(GameApplication gameApplication, double x, double y, double angle) {
+    public Bullet(GameApplication gameApplication, float x, float y, float angle) {
         this.gameApplication = gameApplication;
         this.getPosition().set(x, y);
         this.initialPosition.set(x, y);
@@ -25,7 +25,7 @@ public class Bullet extends Entity {
     public void render(GraphicsContext ctx) {
         /*ctx.beginPath();
         ctx.setFill(Color.web("red"));
-        double radius = 10;
+        float radius = 10;
         ctx.fillOval(getPosition().getX() - radius, getPosition().getY() - radius, radius * 2, radius * 2);
         ctx.closePath();*/
         ctx.save();
@@ -38,21 +38,21 @@ public class Bullet extends Entity {
         ctx.restore();
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         this.getPosition().add(this.getVelocity());
         this.getPosition().add(this.getVelocity().clone().scale(deltaTime));
         this.handleMovement();
     }
     
-    public void setAngle(double angle) {
+    public void setAngle(float angle) {
         this.angle = angle;
     }
     
-    public void setMaxDistance(double maxDistance) {
+    public void setMaxDistance(float maxDistance) {
         this.maxDistance = maxDistance;
     }
     
-    public double getMaxDistance() {
+    public float getMaxDistance() {
         return maxDistance;
     }
     
@@ -62,8 +62,8 @@ public class Bullet extends Entity {
     
     public void handleMovement() {
         this.getVelocity().set(
-            Math.cos(this.angle) * this.speed,
-            Math.sin(this.angle) * this.speed
+            (float) (Math.cos(this.angle) * this.speed),
+            (float) (Math.sin(this.angle) * this.speed)
         );
     }
 }

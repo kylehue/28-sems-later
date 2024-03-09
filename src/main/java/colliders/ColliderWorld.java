@@ -43,7 +43,7 @@ public class ColliderWorld {
         this.quadtree = quadtree;
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         for (int i = 0; i < updateIterationCount; i++) {
             HashSet<String> pairs = new HashSet<>();
             for (Collider colliderA : this.colliders) {
@@ -53,8 +53,8 @@ public class ColliderWorld {
                 // If there's a quadtree, use it
                 ArrayList<Collider> otherColliders;
                 if (this.quadtree != null) {
-                    double width = colliderA.getWidth();
-                    double height = colliderA.getHeight();
+                    float width = colliderA.getWidth();
+                    float height = colliderA.getHeight();
                     otherColliders = new ArrayList<>(
                         this.quadtree.retrieve(
                             colliderA.getPosition().getX() - width / 2,

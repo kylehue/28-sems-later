@@ -21,7 +21,7 @@ public abstract class Entity {
     }
     
     // to be overridden
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
     
     }
 }

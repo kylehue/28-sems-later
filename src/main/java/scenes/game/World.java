@@ -56,7 +56,7 @@ public class World {
     }
     
     public void render(GraphicsContext ctx) {
-        double renderDistanceOffset = 50;
+        float renderDistanceOffset = 50;
         
         this.camera.begin();
         map.render(ctx);
@@ -80,8 +80,8 @@ public class World {
         
         // TODO: project requirements application: apply insertion sort
         entities.sort((a, b) -> {
-            double ay = a.getPosition().getY();
-            double by = b.getPosition().getY();
+            float ay = a.getPosition().getY();
+            float by = b.getPosition().getY();
             if (ay < by) return -1;
             else if (ay > by) return 1;
             return 0;
@@ -113,7 +113,7 @@ public class World {
         }
     }
     
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         this.getQuadtree().clear();
         this.handleBulletDisposal();
         
@@ -155,7 +155,7 @@ public class World {
         return bullets;
     }
     
-    public Bullet spawnBullet(double x, double y, double angle) {
+    public Bullet spawnBullet(float x, float y, float angle) {
         Bullet bullet = new Bullet(this.gameApplication, x, y, angle);
         this.bullets.add(bullet);
         return bullet;
@@ -165,7 +165,7 @@ public class World {
         for (int i = bullets.size() - 1; i >= 0; i--) {
             Bullet bullet = bullets.get(i);
             // dispose bullets when reached max distance
-            double distance = bullet.getPosition().getDistanceFrom(bullet.getInitialPosition());
+            float distance = bullet.getPosition().getDistanceFrom(bullet.getInitialPosition());
             if (distance > bullet.getMaxDistance()) {
                 bullets.remove(i);
             }

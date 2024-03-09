@@ -7,23 +7,23 @@ public abstract class GameUtils {
         return "#" + (GameUtils.idAccumulator++);
     }
     
-    public static double random(double min, double max) {
-        return Math.random() * (max - min) + min;
+    public static float random(float min, float max) {
+        return (float) (Math.random() * (max - min) + min);
     }
     
-    public static double getDistance(double x1, double y1, double x2, double y2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    public static float getDistance(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
     
-    public static double map(double n, double fromMin, double fromMax, double toMin, double toMax) {
+    public static float map(float n, float fromMin, float fromMax, float toMin, float toMax) {
         return (n - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
     }
     
-    public static double lerp(double start, double stop, double weight) {
+    public static float lerp(float start, float stop, float weight) {
         return weight * (stop - start) + start;
     }
     
-    public static double clamp(double n, double min, double max) {
+    public static float clamp(float n, float min, float max) {
         return Math.max(min, Math.min(max, n));
     }
 }

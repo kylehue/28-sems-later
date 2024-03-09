@@ -6,11 +6,11 @@ import utils.GameUtils;
 import utils.Vector;
 
 public class CircleCollider extends Collider {
-    private double radius = 7.5;
-    private double width = radius * 2;
-    private double height = radius * 2;
+    private float radius = 7.5f;
+    private float width = radius * 2;
+    private float height = radius * 2;
     
-    public CircleCollider(double x, double y, double radius) {
+    public CircleCollider(float x, float y, float radius) {
         this.getPosition().set(x, y);
         this.setRadius(radius);
     }
@@ -24,22 +24,22 @@ public class CircleCollider extends Collider {
         this.height = radius * 2;
     }
     
-    public double getRadius() {
+    public float getRadius() {
         return radius;
     }
     
-    public void setRadius(double radius) {
+    public void setRadius(float radius) {
         this.radius = radius;
         this.updateSize();
     }
     
     @Override
-    public double getWidth() {
+    public float getWidth() {
         return this.width;
     }
     
     @Override
-    public double getHeight() {
+    public float getHeight() {
         return this.height;
     }
     

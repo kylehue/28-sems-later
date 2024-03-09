@@ -13,15 +13,15 @@ public class MouseHandler {
     public MouseHandler(Scene scene) {
         scene.setOnMouseMoved(event -> {
             this.position.set(
-                event.getSceneX(),
-                event.getSceneY()
+                (float) event.getSceneX(),
+                (float) event.getSceneY()
             );
         });
         
         scene.setOnMouseDragged(event -> {
             this.position.set(
-                event.getSceneX(),
-                event.getSceneY()
+                (float) event.getSceneX(),
+                (float) event.getSceneY()
             );
         });
         

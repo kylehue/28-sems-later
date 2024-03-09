@@ -9,9 +9,9 @@ import java.util.Arrays;
 
 public class PolygonCollider extends Collider {
     private final ArrayList<Vector> vertices = new ArrayList<>();
-    private double angle = 0;
-    private double width = 0;
-    private double height = 0;
+    private float angle = 0;
+    private float width = 0;
+    private float height = 0;
     
     public PolygonCollider() {
     }
@@ -21,10 +21,10 @@ public class PolygonCollider extends Collider {
     }
     
     private void updateSize() {
-        double minX = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
+        float minX = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
         for (Vector vertex : vertices) {
             minX = Math.min(minX, vertex.getX());
             maxX = Math.max(maxX, vertex.getX());
@@ -42,7 +42,7 @@ public class PolygonCollider extends Collider {
         this.updateSize();
     }
     
-    public void addVertex(double x, double y) {
+    public void addVertex(float x, float y) {
         this.vertices.add(new Vector(x, y));
         this.updateSize();
     }
@@ -51,11 +51,11 @@ public class PolygonCollider extends Collider {
         this.addVertex(vertex.getX(), vertex.getY());
     }
     
-    public void setAngle(double angle) {
-        double d = angle - this.angle;
+    public void setAngle(float angle) {
+        float d = angle - this.angle;
         for (Vector vertex : vertices) {
-            double x = vertex.getX() * Math.cos(d) - vertex.getY() * Math.sin(d);
-            double y = vertex.getX() * Math.sin(d) + vertex.getY() * Math.cos(d);
+            float x = (float) (vertex.getX() * Math.cos(d) - vertex.getY() * Math.sin(d));
+            float y = (float) (vertex.getX() * Math.sin(d) + vertex.getY() * Math.cos(d));
             vertex.set(x, y);
         }
         
@@ -63,17 +63,17 @@ public class PolygonCollider extends Collider {
         this.updateSize();
     }
     
-    public double getAngle() {
+    public float getAngle() {
         return angle;
     }
     
     @Override
-    public double getWidth() {
+    public float getWidth() {
         return this.width;
     }
     
     @Override
-    public double getHeight() {
+    public float getHeight() {
         return this.height;
     }
     
@@ -82,8 +82,8 @@ public class PolygonCollider extends Collider {
         if (vertices.isEmpty()) return;
         ctx.beginPath();
         ctx.setStroke(Paint.valueOf("yellow"));
-        double x = this.getPosition().getX();
-        double y = this.getPosition().getY();
+        float x = this.getPosition().getX();
+        float y = this.getPosition().getY();
         ctx.moveTo(vertices.get(0).getX() + x, vertices.get(0).getY() + y);
         for (int i = 1; i < vertices.size(); i++) {
             Vector vertex = vertices.get(i);
