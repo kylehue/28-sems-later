@@ -15,6 +15,33 @@ public abstract class Collider {
     private float mass = 1;
     private boolean isStatic = false;
     private final HashSet<String> contacts = new HashSet<>();
+    private final HashSet<String> groups = new HashSet<>();
+    private String groupId = "";
+    
+    public void addFromGroup(String groupId) {
+        groups.add(groupId);
+    }
+    
+    public void removeFromGroup(String groupId) {
+        groups.remove(groupId);
+    }
+    
+    public void setGroup(String groupId) {
+        this.groupId = groupId;
+    }
+    
+    public boolean isGroupedWith(Collider collider) {
+        if (
+            groups.isEmpty() ||
+                collider.groups.isEmpty() ||
+                this.groupId.isEmpty() ||
+                collider.groupId.isEmpty()
+        ) {
+            return true;
+        }
+        
+        return groups.contains(collider.groupId);
+    }
     
     protected HashSet<String> getContacts() {
         return contacts;
@@ -63,7 +90,7 @@ public abstract class Collider {
     public Vector getOldVelocity() {
         return oldVelocity;
     }
-
+    
     protected void update(float deltaTime) {
         Vector oldPosition = this.position.clone();
         Vector oldVelocity = this.velocity.clone();

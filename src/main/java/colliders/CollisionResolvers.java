@@ -8,6 +8,8 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
+        if (!circleA.isGroupedWith(circleB)) return;
+        
         // No need to check if they're going away from each other
         if (circleA.getVelocity().dot(circleB.getVelocity()) < 0) return;
         
@@ -41,17 +43,21 @@ public abstract class CollisionResolvers {
         if (!circleA.isStatic()) {
             int div = circleB.isStatic() ? 1 : 2;
             circleA.getPosition().add(displacement.clone().divide(div));
+            circleA.getVelocity().scale(0);
         }
         
         if (!circleB.isStatic()) {
             int div = circleA.isStatic() ? 1 : 2;
             circleB.getPosition().subtract(displacement.clone().divide(div));
+            circleB.getVelocity().scale(0);
         }
         
         if (circleA.isStatic() && circleB.isStatic()) {
             displacement.divide(2);
             circleA.getPosition().add(displacement);
             circleB.getPosition().subtract(displacement);
+            circleA.getVelocity().scale(0);
+            circleB.getVelocity().scale(0);
         }
     }
     
@@ -59,6 +65,8 @@ public abstract class CollisionResolvers {
         CircleCollider circle,
         PolygonCollider polygon
     ) {
+        if (!circle.isGroupedWith(polygon)) return;
+        
         // No need to check if they're going away from each other
         if (circle.getVelocity().dot(polygon.getVelocity()) < 0) return;
         
@@ -215,6 +223,8 @@ public abstract class CollisionResolvers {
                 mtv.divide(2);
                 circle.getPosition().add(mtv);
                 polygon.getPosition().subtract(mtv);
+                circle.getVelocity().scale(0);
+                polygon.getVelocity().scale(0);
             }
         }
     }
@@ -223,6 +233,8 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
+        if (!polygonA.isGroupedWith(polygonB)) return;
+        
         // No need to check if they're going away from each other
         if (polygonA.getVelocity().dot(polygonB.getVelocity()) < 0) return;
         
@@ -327,6 +339,8 @@ public abstract class CollisionResolvers {
             displacement.divide(2);
             polygonA.getPosition().add(displacement);
             polygonB.getPosition().subtract(displacement);
+            polygonA.getVelocity().scale(0);
+            polygonB.getVelocity().scale(0);
         }
     }
 }
