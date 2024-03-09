@@ -3,6 +3,7 @@ package entity;
 import colliders.CircleCollider;
 import colliders.Collider;
 import colliders.CircleCollider;
+import javafx.scene.paint.Paint;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -207,27 +208,28 @@ public class Player extends Entity {
         );
         
         // x controls
+        double acceleration = 0.15;
         if (leftPressed || rightPressed) {
             if (leftPressed) {
-                this.collider.getVelocity().setX(-1 * speed);
+                this.collider.getVelocity().lerpX(-1 * speed, acceleration);
             }
             if (rightPressed) {
-                this.collider.getVelocity().setX(1 * speed);
+                this.collider.getVelocity().lerpX(1 * speed, acceleration);
             }
         } else {
-            this.collider.getVelocity().setX(0);
+            this.collider.getVelocity().lerpX(0, acceleration);
         }
         
         // y controls
         if (upPressed || downPressed) {
             if (upPressed) {
-                this.collider.getVelocity().setY(-1 * speed);
+                this.collider.getVelocity().lerpY(-1 * speed, acceleration);
             }
             if (downPressed) {
-                this.collider.getVelocity().setY(1 * speed);
+                this.collider.getVelocity().lerpY(1 * speed, acceleration);
             }
         } else {
-            this.collider.getVelocity().setY(0);
+            this.collider.getVelocity().lerpY(0, acceleration);
         }
         
         // fix speed in diagonal movement
@@ -237,7 +239,7 @@ public class Player extends Entity {
         
         // dash
         dashVelocity.lerp(0, 0, dashSpeedFadeRate);
-        this.collider.getVelocity().add(dashVelocity);
+        this.collider.getPosition().add(dashVelocity);
         if (dashPressed) {
             this.dash();
         }
@@ -250,7 +252,7 @@ public class Player extends Entity {
             this.gunSprite.set(GunSprite.Animation.Idle);
         }
         
-        if (this.collider.getVelocity().getX() == 0 && this.collider.getVelocity().getY() == 0) {
+        if (this.collider.getVelocity().getMagnitude() <= 0.25) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
             if (shootPressed) {

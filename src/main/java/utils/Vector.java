@@ -40,9 +40,19 @@ public class Vector {
         return this;
     }
     
-    public Vector add(double x, double y) {
+    public Vector addX(double x) {
         this.x += x;
+        return this;
+    }
+    
+    public Vector addY(double y) {
         this.y += y;
+        return this;
+    }
+    
+    public Vector add(double x, double y) {
+        this.addX(x);
+        this.addY(y);
         return this;
     }
     
@@ -51,9 +61,19 @@ public class Vector {
         return this;
     }
     
-    public Vector subtract(double x, double y) {
+    public Vector subtractX(double x) {
         this.x -= x;
+        return this;
+    }
+    
+    public Vector subtractY(double y) {
         this.y -= y;
+        return this;
+    }
+    
+    public Vector subtract(double x, double y) {
+        this.subtractX(x);
+        this.subtractY(y);
         return this;
     }
     
@@ -110,9 +130,19 @@ public class Vector {
         return this.getDistanceFrom(vector.getX(), vector.getY());
     }
     
+    public Vector lerpX(double x, double weight) {
+        this.x = weight * (x - this.x) + this.x;
+        return this;
+    }
+    
+    public Vector lerpY(double y, double weight) {
+        this.y = weight * (y - this.y) + this.y;
+        return this;
+    }
+    
     public Vector lerp(double x, double y, double weightX, double weightY) {
-        this.x = weightX * (x - this.x) + this.x;
-        this.y = weightY * (y - this.y) + this.y;
+        this.lerpX(x, weightX);
+        this.lerpY(y, weightY);
         return this;
     }
     

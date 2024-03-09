@@ -101,7 +101,7 @@ public class World {
             }
         }
         
-        this.renderMeta(ctx);
+        // this.renderMeta(ctx);
         this.camera.end();
     }
     
