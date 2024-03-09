@@ -10,6 +10,9 @@ public abstract class Collider {
     private final String id = GameUtils.generateId();
     private final Vector position = new Vector();
     private final Vector velocity = new Vector();
+    private final Vector oldPosition = new Vector();
+    private final Vector oldVelocity = new Vector();
+    private float mass = 1;
     private boolean isStatic = false;
     private final HashSet<String> contacts = new HashSet<>();
     
@@ -23,6 +26,14 @@ public abstract class Collider {
     
     public boolean isColliding() {
         return !contacts.isEmpty();
+    }
+    
+    public void setMass(float mass) {
+        this.mass = mass;
+    }
+    
+    public float getMass() {
+        return mass;
     }
     
     public boolean isStatic() {
@@ -44,11 +55,24 @@ public abstract class Collider {
     public Vector getVelocity() {
         return velocity;
     }
+    
+    public Vector getOldPosition() {
+        return oldPosition;
+    }
+    
+    public Vector getOldVelocity() {
+        return oldVelocity;
+    }
 
-    protected void update(float deltaTime, ColliderWorld world) {
+    protected void update(float deltaTime) {
+        Vector oldPosition = this.position.clone();
+        Vector oldVelocity = this.velocity.clone();
+        
         this.position.add(this.velocity);
         this.position.add(this.velocity.clone().scale(deltaTime));
-        this.velocity.divide(world.getUpdateIterationCount());
+        
+        this.oldPosition.set(oldPosition);
+        this.oldVelocity.set(oldVelocity);
     }
     
     // to be overridden

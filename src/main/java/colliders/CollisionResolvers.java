@@ -8,6 +8,9 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
+        // No need to check if they're going away from each other
+        if (circleA.getVelocity().dot(circleB.getVelocity()) < 0) return;
+        
         float distance = circleA
             .getPosition()
             .getDistanceFrom(circleB.getPosition());
@@ -27,21 +30,28 @@ public abstract class CollisionResolvers {
         float overlap = distance - radiusSum;
         float angle = circleA.getPosition().getAngle(circleB.getPosition());
         
-        Vector displacement = new Vector(
+        Vector collisionNormal = new Vector(
             (float) Math.cos(angle),
             (float) Math.sin(angle)
         );
-        displacement.scale(overlap);
+        Vector displacement = collisionNormal.clone().scale(overlap);
+        
+        boolean isBothStatic = circleA.isStatic() && circleB.isStatic();
+        
         if (!circleA.isStatic()) {
             int div = circleB.isStatic() ? 1 : 2;
             circleA.getPosition().add(displacement.clone().divide(div));
-            circleA.getVelocity().scale(0);
         }
         
         if (!circleB.isStatic()) {
             int div = circleA.isStatic() ? 1 : 2;
-            circleB.getPosition().subtract(displacement.divide(div));
-            circleB.getVelocity().scale(0);
+            circleB.getPosition().subtract(displacement.clone().divide(div));
+        }
+        
+        if (circleA.isStatic() && circleB.isStatic()) {
+            displacement.divide(2);
+            circleA.getPosition().add(displacement);
+            circleB.getPosition().subtract(displacement);
         }
     }
     
@@ -49,6 +59,9 @@ public abstract class CollisionResolvers {
         CircleCollider circle,
         PolygonCollider polygon
     ) {
+        // No need to check if they're going away from each other
+        if (circle.getVelocity().dot(polygon.getVelocity()) < 0) return;
+        
         int vertexCount = polygon.getVertices().size();
         
         // Minimum vertex to make a polygon is 3, so we return if it's less than 3
@@ -197,6 +210,12 @@ public abstract class CollisionResolvers {
                 polygon.getPosition().subtract(mtv.clone().divide(div));
                 polygon.getVelocity().scale(0);
             }
+            
+            if (circle.isStatic() && polygon.isStatic()) {
+                mtv.divide(2);
+                circle.getPosition().add(mtv);
+                polygon.getPosition().subtract(mtv);
+            }
         }
     }
     
@@ -204,6 +223,9 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
+        // No need to check if they're going away from each other
+        if (polygonA.getVelocity().dot(polygonB.getVelocity()) < 0) return;
+        
         float minOverlap = Float.MAX_VALUE;
         boolean swapped = false;
         for (int i = 0; i < polygonA.getVertices().size(); i++) {
@@ -299,6 +321,12 @@ public abstract class CollisionResolvers {
             int div = polygonA.isStatic() ? 1 : 2;
             polygonB.getPosition().add(displacement.divide(div));
             polygonB.getVelocity().scale(0);
+        }
+        
+        if (polygonA.isStatic() && polygonB.isStatic()) {
+            displacement.divide(2);
+            polygonA.getPosition().add(displacement);
+            polygonB.getPosition().subtract(displacement);
         }
     }
 }
