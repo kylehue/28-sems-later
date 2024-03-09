@@ -101,7 +101,7 @@ public class World {
             }
         }
         
-        // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         this.camera.end();
     }
     
@@ -128,7 +128,7 @@ public class World {
         }
         
         this.camera.moveTo(player.getPosition());
-        this.camera.zoomTo(500);
+        this.camera.zoomTo(400);
         colliderWorld.update(deltaTime);
         
         this.map.setViewport(

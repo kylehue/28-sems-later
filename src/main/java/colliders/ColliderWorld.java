@@ -53,12 +53,14 @@ public class ColliderWorld {
                 // If there's a quadtree, use it
                 ArrayList<Collider> otherColliders;
                 if (this.quadtree != null) {
+                    double width = colliderA.getWidth();
+                    double height = colliderA.getHeight();
                     otherColliders = new ArrayList<>(
                         this.quadtree.retrieve(
-                            colliderA.getPosition().getX() - colliderA.getWidth() / 2,
-                            colliderA.getPosition().getY() - colliderA.getHeight() / 2,
-                            colliderA.getWidth(),
-                            colliderA.getHeight()
+                            colliderA.getPosition().getX() - width / 2,
+                            colliderA.getPosition().getY() - height / 2,
+                            width,
+                            height
                         ).stream().map(e -> e.object).toList()
                     );
                 } else {

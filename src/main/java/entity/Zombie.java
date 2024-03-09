@@ -9,7 +9,7 @@ import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private double speed = GameUtils.random(0.5, 1);
+    private double speed = /*GameUtils.random(1, 1.5)*/0;
     
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
@@ -40,12 +40,12 @@ public class Zombie extends Entity {
         
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
-            this.collider,
+            collider,
             new Quadtree.Bounds(
-                this.collider.getPosition().getX() - 9,
-                this.collider.getPosition().getY() - 12,
-                18,
-                25
+                collider.getPosition().getX() - collider.getWidth() / 2,
+                collider.getPosition().getY() - collider.getHeight() / 2,
+                collider.getWidth(),
+                collider.getHeight()
             )
         );
     }
@@ -59,14 +59,16 @@ public class Zombie extends Entity {
     private void handleSprite() {
         this.sprite.setPosition(
             getPosition().getX(),
-            getPosition().getY() - this.collider.getRadius()
+            getPosition().getY()
         );
         this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
         this.sprite.nextFrame();
     }
     
     private void handleMovements() {
-        this.getPosition().set(collider.getPosition());
+        this.getPosition().set(
+            collider.getPosition().clone().subtract(0, collider.getRadius())
+        );
         this.collider.getVelocity().setX(Math.cos(angleToPlayer) * speed);
         this.collider.getVelocity().setY(Math.sin(angleToPlayer) * speed);
     }

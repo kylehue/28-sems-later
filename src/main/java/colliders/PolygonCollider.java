@@ -10,6 +10,8 @@ import java.util.Arrays;
 public class PolygonCollider extends Collider {
     private final ArrayList<Vector> vertices = new ArrayList<>();
     private double angle = 0;
+    private double width = 0;
+    private double height = 0;
     
     public PolygonCollider() {
     }
@@ -18,17 +20,35 @@ public class PolygonCollider extends Collider {
         return vertices;
     }
     
+    private void updateSize() {
+        double minX = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+        for (Vector vertex : vertices) {
+            minX = Math.min(minX, vertex.getX());
+            maxX = Math.max(maxX, vertex.getX());
+            minY = Math.min(minY, vertex.getY());
+            maxY = Math.max(maxY, vertex.getY());
+        }
+        
+        this.width = Math.abs(minX - maxX);
+        this.height = Math.abs(minY - maxY);
+    }
+    
     public void setVertices(Vector[] vertices) {
         this.vertices.clear();
         this.vertices.addAll(Arrays.stream(vertices).toList());
+        this.updateSize();
     }
     
     public void addVertex(double x, double y) {
         this.vertices.add(new Vector(x, y));
+        this.updateSize();
     }
     
     public void addVertex(Vector vertex) {
-        this.vertices.add(vertex);
+        this.addVertex(vertex.getX(), vertex.getY());
     }
     
     public void setAngle(double angle) {
@@ -40,10 +60,21 @@ public class PolygonCollider extends Collider {
         }
         
         this.angle = angle;
+        this.updateSize();
     }
     
     public double getAngle() {
         return angle;
+    }
+    
+    @Override
+    public double getWidth() {
+        return this.width;
+    }
+    
+    @Override
+    public double getHeight() {
+        return this.height;
     }
     
     @Override

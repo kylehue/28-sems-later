@@ -41,7 +41,7 @@ public class Quadtree<T> {
     public void render(GraphicsContext ctx) {
         for (QObject<T> obj : this.objects) {
             ctx.beginPath();
-            ctx.setStroke(Paint.valueOf("blue"));
+            ctx.setStroke(Paint.valueOf("red"));
             ctx.strokeRect(
                 obj.position.getX(),
                 obj.position.getY(),

@@ -87,7 +87,7 @@ public class Player extends Entity {
         ctx.save();
         ctx.translate(
             getPosition().getX(),
-            getPosition().getY() - this.collider.getRadius()
+            getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
         this.gunSprite.render(ctx);
@@ -109,12 +109,12 @@ public class Player extends Entity {
         
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
-            this.collider,
+            collider,
             new Quadtree.Bounds(
-                this.collider.getPosition().getX() - 9,
-                this.collider.getPosition().getY() - 12,
-                18,
-                25
+                collider.getPosition().getX() - collider.getWidth() / 2,
+                collider.getPosition().getY() - collider.getHeight() / 2,
+                collider.getWidth(),
+                collider.getHeight()
             )
         );
     }
@@ -135,10 +135,9 @@ public class Player extends Entity {
         long timeNow = System.nanoTime();
         if (timeNow - lastShootTime > TimeUnit.MILLISECONDS.toNanos(fireRateInMillis)) {
             double offset = 30;
-            double gunAlignmentOffset = 10;
             this.gameApplication.getGameScene().getWorld().spawnBullet(
                 this.getPosition().getX() + Math.cos(this.angleToMouse) * offset,
-                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset - gunAlignmentOffset,
+                this.getPosition().getY() + Math.sin(this.angleToMouse) * offset,
                 this.angleToMouse
             );
             lastShootTime = System.nanoTime();
@@ -203,7 +202,9 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        this.getPosition().set(collider.getPosition());
+        this.getPosition().set(
+            collider.getPosition().clone().subtract(0, collider.getRadius())
+        );
         
         // x controls
         if (leftPressed || rightPressed) {
@@ -231,8 +232,7 @@ public class Player extends Entity {
         
         // fix speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
-            this.collider.getVelocity().normalize();
-            this.collider.getVelocity().scale(speed);
+            this.collider.getVelocity().normalize().scale(speed);
         }
         
         // dash
@@ -268,7 +268,7 @@ public class Player extends Entity {
         this.bodySprite.nextFrame();
         this.bodySprite.setPosition(
             getPosition().getX(),
-            getPosition().getY() - this.collider.getRadius()
+            getPosition().getY()
         );
     }
 }

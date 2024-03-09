@@ -7,14 +7,21 @@ import utils.Vector;
 
 public class CircleCollider extends Collider {
     private double radius = 7.5;
+    private double width = radius * 2;
+    private double height = radius * 2;
     
     public CircleCollider(double x, double y, double radius) {
         this.getPosition().set(x, y);
-        this.radius = radius;
+        this.setRadius(radius);
     }
     
     public CircleCollider() {
     
+    }
+    
+    private void updateSize() {
+        this.width = radius * 2;
+        this.height = radius * 2;
     }
     
     public double getRadius() {
@@ -23,6 +30,17 @@ public class CircleCollider extends Collider {
     
     public void setRadius(double radius) {
         this.radius = radius;
+        this.updateSize();
+    }
+    
+    @Override
+    public double getWidth() {
+        return this.width;
+    }
+    
+    @Override
+    public double getHeight() {
+        return this.height;
     }
     
     @Override
