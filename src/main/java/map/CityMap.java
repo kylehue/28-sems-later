@@ -1,5 +1,7 @@
 package map;
 
+import colliders.ColliderWorld;
+import colliders.PolygonCollider;
 import utils.LayoutUtils;
 
 public class CityMap extends Map {
@@ -109,5 +111,38 @@ public class CityMap extends Map {
         this.registerTile("I", Map.TileLocation.create(2,9)); // Damaged Dirt
         this.registerTile("J", Map.TileLocation.create(3,0)); // Dirty Road
         this.registerTile("K", Map.TileLocation.create(3,1)); // Damaged Roadside
+        
+        float mid = this.getTileHeight() / 2;
+        
+        // Reference to square:
+        // addVertex(-mid, -mid);
+        // addVertex(mid, -mid);
+        // addVertex(mid, mid);
+        // addVertex(-mid, mid);
+        
+        PolygonCollider cCollider = new PolygonCollider();
+        cCollider.addVertex(-mid, mid / 2);
+        cCollider.addVertex(mid, mid / 2);
+        cCollider.addVertex(mid, mid);
+        cCollider.addVertex(-mid, mid);
+        this.registerColliderToTile("c", cCollider);
+        this.registerColliderToTile("a", cCollider.clone());
+        this.registerColliderToTile("b", cCollider.clone());
+        this.registerColliderToTile("k", cCollider.clone());
+        this.registerColliderToTile("l", cCollider.clone());
+        
+        PolygonCollider mCollider = new PolygonCollider();
+        mCollider.addVertex(-mid, -mid);
+        mCollider.addVertex(-mid / 2, -mid);
+        mCollider.addVertex(-mid / 2, mid);
+        mCollider.addVertex(-mid, mid);
+        this.registerColliderToTile("m", mCollider);
+        
+        PolygonCollider nCollider = new PolygonCollider();
+        nCollider.addVertex(mid / 2, -mid);
+        nCollider.addVertex(mid, -mid);
+        nCollider.addVertex(mid, mid);
+        nCollider.addVertex(mid / 2, mid);
+        this.registerColliderToTile("n", nCollider);
     }
 }

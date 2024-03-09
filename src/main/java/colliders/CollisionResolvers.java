@@ -10,9 +10,6 @@ public abstract class CollisionResolvers {
     ) {
         if (!circleA.isGroupedWith(circleB)) return;
         
-        // No need to check if they're going away from each other
-        if (circleA.getVelocity().dot(circleB.getVelocity()) < 0) return;
-        
         float distance = circleA
             .getPosition()
             .getDistanceFrom(circleB.getPosition());
@@ -29,35 +26,31 @@ public abstract class CollisionResolvers {
         circleB.getContacts().add(circleA.getId());
         
         // Resolve collision
-        float overlap = distance - radiusSum;
+        float overlap = radiusSum - distance;
         float angle = circleA.getPosition().getAngle(circleB.getPosition());
         
-        Vector collisionNormal = new Vector(
+        Vector displacement = new Vector(
             (float) Math.cos(angle),
             (float) Math.sin(angle)
-        );
-        Vector displacement = collisionNormal.clone().scale(overlap);
-        
-        boolean isBothStatic = circleA.isStatic() && circleB.isStatic();
+        ).scale(overlap);
         
         if (!circleA.isStatic()) {
             int div = circleB.isStatic() ? 1 : 2;
-            circleA.getPosition().add(displacement.clone().divide(div));
-            circleA.getVelocity().scale(0);
+            circleA.getPosition().subtract(displacement.clone().divide(div));
+            circleA.getVelocity().setMagnitude(1 / overlap * div * distance);
         }
         
         if (!circleB.isStatic()) {
             int div = circleA.isStatic() ? 1 : 2;
-            circleB.getPosition().subtract(displacement.clone().divide(div));
-            circleB.getVelocity().scale(0);
+            circleB.getPosition().add(displacement.clone().divide(div));
+            circleB.getVelocity().setMagnitude(1 / overlap * div * distance);
         }
         
+        boolean isBothStatic = circleA.isStatic() && circleB.isStatic();
         if (circleA.isStatic() && circleB.isStatic()) {
             displacement.divide(2);
             circleA.getPosition().add(displacement);
             circleB.getPosition().subtract(displacement);
-            circleA.getVelocity().scale(0);
-            circleB.getVelocity().scale(0);
         }
     }
     
@@ -66,9 +59,6 @@ public abstract class CollisionResolvers {
         PolygonCollider polygon
     ) {
         if (!circle.isGroupedWith(polygon)) return;
-        
-        // No need to check if they're going away from each other
-        if (circle.getVelocity().dot(polygon.getVelocity()) < 0) return;
         
         int vertexCount = polygon.getVertices().size();
         
@@ -210,21 +200,11 @@ public abstract class CollisionResolvers {
             if (!circle.isStatic()) {
                 int div = polygon.isStatic() ? 1 : 2;
                 circle.getPosition().add(mtv.clone().divide(div));
-                circle.getVelocity().scale(0);
             }
             
             if (!polygon.isStatic()) {
                 int div = circle.isStatic() ? 1 : 2;
                 polygon.getPosition().subtract(mtv.clone().divide(div));
-                polygon.getVelocity().scale(0);
-            }
-            
-            if (circle.isStatic() && polygon.isStatic()) {
-                mtv.divide(2);
-                circle.getPosition().add(mtv);
-                polygon.getPosition().subtract(mtv);
-                circle.getVelocity().scale(0);
-                polygon.getVelocity().scale(0);
             }
         }
     }
@@ -234,9 +214,6 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonB
     ) {
         if (!polygonA.isGroupedWith(polygonB)) return;
-        
-        // No need to check if they're going away from each other
-        if (polygonA.getVelocity().dot(polygonB.getVelocity()) < 0) return;
         
         float minOverlap = Float.MAX_VALUE;
         boolean swapped = false;
@@ -326,21 +303,17 @@ public abstract class CollisionResolvers {
         if (!polygonA.isStatic()) {
             int div = polygonB.isStatic() ? 1 : 2;
             polygonA.getPosition().subtract(displacement.divide(div));
-            polygonA.getVelocity().scale(0);
         }
         
         if (!polygonB.isStatic()) {
             int div = polygonA.isStatic() ? 1 : 2;
             polygonB.getPosition().add(displacement.divide(div));
-            polygonB.getVelocity().scale(0);
         }
         
         if (polygonA.isStatic() && polygonB.isStatic()) {
             displacement.divide(2);
-            polygonA.getPosition().add(displacement);
-            polygonB.getPosition().subtract(displacement);
-            polygonA.getVelocity().scale(0);
-            polygonB.getVelocity().scale(0);
+            polygonA.getPosition().subtract(displacement);
+            polygonB.getPosition().add(displacement);
         }
     }
 }

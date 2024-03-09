@@ -13,6 +13,10 @@ public class ColliderWorld {
     
     }
     
+    public ArrayList<Collider> getColliders() {
+        return colliders;
+    }
+    
     public void addCollider(Collider collider) {
         this.colliders.add(collider);
     }

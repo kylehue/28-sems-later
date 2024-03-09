@@ -70,4 +70,12 @@ public class CircleCollider extends Collider {
             );
         }
     }
+    
+    @Override
+    public CircleCollider clone() {
+        CircleCollider collider = new CircleCollider();
+        this.copyAttributesToCollider(collider);
+        collider.setRadius(this.getRadius());
+        return collider;
+    }
 }

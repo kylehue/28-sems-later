@@ -1,5 +1,7 @@
 package map;
 
+import colliders.Collider;
+import colliders.ColliderWorld;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -9,6 +11,7 @@ import java.util.HashMap;
 public abstract class Map {
     private final HashMap<String, TileLocation> registeredTiles = new HashMap<>();
     private final HashMap<String, Integer> registeredTileAngles = new HashMap<>();
+    private final HashMap<String, ArrayList<Collider>> registeredTileColliders = new HashMap<>();
     private Image tileSheet = null;
     private String[][] mapMatrix = {};
     private float tileWidth = 0;
@@ -16,6 +19,47 @@ public abstract class Map {
     private Viewport viewport = null;
     private int renderTileViewportOffsetX = 0;
     private int renderTileViewportOffsetY = 0;
+    
+    public void registerColliderToTile(String tileId, Collider collider) {
+        if (!registeredTiles.containsKey(tileId)) {
+            throw new Error("Tile #" + tileId + " is not found. Please make sure that you have registered this tile using registerTile().");
+        }
+        
+        ArrayList<Collider> colliders = registeredTileColliders.computeIfAbsent(tileId, k -> new ArrayList<>());
+        
+        collider.setStatic(true);
+        collider.setGroup("tiles");
+        collider.addToGroup("tiles");
+        colliders.add(collider);
+    }
+    
+    public void initializeColliders(ColliderWorld colliderWorld) {
+        for (
+            int rowIndex = 0;
+            rowIndex < mapMatrix.length;
+            rowIndex++
+        ) {
+            String[] tilesRow = mapMatrix[rowIndex];
+            for (
+                int columnIndex = 0;
+                columnIndex < tilesRow.length;
+                columnIndex++
+            ) {
+                String tileId = tilesRow[columnIndex];
+                ArrayList<Collider> colliders = registeredTileColliders.get(tileId);
+                if (colliders == null || colliders.isEmpty()) continue;
+                
+                int tileAngle = this.registeredTileAngles.get(tileId);
+                float x = getTileX(columnIndex);
+                float y = getTileY(rowIndex);
+                for (Collider _collider : colliders) {
+                    Collider collider = _collider.clone();
+                    collider.getPosition().add(x, y);
+                    colliderWorld.addCollider(collider);
+                }
+            }
+        }
+    }
     
     public void setViewport(float top, float bottom, float left, float right) {
         this.viewport = new Viewport(top, bottom, left, right);
@@ -65,6 +109,14 @@ public abstract class Map {
         return mapMatrix.length * this.tileHeight;
     }
     
+    private float getTileX(int columnIndex) {
+        return columnIndex * this.tileWidth - (this.getTotalWidth() / 2);
+    }
+    
+    private float getTileY(int rowIndex) {
+        return rowIndex * this.tileHeight - (this.getTotalHeight() / 2);
+    }
+    
     public void render(GraphicsContext ctx) {
         if (this.tileSheet == null) {
             throw new Error("Tile sheet is not found. Please make sure that you have set the tile sheet using setTileSheet().");
@@ -100,20 +152,20 @@ public abstract class Map {
                 columnIndex++
             ) {
                 String tileId = tilesRow[columnIndex];
-                TileLocation tileLocation = registeredTiles.get(tileId);
-                if (tileLocation == null) continue;
+                TileLocation tileLocationFromSprite = registeredTiles.get(tileId);
+                if (tileLocationFromSprite == null) continue;
                 
                 int tileAngle = this.registeredTileAngles.get(tileId);
-                float x = columnIndex * this.tileWidth - (this.getTotalWidth() / 2);
-                float y = rowIndex * this.tileHeight - (this.getTotalHeight() / 2);
+                float x = getTileX(columnIndex);
+                float y = getTileY(rowIndex);
                 ctx.save();
                 ctx.translate(x, y);
                 ctx.rotate(tileAngle);
                 ctx.beginPath();
                 ctx.drawImage(
                     this.tileSheet,
-                    tileLocation.column() * this.tileWidth,
-                    tileLocation.row() * this.tileHeight,
+                    tileLocationFromSprite.column() * this.tileWidth,
+                    tileLocationFromSprite.row() * this.tileHeight,
                     this.tileWidth,
                     this.tileHeight,
                     -this.tileWidth / 2,

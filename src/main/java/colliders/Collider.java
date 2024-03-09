@@ -18,7 +18,7 @@ public abstract class Collider {
     private final HashSet<String> groups = new HashSet<>();
     private String groupId = "";
     
-    public void addFromGroup(String groupId) {
+    public void addToGroup(String groupId) {
         groups.add(groupId);
     }
     
@@ -28,6 +28,10 @@ public abstract class Collider {
     
     public void setGroup(String groupId) {
         this.groupId = groupId;
+    }
+    
+    protected String getGroup() {
+        return groupId;
     }
     
     public boolean isGroupedWith(Collider collider) {
@@ -102,6 +106,14 @@ public abstract class Collider {
         this.oldVelocity.set(oldVelocity);
     }
     
+    protected void copyAttributesToCollider(Collider collider) {
+        collider.groupId = groupId;
+        collider.mass = mass;
+        collider.isStatic = isStatic;
+        collider.groups.addAll(groups);
+        collider.groupId = groupId;
+    }
+    
     // to be overridden
     public float getWidth() {
         return 0;
@@ -120,5 +132,10 @@ public abstract class Collider {
     // to be overridden
     protected void resolveCollision(Collider otherCollider) {
     
+    }
+    
+    // to be overridden
+    public Collider clone() {
+        return this;
     }
 }

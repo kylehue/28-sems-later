@@ -108,4 +108,15 @@ public class PolygonCollider extends Collider {
             );
         }
     }
+    
+    @Override
+    public PolygonCollider clone() {
+        PolygonCollider collider = new PolygonCollider();
+        this.copyAttributesToCollider(collider);
+        collider.setAngle(angle);
+        for (Vector vertex : vertices) {
+            collider.addVertex(vertex.clone());
+        }
+        return collider;
+    }
 }

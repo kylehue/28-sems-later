@@ -41,6 +41,7 @@ public class World {
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
         this.map.setRenderTileViewportOffset(2, 2);
+        this.map.initializeColliders(this.colliderWorld);
     }
     
     public void setup() {
@@ -101,15 +102,14 @@ public class World {
             }
         }
         
-        // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         this.camera.end();
     }
     
     public void renderMeta(GraphicsContext ctx) {
         this.getQuadtree().render(ctx);
-        player.getCollider().render(ctx);
-        for (Zombie zombie : zombies) {
-            zombie.getCollider().render(ctx);
+        for (Collider collider : colliderWorld.getColliders()) {
+            collider.render(ctx);
         }
     }
     

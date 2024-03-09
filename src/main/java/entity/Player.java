@@ -2,8 +2,6 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
-import colliders.CircleCollider;
-import javafx.scene.paint.Paint;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -58,7 +56,11 @@ public class Player extends Entity {
             this.collider
         );
         
-        this.collider.setStatic(true);
+        this.collider.setGroup("player");
+        this.collider.addToGroup("tiles");
+        this.collider.addToGroup("decorations");
+        // this.collider.addToGroup("zombies");
+
         this.collider.setRadius(5);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
     }

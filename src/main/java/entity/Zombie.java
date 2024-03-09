@@ -9,7 +9,7 @@ import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private float speed = /*GameUtils.random(1, 1.5)*/0;
+    private float speed = GameUtils.random(0.5f, 1f);
     
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
@@ -26,6 +26,12 @@ public class Zombie extends Entity {
         this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
             this.collider
         );
+        
+        this.collider.setGroup("zombies");
+        this.collider.addToGroup("tiles");
+        this.collider.addToGroup("decorations");
+        this.collider.addToGroup("zombies");
+        
         this.collider.setRadius(5);
     }
     
