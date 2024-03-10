@@ -7,6 +7,9 @@ import entity.Entity;
 import entity.Zombie;
 import entity.Player;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import main.GameApplication;
 import map.CityMap;
 import map.Map;
@@ -35,12 +38,13 @@ public class World {
     
     public World(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
+        float quadtreeBoundsOffset = 100; // for map bounds colliders
         this.quadtree = new Quadtree<>(
             new Quadtree.Bounds(
-                -map.getTotalWidth() / 2 - map.getTileWidth() / 2,
-                -map.getTotalHeight() / 2 - map.getTileHeight() / 2,
-                map.getTotalWidth(),
-                map.getTotalHeight()
+                -map.getTotalWidth() / 2 - map.getTileWidth() / 2 - quadtreeBoundsOffset,
+                -map.getTotalHeight() / 2 - map.getTileHeight() / 2 - quadtreeBoundsOffset,
+                map.getTotalWidth() + quadtreeBoundsOffset * 2,
+                map.getTotalHeight() + quadtreeBoundsOffset * 2
             ),
             12,
             15
@@ -53,7 +57,7 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 400; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
@@ -119,6 +123,20 @@ public class World {
         }
         
         this.camera.end();
+        
+        this.renderFPS(ctx);
+    }
+    
+    private void renderFPS(GraphicsContext ctx) {
+        ctx.beginPath();
+        ctx.setFill(Paint.valueOf("#00FF00"));
+        ctx.setFont(Font.font(null, FontWeight.BOLD, 24));
+        ctx.fillText(
+            String.valueOf(gameApplication.getGameScene().getGameLoop().getFPS()), 15,
+            30,
+            100
+        );
+        ctx.closePath();
     }
     
     public void renderMeta(GraphicsContext ctx) {

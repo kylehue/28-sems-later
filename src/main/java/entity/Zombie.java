@@ -2,6 +2,7 @@ package entity;
 
 import colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
+import main.CollisionGroup;
 import main.GameApplication;
 import sprites.ZombieSprite;
 import utils.GameUtils;
@@ -27,10 +28,10 @@ public class Zombie extends Entity {
             this.collider
         );
         
-        this.collider.setGroup("zombies");
-        this.collider.addToGroup("tiles");
-        this.collider.addToGroup("decorations");
-        this.collider.addToGroup("zombies");
+        this.collider.setGroup(CollisionGroup.ZOMBIES);
+        this.collider.addToGroup(CollisionGroup.MAP_BOUNDS);
+        this.collider.addToGroup(CollisionGroup.MAP_TILES);
+        this.collider.addToGroup(CollisionGroup.ZOMBIES);
         
         this.collider.setRadius(5);
     }

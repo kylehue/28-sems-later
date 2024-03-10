@@ -9,6 +9,7 @@ public class AnimationLoop {
     private AnimationTimer timer;
     private int frameCount = 0;
     private long lastUpdate = System.nanoTime();
+    private float fps = 0;
     
     private void maybeCreateTimer() {
         if (this.timer != null) return;
@@ -16,6 +17,10 @@ public class AnimationLoop {
             
             @Override
             public void handle(long now) {
+                if (lastUpdate > 0) {
+                    long nanosElapsed = now - lastUpdate;
+                    fps = 1e9f / nanosElapsed;
+                }
                 deltaTime = (now - lastUpdate) / 1e9f;
                 update(deltaTime);
                 render();
@@ -32,6 +37,10 @@ public class AnimationLoop {
     
     public void pauseLoop() {
         this.timer.stop();
+    }
+    
+    public float getFPS() {
+        return fps;
     }
     
     public int getFrameCount() {

@@ -51,15 +51,15 @@ public class PolygonCollider extends Collider {
         this.addVertex(vertex.getX(), vertex.getY());
     }
     
-    public void setAngle(float angle) {
-        float d = angle - this.angle;
+    public void setAngle(float angleInRadians) {
+        float d = angleInRadians - this.angle;
         for (Vector vertex : vertices) {
             float x = (float) (vertex.getX() * Math.cos(d) - vertex.getY() * Math.sin(d));
             float y = (float) (vertex.getX() * Math.sin(d) + vertex.getY() * Math.cos(d));
             vertex.set(x, y);
         }
         
-        this.angle = angle;
+        this.angle = angleInRadians;
         this.updateSize();
     }
     

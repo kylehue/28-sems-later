@@ -3,6 +3,7 @@ package scenes.game;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Paint;
 import main.GameApplication;
 import map.Map;
 import scenes.GameApplicationScene;
@@ -91,7 +92,10 @@ public class GameScene extends GameApplicationScene {
     }
     
     public void render() {
-        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.beginPath();
+        graphicsContext.setFill(Paint.valueOf("#000000"));
+        graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.closePath();
         world.render(graphicsContext);
         graphicsContext.setImageSmoothing(false);
     }

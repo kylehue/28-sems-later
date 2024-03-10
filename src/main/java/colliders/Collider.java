@@ -142,6 +142,8 @@ public abstract class Collider {
         collider.isStatic = isStatic;
         collider.groups.addAll(groups);
         collider.groupId = groupId;
+        collider.mass = mass;
+        collider.friction = friction;
     }
     
     // to be overridden

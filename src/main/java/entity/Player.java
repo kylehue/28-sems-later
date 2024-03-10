@@ -2,6 +2,7 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
+import main.CollisionGroup;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -55,10 +56,10 @@ public class Player extends Entity {
             this.collider
         );
         
-        this.collider.setGroup("player");
-        this.collider.addToGroup("tiles");
-        this.collider.addToGroup("decorations");
-        this.collider.addToGroup("zombies");
+        this.collider.setGroup(CollisionGroup.PLAYER);
+        this.collider.addToGroup(CollisionGroup.MAP_BOUNDS);
+        this.collider.addToGroup(CollisionGroup.MAP_TILES);
+        this.collider.addToGroup(CollisionGroup.ZOMBIES);
         this.collider.setMass(50);
 
         this.collider.setRadius(5);
