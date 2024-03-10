@@ -4,14 +4,17 @@ import colliders.Collider;
 import colliders.ColliderWorld;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import utils.Quadtree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public abstract class Map {
     private final HashMap<String, TileLocation> registeredTiles = new HashMap<>();
     private final HashMap<String, Integer> registeredTileAngles = new HashMap<>();
     private final HashMap<String, ArrayList<Collider>> registeredTileColliders = new HashMap<>();
+    private final HashSet<Collider> tileColliders = new HashSet<>();
     private Image tileSheet = null;
     private String[][] mapMatrix = {};
     private float tileWidth = 0;
@@ -29,8 +32,21 @@ public abstract class Map {
         
         collider.setStatic(true);
         collider.setGroup("tiles");
-        collider.addToGroup("tiles");
         colliders.add(collider);
+    }
+    
+    public void putCollidersInQuadtree(Quadtree<Collider> quadtree) {
+        for (Collider collider : tileColliders) {
+            quadtree.insert(
+                collider,
+                new Quadtree.Bounds(
+                    collider.getPosition().getX() - this.getTileWidth() / 2,
+                    collider.getPosition().getY() - this.getTileHeight() / 2,
+                    this.getTileWidth(),
+                    this.getTileHeight()
+                )
+            );
+        }
     }
     
     public void initializeColliders(ColliderWorld colliderWorld) {
@@ -54,8 +70,9 @@ public abstract class Map {
                 float y = getTileY(rowIndex);
                 for (Collider _collider : colliders) {
                     Collider collider = _collider.clone();
-                    collider.getPosition().add(x, y);
+                    collider.getPosition().set(x, y);
                     colliderWorld.addCollider(collider);
+                    tileColliders.add(collider);
                 }
             }
         }

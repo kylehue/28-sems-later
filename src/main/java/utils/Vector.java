@@ -158,16 +158,23 @@ public class Vector {
         return this.lerp(vector.getX(), vector.getY(), weightX, weightY);
     }
     
-    public Vector clone() {
-        return new Vector(this.x, this.y);
-    }
-    
     public float dot(float x, float y) {
         return this.x * x + this.y * y;
     }
     
     public float dot(Vector vector) {
         return this.dot(vector.getX(), vector.getY());
+    }
+    
+    public Vector normal() {
+        float tempX = this.x;
+        this.x = -this.y;
+        this.y = tempX;
+        return this;
+    }
+    
+    public Vector clone() {
+        return new Vector(this.x, this.y);
     }
     
     @Override

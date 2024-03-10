@@ -15,6 +15,7 @@ import utils.GameUtils;
 import utils.Quadtree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class World {
     private final GameApplication gameApplication;
@@ -25,6 +26,12 @@ public class World {
     private final Quadtree<Collider> quadtree;
     private final ColliderWorld colliderWorld = new ColliderWorld();
     private Player player;
+    
+    /* For debugging */
+    public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
+    public interface DebugRenderCallback {
+        void call(GraphicsContext ctx);
+    }
     
     public World(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -102,20 +109,29 @@ public class World {
             }
         }
         
-        this.renderMeta(ctx);
+        // this.renderMeta(ctx);
+        
+        if (!debugRender.isEmpty()) {
+            debugRender.forEach((key, run) -> {
+                run.call(ctx);
+            });
+            debugRender.clear();
+        }
+        
         this.camera.end();
     }
     
     public void renderMeta(GraphicsContext ctx) {
-        this.getQuadtree().render(ctx);
+        this.quadtree.render(ctx);
         for (Collider collider : colliderWorld.getColliders()) {
             collider.render(ctx);
         }
     }
     
     public void update(float deltaTime) {
-        this.getQuadtree().clear();
+        this.quadtree.clear();
         this.handleBulletDisposal();
+        this.map.putCollidersInQuadtree(this.quadtree);
         
         player.update(deltaTime);
         
