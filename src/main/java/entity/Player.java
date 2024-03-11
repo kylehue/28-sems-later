@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
     // basic characteristics
-    private final float speed = 4.5f;
+    private final float speed = 1000;
     private float health = 0;
     
     // shoot
@@ -27,7 +27,7 @@ public class Player extends Entity {
     // dash
     private long lastDashTime = 0;
     private int dashRateInMillis = 1000;
-    private float dashSpeed = 200;
+    private float dashSpeed = 25000;
     private float dashAngle = 0;
     private final Vector dashPosition = new Vector();
     
@@ -166,29 +166,32 @@ public class Player extends Entity {
         boolean isCoolDownOver = timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis);
         if (!isCoolDownOver) return;
         
+        float computedSpeed = dashSpeed * collider.getMass();
         if (upPressed) {
-            this.collider.applyForceY(-dashSpeed);
+            collider.applyForceY(-computedSpeed);
         } else if (downPressed) {
-            this.collider.applyForceY(dashSpeed);
+            collider.applyForceY(computedSpeed);
         }
         
         if (leftPressed) {
-            this.collider.applyForceX(-dashSpeed);
+            collider.applyForceX(-computedSpeed);
         } else if (rightPressed) {
-            this.collider.applyForceX(dashSpeed);
+            collider.applyForceX(computedSpeed);
         }
         
         // fix dash speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
-            this.collider.getAcceleration().normalize().scale(dashSpeed);
+            collider.getAcceleration().limit(
+                computedSpeed / collider.getMass()
+            );
         }
         
         // if not moving, just dash away from mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
             float angle = (float) (Math.PI + angleToMouse);
             this.collider.applyForce(
-                (float) (Math.cos(angle) * (dashSpeed)),
-                (float) (Math.sin(angle) * (dashSpeed))
+                (float) (Math.cos(angle) * (computedSpeed)),
+                (float) (Math.sin(angle) * (computedSpeed))
             );
         }
         
@@ -210,38 +213,41 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        this.getPosition().set(
+        getPosition().set(
             collider.getPosition().clone().subtract(0, collider.getRadius())
         );
         
         // x controls
+        float computedSpeed = speed * collider.getMass();
         if (leftPressed || rightPressed) {
             if (leftPressed) {
-                this.collider.applyForceX(-1 * speed);
+                collider.applyForceX(-1 * computedSpeed);
             }
             if (rightPressed) {
-                this.collider.applyForceX(1 * speed);
+                collider.applyForceX(1 * computedSpeed);
             }
         }
         
         // y controls
         if (upPressed || downPressed) {
             if (upPressed) {
-                this.collider.applyForceY(-1 * speed);
+                collider.applyForceY(-1 * computedSpeed);
             }
             if (downPressed) {
-                this.collider.applyForceY(1 * speed);
+                collider.applyForceY(1 * computedSpeed);
             }
         }
         
         // fix speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
-            this.collider.getAcceleration().normalize().scale(speed);
+            collider.getAcceleration().limit(
+                computedSpeed / collider.getMass()
+            );
         }
         
         // dash
         if (dashPressed) {
-            this.dash();
+            dash();
         }
     }
     
@@ -252,7 +258,7 @@ public class Player extends Entity {
             this.gunSprite.set(GunSprite.Animation.Idle);
         }
         
-        if (this.collider.getAcceleration().getMagnitude() <= 0.25) {
+        if (this.collider.getVelocity().getMagnitude() <= 0.25) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
             if (shootPressed) {

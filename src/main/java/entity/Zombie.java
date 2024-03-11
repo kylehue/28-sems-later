@@ -10,7 +10,7 @@ import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private float speed = GameUtils.random(2.5f, 3f);
+    private float speed = GameUtils.random(200f, 700f);
     
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
@@ -34,6 +34,7 @@ public class Zombie extends Entity {
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
         
         this.collider.setRadius(5);
+        this.collider.setMass(1);
     }
     
     public void render(GraphicsContext ctx) {
@@ -77,8 +78,8 @@ public class Zombie extends Entity {
             collider.getPosition().clone().subtract(0, collider.getRadius())
         );
         this.collider.applyForce(
-            (float) (Math.cos(angleToPlayer) * speed),
-            (float) (Math.sin(angleToPlayer) * speed)
+            (float) (Math.cos(angleToPlayer) * speed * collider.getMass()),
+            (float) (Math.sin(angleToPlayer) * speed * collider.getMass())
         );
     }
     

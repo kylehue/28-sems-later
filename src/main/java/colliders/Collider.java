@@ -11,7 +11,7 @@ public abstract class Collider {
     private final Vector position = new Vector();
     private final Vector oldPosition = new Vector();
     private final Vector acceleration = new Vector();
-    private float friction = 0.05f;
+    private float friction = 0.1f;
     private float mass = 1.0f;
     private final Vector velocity = new Vector();
     private boolean isStatic = false;
@@ -95,11 +95,11 @@ public abstract class Collider {
     }
     
     public void applyForceX(float x) {
-        this.acceleration.addX(x);
+        this.acceleration.addX(x / mass);
     }
     
     public void applyForceY(float y) {
-        this.acceleration.addY(y);
+        this.acceleration.addY(y / mass);
     }
     
     public void applyForce(float x, float y) {
@@ -112,22 +112,29 @@ public abstract class Collider {
     }
     
     boolean ticked = false;
+    
     protected void update(float deltaTime) {
         if (!ticked) {
             oldPosition.set(position);
             ticked = true;
+            return;
         }
         
+        Vector temp = position.clone();
         velocity.set(position.clone().subtract(oldPosition));
-        oldPosition.set(position);
         
+        // Update current position
         position.add(
-            velocity.clone().add(acceleration.clone().scale(deltaTime))
+            velocity.clone().add(
+                acceleration.clone().scale(deltaTime * deltaTime)
+            )
         );
         
-        position.subtract(
-            velocity.clone().scale(friction)
-        );
+        // Apply friction
+        position.subtract(velocity.clone().scale(friction));
+        
+        // Update old position
+        oldPosition.set(temp);
         
         acceleration.set(0, 0);
     }
