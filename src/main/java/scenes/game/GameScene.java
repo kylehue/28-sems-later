@@ -31,8 +31,8 @@ public class GameScene extends GameApplicationScene {
             }
             
             @Override
-            public void update(float deltaTime) {
-                $this.update(deltaTime);
+            public void fixedUpdate(float deltaTime) {
+                $this.fixedUpdate(deltaTime);
             }
         };
         
@@ -100,7 +100,7 @@ public class GameScene extends GameApplicationScene {
         graphicsContext.setImageSmoothing(false);
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         world.update(deltaTime);
     }
 }

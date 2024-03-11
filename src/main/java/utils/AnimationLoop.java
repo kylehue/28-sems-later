@@ -2,10 +2,10 @@ package utils;
 
 import javafx.animation.AnimationTimer;
 
-import java.util.concurrent.TimeUnit;
-
 public class AnimationLoop {
-    private float deltaTime = 0;
+    private final float targetFps = 60.0f;
+    private final float deltaTime = 1 / targetFps;
+    private float accumulator = 0.0f;
     private AnimationTimer timer;
     private int frameCount = 0;
     private long lastUpdate = System.nanoTime();
@@ -14,17 +14,28 @@ public class AnimationLoop {
     private void maybeCreateTimer() {
         if (this.timer != null) return;
         this.timer = new AnimationTimer() {
-            
             @Override
             public void handle(long now) {
-                if (lastUpdate > 0) {
-                    long nanosElapsed = now - lastUpdate;
+                long nanosElapsed = now - lastUpdate;
+                float frameTime = nanosElapsed / 1e9f;
+                if (frameTime > 0.25) {
+                    frameTime = 0.25f;
+                }
+                
+                accumulator += frameTime;
+                while (accumulator >= deltaTime) {
+                    fixedUpdate(deltaTime);
+                    accumulator -= deltaTime;
+                }
+                
+                // Update FPS
+                if (nanosElapsed > 0) {
                     fps = 1e9f / nanosElapsed;
                 }
-                deltaTime = (now - lastUpdate) / 1e9f;
-                update(deltaTime);
-                render();
+                
+                float alpha = accumulator / deltaTime;
                 frameCount++;
+                render();
                 lastUpdate = now;
             }
         };
@@ -55,9 +66,13 @@ public class AnimationLoop {
         return deltaTime;
     }
     
-    public void update(float deltaTime) {
+    // to be overridden
+    public void fixedUpdate(float deltaTime) {
+    
     }
     
+    // to be overridden
     public void render() {
+    
     }
 }

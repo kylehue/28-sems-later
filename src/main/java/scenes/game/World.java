@@ -113,7 +113,7 @@ public class World {
             }
         }
         
-        // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {
@@ -145,6 +145,7 @@ public class World {
             collider.render(ctx);
         }
     }
+    
     
     public void update(float deltaTime) {
         this.quadtree.clear();

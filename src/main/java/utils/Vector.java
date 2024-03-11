@@ -108,9 +108,14 @@ public class Vector {
     
     public Vector setMagnitude(float magnitude) {
         float currentMagnitude = this.getMagnitude();
-        currentMagnitude = currentMagnitude == 0 ? 0.0001f : currentMagnitude;
-        this.x /= currentMagnitude * magnitude;
-        this.y /= currentMagnitude * magnitude;
+        if (currentMagnitude == 0) {
+            this.x = magnitude;
+            this.y = 0;
+        } else {
+            float scaleFactor = magnitude / currentMagnitude;
+            this.x *= scaleFactor;
+            this.y *= scaleFactor;
+        }
         return this;
     }
     
@@ -170,6 +175,13 @@ public class Vector {
         float tempX = this.x;
         this.x = -this.y;
         this.y = tempX;
+        return this;
+    }
+    
+    public Vector limit(float n) {
+        if (this.getMagnitude() > n) {
+            this.setMagnitude(n);
+        }
         return this;
     }
     
