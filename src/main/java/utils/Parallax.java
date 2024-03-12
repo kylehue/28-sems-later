@@ -16,6 +16,7 @@ public class Parallax extends AnimationLoop {
     private final MouseHandler mouseHandler;
     private Vector velocity = new Vector(10, 5);
     private float acceleration = 0.1f;
+    
     public Parallax(Scene scene) {
         this.mouseHandler = new MouseHandler(scene);
     }
@@ -28,13 +29,21 @@ public class Parallax extends AnimationLoop {
         layers.add(index, new Layer(image));
     }
     
+    private Vector getComputedDepthVector(int layerIndex) {
+        return new Vector(
+            (float) (Math.pow(layerIndex + 1, 2) * velocity.getX()),
+            (float) (Math.pow(layerIndex + 1, 2) * velocity.getY())
+        );
+    }
+    
     @Override
     public void render() {
         ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
-            float offsetX = (float) (Math.pow(i + 1, 2) * velocity.getX()) * 2;
-            float offsetY = (float) (Math.pow(i + 1, 2) * velocity.getX()) * 2;
+            Vector computedDepthVector = getComputedDepthVector(i);
+            float offsetX = computedDepthVector.getX() * 2;
+            float offsetY = computedDepthVector.getY() * 2;
             ctx.beginPath();
             ctx.drawImage(
                 layer.image,
@@ -68,9 +77,10 @@ public class Parallax extends AnimationLoop {
         
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
+            Vector computedDepthVector = getComputedDepthVector(i);
             layer.position.lerp(
-                (float) (mappedX * Math.pow(i + 1, 2) * velocity.getX()),
-                (float) (mappedY * Math.pow(i + 1, 2) * velocity.getY()),
+                mappedX * computedDepthVector.getX(),
+                mappedY * computedDepthVector.getY(),
                 acceleration
             );
         }
