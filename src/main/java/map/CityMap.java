@@ -125,7 +125,7 @@ public class CityMap extends Map {
         cCollider.addVertex(mid, mid / 2);
         cCollider.addVertex(mid, mid);
         cCollider.addVertex(-mid, mid);
-        this.registerColliderToTile("c", cCollider);
+        this.registerColliderToTile("c", cCollider.clone());
         this.registerColliderToTile("a", cCollider.clone());
         this.registerColliderToTile("b", cCollider.clone());
         this.registerColliderToTile("k", cCollider.clone());

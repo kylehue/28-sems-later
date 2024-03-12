@@ -10,6 +10,7 @@ import sprites.PlayerSprite;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import event.KeyHandler;
+import utils.Bounds;
 import utils.Quadtree;
 import utils.Vector;
 
@@ -60,7 +61,7 @@ public class Player extends Entity {
         this.collider.addToGroup(CollisionGroup.MAP_BOUNDS);
         this.collider.addToGroup(CollisionGroup.MAP_TILES);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
-        this.collider.setMass(50);
+        this.collider.setMass(250);
 
         this.collider.setRadius(5);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
@@ -114,7 +115,7 @@ public class Player extends Entity {
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             collider,
-            new Quadtree.Bounds(
+            new Bounds(
                 collider.getPosition().getX() - collider.getWidth() / 2f,
                 collider.getPosition().getY() - collider.getHeight() / 2f,
                 collider.getWidth(),

@@ -1,5 +1,6 @@
 package colliders;
 
+import utils.Bounds;
 import utils.Quadtree;
 
 import java.util.ArrayList;
@@ -8,9 +9,18 @@ import java.util.HashSet;
 public class ColliderWorld {
     private final ArrayList<Collider> colliders = new ArrayList<>();
     private Quadtree<Collider> quadtree = null;
+    private Bounds bounds = new Bounds();
     
     public ColliderWorld() {
     
+    }
+    
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds;
+    }
+    
+    public Bounds getBounds() {
+        return bounds;
     }
     
     public ArrayList<Collider> getColliders() {
@@ -19,6 +29,7 @@ public class ColliderWorld {
     
     public void addCollider(Collider collider) {
         this.colliders.add(collider);
+        collider.setColliderWorld(this);
     }
     
     public void removeCollider(String id) {

@@ -13,6 +13,7 @@ import javafx.scene.text.FontWeight;
 import main.GameApplication;
 import map.CityMap;
 import map.Map;
+import utils.Bounds;
 import utils.Camera;
 import utils.GameUtils;
 import utils.Quadtree;
@@ -32,23 +33,25 @@ public class World {
     
     /* For debugging */
     public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
+    
     public interface DebugRenderCallback {
         void call(GraphicsContext ctx);
     }
     
     public World(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
-        float quadtreeBoundsOffset = 100; // for map bounds colliders
+        Bounds mapBounds = new Bounds(
+            -map.getTotalWidth() / 2 - map.getTileWidth() / 2,
+            -map.getTotalHeight() / 2 - map.getTileHeight() / 2,
+            map.getTotalWidth(),
+            map.getTotalHeight()
+        );
         this.quadtree = new Quadtree<>(
-            new Quadtree.Bounds(
-                -map.getTotalWidth() / 2 - map.getTileWidth() / 2 - quadtreeBoundsOffset,
-                -map.getTotalHeight() / 2 - map.getTileHeight() / 2 - quadtreeBoundsOffset,
-                map.getTotalWidth() + quadtreeBoundsOffset * 2,
-                map.getTotalHeight() + quadtreeBoundsOffset * 2
-            ),
+            mapBounds,
             12,
             15
         );
+        this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
         this.map.setRenderTileViewportOffset(2, 2);
@@ -132,7 +135,7 @@ public class World {
         ctx.setFill(Paint.valueOf("#00FF00"));
         ctx.setFont(Font.font(null, FontWeight.BOLD, 24));
         ctx.fillText(
-            String.valueOf(gameApplication.getGameScene().getGameLoop().getFPS()), 15,
+            String.valueOf((int) gameApplication.getGameScene().getGameLoop().getFPS()), 15,
             30,
             100
         );

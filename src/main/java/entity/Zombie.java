@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import main.CollisionGroup;
 import main.GameApplication;
 import sprites.ZombieSprite;
+import utils.Bounds;
 import utils.GameUtils;
 import utils.Quadtree;
 
@@ -49,7 +50,7 @@ public class Zombie extends Entity {
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             collider,
-            new Quadtree.Bounds(
+            new Bounds(
                 collider.getPosition().getX() - collider.getWidth() / 2,
                 collider.getPosition().getY() - collider.getHeight() / 2,
                 collider.getWidth(),

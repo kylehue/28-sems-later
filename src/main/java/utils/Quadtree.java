@@ -43,10 +43,10 @@ public class Quadtree<T> {
             ctx.beginPath();
             ctx.setStroke(Paint.valueOf("red"));
             ctx.strokeRect(
-                obj.position.getX(),
-                obj.position.getY(),
-                obj.width,
-                obj.height
+                obj.getX(),
+                obj.getY(),
+                obj.getWidth(),
+                obj.getHeight()
             );
             ctx.closePath();
         }
@@ -54,10 +54,10 @@ public class Quadtree<T> {
         ctx.beginPath();
         ctx.setStroke(Paint.valueOf("red"));
         ctx.strokeRect(
-            this.bounds.position.getX(),
-            this.bounds.position.getY(),
-            this.bounds.width,
-            this.bounds.height
+            this.bounds.getX(),
+            this.bounds.getY(),
+            this.bounds.getWidth(),
+            this.bounds.getHeight()
         );
         ctx.closePath();
         
@@ -73,10 +73,10 @@ public class Quadtree<T> {
      * Splits the node into 4 sub-nodes.
      */
     private void split() {
-        float x = this.bounds.position.getX();
-        float y = this.bounds.position.getY();
-        float subWidth = this.bounds.width / 2;
-        float subHeight = this.bounds.height / 2;
+        float x = this.bounds.getX();
+        float y = this.bounds.getY();
+        float subWidth = this.bounds.getWidth() / 2;
+        float subHeight = this.bounds.getHeight() / 2;
         
         this.subnodes = new Subnodes<T>(
             new Quadtree<T>(
@@ -141,13 +141,13 @@ public class Quadtree<T> {
      */
     public HashSet<SubnodeLocation> getNodeLocation(Bounds bounds) {
         HashSet<SubnodeLocation> locations = new HashSet<>();
-        float verticalMidpoint = this.bounds.position.getX() + (this.bounds.width / 2);
-        float horizontalMidpoint = this.bounds.position.getY() + (this.bounds.height / 2);
+        float verticalMidpoint = this.bounds.getX() + (this.bounds.getWidth() / 2);
+        float horizontalMidpoint = this.bounds.getY() + (this.bounds.getHeight() / 2);
         
-        boolean startIsNorth = bounds.position.getY() < horizontalMidpoint;
-        boolean startIsWest = bounds.position.getX() < verticalMidpoint;
-        boolean endIsEast = bounds.position.getX() + bounds.width > verticalMidpoint;
-        boolean endIsSouth = bounds.position.getY() + bounds.height > horizontalMidpoint;
+        boolean startIsNorth = bounds.getY() < horizontalMidpoint;
+        boolean startIsWest = bounds.getX() < verticalMidpoint;
+        boolean endIsEast = bounds.getX() + bounds.getWidth() > verticalMidpoint;
+        boolean endIsSouth = bounds.getY() + bounds.getHeight() > horizontalMidpoint;
         
         // Top left
         if (startIsWest && startIsNorth) {
@@ -195,8 +195,8 @@ public class Quadtree<T> {
         // Max objects reached
         if (
             this.objects.size() > this.maxObjects &&
-                this.bounds.width / 2 > this.minWidth &&
-                this.bounds.height / 2 > this.minHeight
+                this.bounds.getWidth() / 2 > this.minWidth &&
+                this.bounds.getHeight() / 2 > this.minHeight
         ) {
             // Split if we don't already have sub-nodes
             this.split();
@@ -285,21 +285,6 @@ public class Quadtree<T> {
         }
     }
     
-    public static class Bounds {
-        public final Vector position = new Vector();
-        public float width = 0;
-        public float height = 0;
-        
-        public Bounds() {
-        }
-        
-        public Bounds(float x, float y, float width, float height) {
-            this.position.set(x, y);
-            this.width = width;
-            this.height = height;
-        }
-    }
-    
     public static class QObject<T> extends Bounds {
         public final T object;
         
@@ -310,10 +295,10 @@ public class Quadtree<T> {
         
         public QObject(T object, Bounds bounds) {
             super(
-                bounds.position.getX(),
-                bounds.position.getY(),
-                bounds.width,
-                bounds.height
+                bounds.getX(),
+                bounds.getY(),
+                bounds.getWidth(),
+                bounds.getHeight()
             );
             this.object = object;
         }

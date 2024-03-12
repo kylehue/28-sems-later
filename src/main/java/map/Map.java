@@ -6,6 +6,7 @@ import colliders.PolygonCollider;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import main.CollisionGroup;
+import utils.Bounds;
 import utils.Quadtree;
 
 import java.util.ArrayList;
@@ -40,12 +41,13 @@ public abstract class Map {
     
     public void putCollidersInQuadtree(Quadtree<Collider> quadtree) {
         for (Collider collider : colliders) {
-            float width = collider.getWidth();
-            float height = collider.getHeight();
+            // TODO: make width/height bounds dynamic?
+            float width = Math.max(tileWidth, collider.getWidth());
+            float height = Math.max(tileHeight, collider.getHeight());
             
             quadtree.insert(
                 collider,
-                new Quadtree.Bounds(
+                new Bounds(
                     collider.getPosition().getX() - width / 2,
                     collider.getPosition().getY() - height / 2,
                     width,
@@ -55,86 +57,7 @@ public abstract class Map {
         }
     }
     
-    private void initializeBoundColliders(ColliderWorld colliderWorld) {
-        float totalWidth = this.getTotalWidth();
-        float totalHeight = this.getTotalHeight();
-        float wallThickness = 100;
-        
-        PolygonCollider leftWall = new PolygonCollider();
-        leftWall.setGroup(CollisionGroup.MAP_BOUNDS);
-        leftWall.setStatic(true);
-        leftWall.setMass(Float.MAX_VALUE);
-        leftWall.addVertex(
-            -wallThickness / 2,
-            -totalHeight / 2 - wallThickness
-        );
-        leftWall.addVertex(
-            wallThickness / 2,
-            -totalHeight / 2 - wallThickness
-        );
-        leftWall.addVertex(
-            wallThickness / 2,
-            totalHeight / 2 + wallThickness
-        );
-        leftWall.addVertex(
-            -wallThickness / 2,
-            totalHeight / 2 + wallThickness
-        );
-        leftWall.getPosition().set(
-            -totalWidth / 2 - leftWall.getWidth() / 2 - tileWidth / 2,
-            -tileHeight / 2
-        );
-        
-        PolygonCollider rightWall = leftWall.clone();
-        rightWall.getPosition().set(
-            totalWidth / 2 + rightWall.getWidth() / 2 - tileWidth / 2,
-            -tileHeight / 2
-        );
-        
-        PolygonCollider topWall = new PolygonCollider();
-        topWall.setGroup(CollisionGroup.MAP_BOUNDS);
-        topWall.setStatic(true);
-        topWall.setMass(Float.MAX_VALUE);
-        topWall.addVertex(
-            -totalWidth / 2 - wallThickness,
-            -wallThickness / 2
-        );
-        topWall.addVertex(
-            totalWidth / 2 + wallThickness,
-            -wallThickness / 2
-        );
-        topWall.addVertex(
-            totalWidth / 2 + wallThickness,
-            wallThickness / 2
-        );
-        topWall.addVertex(
-            -totalWidth / 2 - wallThickness,
-            wallThickness / 2
-        );
-        topWall.getPosition().set(
-            -tileWidth / 2,
-            -totalHeight / 2 - topWall.getHeight() / 2 - tileHeight / 2
-        );
-        
-        PolygonCollider bottomWall = topWall.clone();
-        bottomWall.getPosition().set(
-            -tileWidth / 2,
-            totalHeight / 2 + bottomWall.getHeight() / 2 - tileHeight / 2
-        );
-        
-        colliders.add(leftWall);
-        colliders.add(rightWall);
-        colliders.add(topWall);
-        colliders.add(bottomWall);
-        colliderWorld.addCollider(leftWall);
-        colliderWorld.addCollider(rightWall);
-        colliderWorld.addCollider(topWall);
-        colliderWorld.addCollider(bottomWall);
-    }
-    
     public void initializeColliders(ColliderWorld colliderWorld) {
-        this.initializeBoundColliders(colliderWorld);
-        
         for (
             int rowIndex = 0;
             rowIndex < mapMatrix.length;
