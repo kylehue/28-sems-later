@@ -60,7 +60,7 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        for (int i = 0; i < 400; i++) {
+        for (int i = 0; i < 0; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
