@@ -32,7 +32,8 @@ public class TitleScene extends GameApplicationScene {
         parallax.addLayer(2, LayoutUtils.loadImage("/backgrounds/parallax/main/3.png"));
         parallax.addLayer(3, LayoutUtils.loadImage("/backgrounds/parallax/main/4.png"));
         parallax.addLayer(4, LayoutUtils.loadImage("/backgrounds/parallax/main/5.png"));
-        // parallax.addLayer(5, LayoutUtils.loadImage("/backgrounds/parallax/main/6.png"));
+         parallax.addLayer(5, LayoutUtils.loadImage("/backgrounds/parallax/main/6.png"));
+        parallax.addLayer(6, LayoutUtils.loadImage("/backgrounds/parallax/main/7.png"));
         parallax.startLoop();
         parallax.getCanvas().widthProperty().bind(root.widthProperty());
         parallax.getCanvas().heightProperty().bind(root.heightProperty());
