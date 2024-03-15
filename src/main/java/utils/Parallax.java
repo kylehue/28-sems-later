@@ -14,7 +14,7 @@ public class Parallax extends AnimationLoop {
     private final Canvas canvas = new Canvas();
     private final GraphicsContext ctx = canvas.getGraphicsContext2D();
     private final MouseHandler mouseHandler;
-    private Vector velocity = new Vector(0.5f, 0.5f);
+    private Vector velocity = new Vector(5f, 5f);
     private float acceleration = 0.1f;
     
     public Parallax(Scene scene) {
@@ -42,7 +42,7 @@ public class Parallax extends AnimationLoop {
         ctx.setImageSmoothing(false);
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
-            Vector computedDepthVector = getComputedDepthVector(i);
+            Vector computedDepthVector = getComputedDepthVector(i - layers.size());
             float offsetX = computedDepthVector.getX() * 2;
             float offsetY = computedDepthVector.getY() * 2;
             ctx.beginPath();
@@ -78,7 +78,7 @@ public class Parallax extends AnimationLoop {
         
         for (int i = layers.size() - 1; i >= 0; i--) {
             Layer layer = layers.get(i);
-            Vector computedDepthVector = getComputedDepthVector(i);
+            Vector computedDepthVector = getComputedDepthVector(i - layers.size());
             layer.position.lerp(
                 mappedX * computedDepthVector.getX(),
                 mappedY * computedDepthVector.getY(),
