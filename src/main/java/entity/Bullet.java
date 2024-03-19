@@ -7,12 +7,14 @@ import sprites.BulletSprite;
 import sprites.PlayerSprite;
 import utils.Vector;
 
-public class Bullet extends Entity {
+public class Bullet {
     private final GameApplication gameApplication;
     private float angle = 0;
     private float speed = 10;
     private float maxDistance = 300;
     private Vector initialPosition = new Vector();
+    private final Vector position = new Vector();
+    private final Vector velocity = new Vector();
     private final BulletSprite sprite = new BulletSprite();
     
     public Bullet(GameApplication gameApplication, float x, float y, float angle) {
@@ -58,6 +60,14 @@ public class Bullet extends Entity {
     
     public Vector getInitialPosition() {
         return initialPosition;
+    }
+    
+    public Vector getVelocity() {
+        return velocity;
+    }
+    
+    public Vector getPosition() {
+        return position;
     }
     
     public void handleMovement() {
