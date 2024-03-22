@@ -67,7 +67,7 @@ public class Zombie extends Entity {
         );
         if(isIntervalOverFor("zombie") && isCollidingWithPlayer) {
             player.setCurrentHealth(player.getCurrentHealth() - damage);
-            System.out.println(player.getCurrentHealth());
+            resetIntervalFor("zombie");
         }
     }
     

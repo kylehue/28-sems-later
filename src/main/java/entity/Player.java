@@ -131,6 +131,7 @@ public class Player extends Entity {
                 (float) (this.getPosition().getY() + Math.sin(this.angleToMouse) * offset),
                 this.angleToMouse
             );
+            resetIntervalFor("shoot");
         }
     }
     
@@ -178,9 +179,9 @@ public class Player extends Entity {
         
         dashAngle = collider.getAcceleration().getAngle();
         
-        
         this.dashSprite.resetFrames();
         this.dashPosition.set(this.getPosition());
+        resetIntervalFor("dash");
     }
     
     private void handleControls() {

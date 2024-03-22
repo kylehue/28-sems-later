@@ -40,21 +40,26 @@ public abstract class Entity {
     public boolean isIntervalOverFor(String name) {
         long timeNow = System.nanoTime();
         Interval intervalAndCooldown = registeredIntervals.get(name);
+        if (intervalAndCooldown == null) return false;
         int interval = intervalAndCooldown.interval;
         long cooldown = intervalAndCooldown.cooldown;
         if (timeNow - cooldown > TimeUnit.MILLISECONDS.toNanos(interval)) {
-            intervalAndCooldown.cooldown = timeNow;
             return true;
         }
         return false;
     }
     
-    public void registerIntervalFor(String name, int intervalRateInMillis){
+    public void resetIntervalFor(String name) {
+        Interval intervalAndCooldown = registeredIntervals.get(name);
+        if (intervalAndCooldown == null) return;
+        intervalAndCooldown.cooldown = System.nanoTime();
+    }
+    
+    public void registerIntervalFor(String name, int intervalRateInMillis) {
         Interval interval = new Interval();
         interval.interval = intervalRateInMillis;
         registeredIntervals.put(name, interval);
     }
-    
     
     // to be overridden
     public void render(GraphicsContext ctx) {
