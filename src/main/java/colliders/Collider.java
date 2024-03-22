@@ -20,6 +20,7 @@ public abstract class Collider {
     private boolean isStatic = false;
     private final HashSet<String> contacts = new HashSet<>();
     private final HashSet<String> groups = new HashSet<>();
+    private final HashSet<String> excludedResolutions = new HashSet<>();
     private String groupId = "";
     
     /* Grouping */
@@ -41,6 +42,14 @@ public abstract class Collider {
     
     public boolean isGroupedWith(Collider collider) {
         return groups.contains(collider.groupId);
+    }
+    
+    public void excludeResolutionToGroup(String groupId) {
+        excludedResolutions.add(groupId);
+    }
+    
+    public boolean isResolutionExcludedFromGroup(String groupId) {
+        return excludedResolutions.contains(groupId);
     }
     
     /* Contacts / collisions */

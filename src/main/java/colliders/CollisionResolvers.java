@@ -29,6 +29,10 @@ public abstract class CollisionResolvers {
         circleA.getContacts().add(circleB.getId());
         circleB.getContacts().add(circleA.getId());
         
+        if (circleB.isResolutionExcludedFromGroup(circleA.getGroup()) || circleA.isResolutionExcludedFromGroup(circleB.getGroup())) {
+            return;
+        }
+        
         // Resolve collision
         float overlap = radiusSum - distance;
         float angle = circleA.getPosition().getAngle(circleB.getPosition());
@@ -196,6 +200,10 @@ public abstract class CollisionResolvers {
         circle.getContacts().add(polygon.getId());
         polygon.getContacts().add(circle.getId());
         
+        if (circle.isResolutionExcludedFromGroup(polygon.getGroup()) || polygon.isResolutionExcludedFromGroup(circle.getGroup())) {
+            return;
+        }
+        
         // Calculate overlap
         float overlap = Math.abs(Math.min(circleMax, polygonMax) - Math.max(circleMin, polygonMin));
         if (overlap < minOverlap) {
@@ -309,6 +317,10 @@ public abstract class CollisionResolvers {
         
         polygonA.getContacts().add(polygonB.getId());
         polygonB.getContacts().add(polygonA.getId());
+        
+        if (polygonA.isResolutionExcludedFromGroup(polygonB.getGroup()) || polygonB.isResolutionExcludedFromGroup(polygonA.getGroup())) {
+            return;
+        }
         
         // Resolve
         if (mtv != null) {
