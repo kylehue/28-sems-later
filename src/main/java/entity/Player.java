@@ -19,15 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class Player extends Entity {
     // basic characteristics
     private final float speed = 1000;
-    private float health = 0;
-    
-    // shoot
-    private long lastShootTime = 0;
-    private int fireRateInMillis = 250;
     
     // dash
-    private long lastDashTime = 0;
-    private int dashRateInMillis = 1000;
     private float dashSpeed = 25000;
     private float dashAngle = 0;
     private final Vector dashPosition = new Vector();
@@ -62,9 +55,11 @@ public class Player extends Entity {
         this.collider.addToGroup(CollisionGroup.MAP_TILES);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
         this.collider.setMass(250);
-
+        
         this.collider.setRadius(5);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
+        registerIntervalFor("shoot", 250);
+        registerIntervalFor("dash", 1000);
     }
     
     public void render(GraphicsContext ctx) {
@@ -128,30 +123,17 @@ public class Player extends Entity {
         return collider;
     }
     
-    public void setHealth(float health) {
-        this.health = health;
-    }
-    
-    public float getHealth() {
-        return health;
-    }
-    
     public void shoot() {
-        long timeNow = System.nanoTime();
-        if (timeNow - lastShootTime > TimeUnit.MILLISECONDS.toNanos(fireRateInMillis)) {
+        if (isIntervalOverFor("shoot")) {
             float offset = 30;
             this.gameApplication.getGameScene().getWorld().spawnBullet(
                 (float) (this.getPosition().getX() + Math.cos(this.angleToMouse) * offset),
                 (float) (this.getPosition().getY() + Math.sin(this.angleToMouse) * offset),
                 this.angleToMouse
             );
-            lastShootTime = System.nanoTime();
         }
     }
     
-    public void setFireRateInMillis(int fireRateInMillis) {
-        this.fireRateInMillis = fireRateInMillis;
-    }
     
     private void updateAngleToMouse() {
         GameScene gameScene = this.gameApplication.getGameScene();
@@ -163,9 +145,7 @@ public class Player extends Entity {
     }
     
     public void dash() {
-        long timeNow = System.nanoTime();
-        boolean isCoolDownOver = timeNow - lastDashTime > TimeUnit.MILLISECONDS.toNanos(dashRateInMillis);
-        if (!isCoolDownOver) return;
+        if (!isIntervalOverFor("dash")) return;
         
         float computedSpeed = dashSpeed * collider.getMass();
         if (upPressed) {
@@ -198,7 +178,7 @@ public class Player extends Entity {
         
         dashAngle = collider.getAcceleration().getAngle();
         
-        lastDashTime = timeNow;
+        
         this.dashSprite.resetFrames();
         this.dashPosition.set(this.getPosition());
     }

@@ -7,20 +7,19 @@ import main.GameApplication;
 import sprites.ZombieSprite;
 import utils.Bounds;
 import utils.GameUtils;
-import utils.Quadtree;
 
 public class Zombie extends Entity {
     // basic characteristics
     private float speed = GameUtils.random(200f, 700f);
-    
+    private int damage = 1;
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
-    
     // misc
     private final GameApplication gameApplication;
     private CircleCollider collider = new CircleCollider();
     private float angleToPlayer = 0;
     private boolean isFacingOnLeftSide = false;
+    
     
     public Zombie(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -36,6 +35,7 @@ public class Zombie extends Entity {
         
         this.collider.setRadius(5);
         this.collider.setMass(1);
+        registerIntervalFor("zombie", 5000);
     }
     
     public void render(GraphicsContext ctx) {
@@ -46,6 +46,7 @@ public class Zombie extends Entity {
         this.handleMovements();
         this.handleSprite();
         this.updateAngleToPlayer();
+        this.checkPlayerCollision();
         
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
@@ -57,6 +58,17 @@ public class Zombie extends Entity {
                 collider.getHeight()
             )
         );
+    }
+    
+    private void checkPlayerCollision() {
+        Player player = gameApplication.getGameScene().getWorld().getPlayer();
+        boolean isCollidingWithPlayer = collider.isCollidingWith(
+            player.getCollider()
+        );
+        if(isIntervalOverFor("zombie") && isCollidingWithPlayer) {
+            player.setCurrentHealth(player.getCurrentHealth() - damage);
+            System.out.println(player.getCurrentHealth());
+        }
     }
     
     private void updateAngleToPlayer() {
