@@ -3,6 +3,7 @@ package map;
 import colliders.ColliderWorld;
 import colliders.PolygonCollider;
 import utils.LayoutUtils;
+import utils.Vector;
 
 public class CityMap extends Map {
     public CityMap() {
@@ -74,43 +75,43 @@ public class CityMap extends Map {
         this.registerTile("7", Map.TileLocation.create(0, 7)); // Slightly-Overgrown Cracked Road
         this.registerTile("8", Map.TileLocation.create(0, 8)); // Overgrown-Cracked Road
         this.registerTile("9", Map.TileLocation.create(0, 9)); // Plain Road
-        this.registerTile("a", Map.TileLocation.create(1,0)); // Front-Left Corner Wall
-        this.registerTile("b", Map.TileLocation.create(1,1)); // Front-Right Corner Wall
-        this.registerTile("c", Map.TileLocation.create(1,2)); // Front Wall
-        this.registerTile("d", Map.TileLocation.create(1,3)); // Slightly-Broken Front Wall
-        this.registerTile("e", Map.TileLocation.create(1,4)); // Broken Front Wall
-        this.registerTile("f", Map.TileLocation.create(1,5)); // Front Wall Door Frame
-        this.registerTile("g", Map.TileLocation.create(1,6)); // Cracked Right Side-Wall
-        this.registerTile("h", Map.TileLocation.create(1,7)); // Cracked Left Side-Wall
-        this.registerTile("i", Map.TileLocation.create(1,8)); // Cracked Inner-Building Tile
-        this.registerTile("j", Map.TileLocation.create(1,9)); // Plain Inner-Building Tile
-        this.registerTile("k", Map.TileLocation.create(2,0)); // Back-Left Corner Wall
-        this.registerTile("l", Map.TileLocation.create(2,1)); // Back-Right Corner Wall
-        this.registerTile("m", Map.TileLocation.create(2,2)); // Plain Left Side-Wall
-        this.registerTile("n", Map.TileLocation.create(2,3)); // Plain Right Side-Wall
-        this.registerTile("o", Map.TileLocation.create(0, 6),90); // Roadside West
-        this.registerTile("p", Map.TileLocation.create(0, 6),180); // Roadside North
-        this.registerTile("q", Map.TileLocation.create(0, 6),270); // Roadside East
+        this.registerTile("a", Map.TileLocation.create(1, 0)); // Front-Left Corner Wall
+        this.registerTile("b", Map.TileLocation.create(1, 1)); // Front-Right Corner Wall
+        this.registerTile("c", Map.TileLocation.create(1, 2)); // Front Wall
+        this.registerTile("d", Map.TileLocation.create(1, 3)); // Slightly-Broken Front Wall
+        this.registerTile("e", Map.TileLocation.create(1, 4)); // Broken Front Wall
+        this.registerTile("f", Map.TileLocation.create(1, 5)); // Front Wall Door Frame
+        this.registerTile("g", Map.TileLocation.create(1, 6)); // Cracked Right Side-Wall
+        this.registerTile("h", Map.TileLocation.create(1, 7)); // Cracked Left Side-Wall
+        this.registerTile("i", Map.TileLocation.create(1, 8)); // Cracked Inner-Building Tile
+        this.registerTile("j", Map.TileLocation.create(1, 9)); // Plain Inner-Building Tile
+        this.registerTile("k", Map.TileLocation.create(2, 0)); // Back-Left Corner Wall
+        this.registerTile("l", Map.TileLocation.create(2, 1)); // Back-Right Corner Wall
+        this.registerTile("m", Map.TileLocation.create(2, 2)); // Plain Left Side-Wall
+        this.registerTile("n", Map.TileLocation.create(2, 3)); // Plain Right Side-Wall
+        this.registerTile("o", Map.TileLocation.create(0, 6), 90); // Roadside West
+        this.registerTile("p", Map.TileLocation.create(0, 6), 180); // Roadside North
+        this.registerTile("q", Map.TileLocation.create(0, 6), 270); // Roadside East
         this.registerTile("r", Map.TileLocation.create(2, 4)); // Corner SideRoad South-West
-        this.registerTile("s", Map.TileLocation.create(2, 4),90); // Corner SideRoad North-West
-        this.registerTile("t", Map.TileLocation.create(2, 4),180); // Corner SideRoad North-East
-        this.registerTile("u", Map.TileLocation.create(2, 4),270); // Corner SideRoad South-East
+        this.registerTile("s", Map.TileLocation.create(2, 4), 90); // Corner SideRoad North-West
+        this.registerTile("t", Map.TileLocation.create(2, 4), 180); // Corner SideRoad North-East
+        this.registerTile("u", Map.TileLocation.create(2, 4), 270); // Corner SideRoad South-East
         this.registerTile("v", Map.TileLocation.create(2, 5)); // PedXing South
-        this.registerTile("w", Map.TileLocation.create(2, 5),90); // PedXing West
-        this.registerTile("x", Map.TileLocation.create(2, 5),180); // PedXing North
-        this.registerTile("y", Map.TileLocation.create(2, 5),270); // PedXing East
+        this.registerTile("w", Map.TileLocation.create(2, 5), 90); // PedXing West
+        this.registerTile("x", Map.TileLocation.create(2, 5), 180); // PedXing North
+        this.registerTile("y", Map.TileLocation.create(2, 5), 270); // PedXing East
         this.registerTile("z", Map.TileLocation.create(2, 6)); // Corner Overgrown SideRoad South-West
-        this.registerTile("A", Map.TileLocation.create(2, 6),90); // Corner Overgrown SideRoad North-West
-        this.registerTile("B", Map.TileLocation.create(2, 6),180); // Corner Overgrown SideRoad North-East
-        this.registerTile("C", Map.TileLocation.create(2, 6),270); // Corner Overgrown SideRoad South-East
-        this.registerTile("D", Map.TileLocation.create(0, 5),90); // Overgrown Roadside West
-        this.registerTile("E", Map.TileLocation.create(0, 5),180); // Overgrown Roadside North
-        this.registerTile("F", Map.TileLocation.create(0, 5),270); // Overgrown Roadside East
-        this.registerTile("G", Map.TileLocation.create(2,7)); // Damaged Grass
-        this.registerTile("H", Map.TileLocation.create(2,8)); // Dirt
-        this.registerTile("I", Map.TileLocation.create(2,9)); // Damaged Dirt
-        this.registerTile("J", Map.TileLocation.create(3,0)); // Dirty Road
-        this.registerTile("K", Map.TileLocation.create(3,1)); // Damaged Roadside
+        this.registerTile("A", Map.TileLocation.create(2, 6), 90); // Corner Overgrown SideRoad North-West
+        this.registerTile("B", Map.TileLocation.create(2, 6), 180); // Corner Overgrown SideRoad North-East
+        this.registerTile("C", Map.TileLocation.create(2, 6), 270); // Corner Overgrown SideRoad South-East
+        this.registerTile("D", Map.TileLocation.create(0, 5), 90); // Overgrown Roadside West
+        this.registerTile("E", Map.TileLocation.create(0, 5), 180); // Overgrown Roadside North
+        this.registerTile("F", Map.TileLocation.create(0, 5), 270); // Overgrown Roadside East
+        this.registerTile("G", Map.TileLocation.create(2, 7)); // Damaged Grass
+        this.registerTile("H", Map.TileLocation.create(2, 8)); // Dirt
+        this.registerTile("I", Map.TileLocation.create(2, 9)); // Damaged Dirt
+        this.registerTile("J", Map.TileLocation.create(3, 0)); // Dirty Road
+        this.registerTile("K", Map.TileLocation.create(3, 1)); // Damaged Roadside
         
         float mid = this.getTileHeight() / 2;
         
@@ -120,29 +121,35 @@ public class CityMap extends Map {
         // addVertex(mid, mid);
         // addVertex(-mid, mid);
         
-        PolygonCollider cCollider = new PolygonCollider();
-        cCollider.addVertex(-mid, mid / 2);
-        cCollider.addVertex(mid, mid / 2);
-        cCollider.addVertex(mid, mid);
-        cCollider.addVertex(-mid, mid);
+        PolygonCollider cCollider = new PolygonCollider(new Vector[]{
+            new Vector(-mid, mid / 2),
+            new Vector(mid, mid / 2),
+            new Vector(mid, mid),
+            new Vector(-mid, mid)
+        });
+        
         this.registerColliderToTile("c", cCollider.clone());
         this.registerColliderToTile("a", cCollider.clone());
         this.registerColliderToTile("b", cCollider.clone());
         this.registerColliderToTile("k", cCollider.clone());
         this.registerColliderToTile("l", cCollider.clone());
         
-        PolygonCollider mCollider = new PolygonCollider();
-        mCollider.addVertex(-mid, -mid);
-        mCollider.addVertex(-mid / 2, -mid);
-        mCollider.addVertex(-mid / 2, mid);
-        mCollider.addVertex(-mid, mid);
+        PolygonCollider mCollider = new PolygonCollider(new Vector[]{
+            new Vector(-mid, -mid),
+            new Vector(-mid / 2, -mid),
+            new Vector(-mid / 2, mid),
+            new Vector(-mid, mid)
+        });
+        
         this.registerColliderToTile("m", mCollider);
         
-        PolygonCollider nCollider = new PolygonCollider();
-        nCollider.addVertex(mid / 2, -mid);
-        nCollider.addVertex(mid, -mid);
-        nCollider.addVertex(mid, mid);
-        nCollider.addVertex(mid / 2, mid);
+        PolygonCollider nCollider = new PolygonCollider(new Vector[]{
+            new Vector(mid / 2, -mid),
+            new Vector(mid, -mid),
+            new Vector(mid, mid),
+            new Vector(mid / 2, mid)
+        });
+        
         this.registerColliderToTile("n", nCollider);
     }
 }

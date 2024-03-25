@@ -2,25 +2,36 @@ package colliders;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
+import utils.Bounds;
 import utils.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PolygonCollider extends Collider {
-    private final ArrayList<Vector> vertices = new ArrayList<>();
+    private final Vector[] vertices;
     private float angle = 0;
     private float width = 0;
     private float height = 0;
     
-    public PolygonCollider() {
+    public PolygonCollider(Vector[] vertices) {
+        this.vertices = vertices;
+        if (vertices.length == 0) {
+            throw new Error("You cannot create a polygon with no vertices!");
+        }
+        
+        Bounds bounds = this.getVerticesBounds();
+        for (Vector vertex : vertices) {
+            vertex.subtract(bounds.getX(), bounds.getY());
+        }
     }
     
-    public ArrayList<Vector> getVertices() {
+    public Vector[] getVertices() {
         return vertices;
     }
     
-    private void updateSize() {
+    private Bounds getVerticesBounds() {
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -32,30 +43,33 @@ public class PolygonCollider extends Collider {
             maxY = Math.max(maxY, vertex.getY());
         }
         
-        this.width = Math.abs(minX - maxX);
-        this.height = Math.abs(minY - maxY);
+        minX = minX == Float.MAX_VALUE ? 0 : minX;
+        minY = minY == Float.MAX_VALUE ? 0 : minY;
+        maxX = maxX == -Float.MAX_VALUE ? 0 : maxX;
+        maxY = maxY == -Float.MAX_VALUE ? 0 : maxY;
+        
+        return new Bounds(
+            (minX + maxX) / 2,
+            (minY + maxY) / 2,
+            maxX - minX,
+            maxY - minY
+        );
     }
     
-    public void setVertices(Vector[] vertices) {
-        this.vertices.clear();
-        this.vertices.addAll(Arrays.stream(vertices).toList());
-        this.updateSize();
-    }
-    
-    public void addVertex(float x, float y) {
-        this.vertices.add(new Vector(x, y));
-        this.updateSize();
-    }
-    
-    public void addVertex(Vector vertex) {
-        this.addVertex(vertex.getX(), vertex.getY());
+    private void updateSize() {
+        Bounds bounds = this.getVerticesBounds();
+        this.width = bounds.getWidth();
+        this.height = bounds.getHeight();
     }
     
     public void setAngle(float angleInRadians) {
-        float d = angleInRadians - this.angle;
+        float deltaAngle = angleInRadians - this.angle;
+        float cos = (float) Math.cos(deltaAngle);
+        float sin = (float) Math.sin(deltaAngle);
+        
         for (Vector vertex : vertices) {
-            float x = (float) (vertex.getX() * Math.cos(d) - vertex.getY() * Math.sin(d));
-            float y = (float) (vertex.getX() * Math.sin(d) + vertex.getY() * Math.cos(d));
+            float x = vertex.getX() * cos - vertex.getY() * sin;
+            float y = vertex.getX() * sin + vertex.getY() * cos;
             vertex.set(x, y);
         }
         
@@ -79,17 +93,17 @@ public class PolygonCollider extends Collider {
     
     @Override
     public void render(GraphicsContext ctx) {
-        if (vertices.isEmpty()) return;
+        if (vertices.length == 0) return;
         ctx.beginPath();
         ctx.setStroke(Paint.valueOf("yellow"));
         float x = this.getPosition().getX();
         float y = this.getPosition().getY();
-        ctx.moveTo(vertices.get(0).getX() + x, vertices.get(0).getY() + y);
-        for (int i = 1; i < vertices.size(); i++) {
-            Vector vertex = vertices.get(i);
+        ctx.moveTo(vertices[0].getX() + x, vertices[0].getY() + y);
+        for (int i = 1; i < vertices.length; i++) {
+            Vector vertex = vertices[i];
             ctx.lineTo(vertex.getX() + x, vertex.getY() + y);
         }
-        ctx.lineTo(vertices.get(0).getX() + x, vertices.get(0).getY() + y);
+        ctx.lineTo(vertices[0].getX() + x, vertices[0].getY() + y);
         ctx.stroke();
         ctx.closePath();
     }
@@ -111,12 +125,15 @@ public class PolygonCollider extends Collider {
     
     @Override
     public PolygonCollider clone() {
-        PolygonCollider collider = new PolygonCollider();
+        Vector[] verticesClone = new Vector[vertices.length];
+        for (int i = 0; i < vertices.length; i++) {
+            Vector vertex = vertices[i];
+            verticesClone[i] = vertex.clone();
+        }
+        
+        PolygonCollider collider = new PolygonCollider(verticesClone);
         this.copyAttributesToCollider(collider);
         collider.setAngle(angle);
-        for (Vector vertex : vertices) {
-            collider.addVertex(vertex.clone());
-        }
         return collider;
     }
 }

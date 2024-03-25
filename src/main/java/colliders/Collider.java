@@ -98,10 +98,6 @@ public abstract class Collider {
         return position;
     }
     
-    public Vector getOldPosition() {
-        return oldPosition;
-    }
-    
     public Vector getVelocity() {
         return velocity;
     }

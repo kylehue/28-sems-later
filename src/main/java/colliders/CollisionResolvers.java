@@ -56,32 +56,13 @@ public abstract class CollisionResolvers {
         }
     }
     
-    public static Vector calculatePolygonCentroid(List<Vector> vertices) {
-        float sumX = 0;
-        float sumY = 0;
-        int numVertices = vertices.size();
-        
-        // Sum up all the vertex positions
-        for (Vector vertex : vertices) {
-            sumX += vertex.getX();
-            sumY += vertex.getY();
-        }
-        
-        // Calculate the average for each component
-        float centerX = sumX / numVertices;
-        float centerY = sumY / numVertices;
-        
-        // Return the centroid position
-        return new Vector(centerX, centerY);
-    }
-    
     public static void circleToPolygon(
         CircleCollider circle,
         PolygonCollider polygon
     ) {
         if (!circle.isGroupedWith(polygon)) return;
         
-        int vertexCount = polygon.getVertices().size();
+        int vertexCount = polygon.getVertices().length;
         
         // Minimum vertex to make a polygon is 3, so we return if it's less than 3
         if (vertexCount < 3) return;
@@ -91,12 +72,12 @@ public abstract class CollisionResolvers {
         float minOverlap = Float.MAX_VALUE;
         for (int i = 0; i < vertexCount; i++) {
             // Pair 2 points that will act as the line
-            Vector pointA = polygon.getVertices()
-                .get(i)
+            Vector pointA = polygon
+                .getVertices()[i]
                 .clone()
                 .add(polygon.getPosition());
-            Vector pointB = polygon.getVertices()
-                .get((i + 1) % vertexCount)
+            Vector pointB = polygon
+                .getVertices()[(i + 1) % vertexCount]
                 .clone()
                 .add(polygon.getPosition());
             
@@ -213,10 +194,7 @@ public abstract class CollisionResolvers {
         
         // Resolve
         if (mtv != null) {
-            Vector polygonCenter = polygon.getPosition().clone().add(
-                calculatePolygonCentroid(polygon.getVertices())
-            );
-            Vector centerToCenter = polygonCenter.clone().subtract(
+            Vector centerToCenter = polygon.getPosition().clone().subtract(
                 circle.getPosition()
             );
             float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
@@ -247,14 +225,14 @@ public abstract class CollisionResolvers {
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;
         boolean swapped = false;
-        for (int i = 0; i < polygonA.getVertices().size(); i++) {
+        for (int i = 0; i < polygonA.getVertices().length; i++) {
             // Pair 2 points that will act as the line
-            Vector pointA = polygonA.getVertices()
-                .get(i)
+            Vector pointA = polygonA
+                .getVertices()[i]
                 .clone()
                 .add(polygonA.getPosition());
-            Vector pointB = polygonA.getVertices()
-                .get((i + 1) % polygonA.getVertices().size())
+            Vector pointB = polygonA
+                .getVertices()[(i + 1) % polygonA.getVertices().length]
                 .clone()
                 .add(polygonA.getPosition());
             
@@ -300,7 +278,7 @@ public abstract class CollisionResolvers {
             }
             
             // Check other way around if the last axis still intersects
-            boolean isLast = i == polygonA.getVertices().size() - 1;
+            boolean isLast = i == polygonA.getVertices().length - 1;
             if (isLast && !swapped) {
                 PolygonCollider polygonATemp = polygonA;
                 polygonA = polygonB;
@@ -324,14 +302,8 @@ public abstract class CollisionResolvers {
         
         // Resolve
         if (mtv != null) {
-            Vector polygonACenter = polygonA.getPosition().clone().add(
-                calculatePolygonCentroid(polygonA.getVertices())
-            );
-            Vector polygonBCenter = polygonB.getPosition().clone().add(
-                calculatePolygonCentroid(polygonB.getVertices())
-            );
-            Vector centerToCenter = polygonBCenter.clone().subtract(
-                polygonACenter
+            Vector centerToCenter = polygonB.getPosition().clone().subtract(
+                polygonA.getPosition()
             );
             float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
             mtv.scale(direction);
