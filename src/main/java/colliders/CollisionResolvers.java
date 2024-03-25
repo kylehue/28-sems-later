@@ -168,7 +168,7 @@ public abstract class CollisionResolvers {
         Vector pointB = closestVectorToCircle.clone();
         
         // Get projection of circle to axis
-        Vector normal = pointB.clone().subtract(pointA).normal();
+        Vector normal = pointB.clone().subtract(pointA);
         float lineLength = pointA.getDistanceFrom(pointB);
         float circleDot = circle.getPosition().clone().dot(normal) / lineLength;
         float circleMin = circleDot - circle.getRadius();
