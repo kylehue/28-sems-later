@@ -50,4 +50,13 @@ public class Bounds {
     public float getHeight() {
         return height;
     }
+    
+    @Override
+    public String toString() {
+        return "Bounds{" +
+            "position=" + position +
+            ", width=" + width +
+            ", height=" + height +
+            '}';
+    }
 }
