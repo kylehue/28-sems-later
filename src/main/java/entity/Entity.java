@@ -6,11 +6,20 @@ import utils.Vector;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Entity {
+public abstract class Entity implements Thing {
     private final HashMap<String, Interval> registeredIntervals = new HashMap<>();
     private final Vector position = new Vector();
     private int currentHealth = 100;
     private int maxHealth = 100;
+    private int zIndex = 0;
+    
+    public int getZIndex() {
+        return this.zIndex;
+    }
+    
+    public void setZIndex(int zIndex) {
+        this.zIndex = zIndex;
+    }
     
     public Vector getPosition() {
         return position;
@@ -62,6 +71,7 @@ public abstract class Entity {
     }
     
     // to be overridden
+    @Override
     public void render(GraphicsContext ctx) {
     
     }

@@ -3,6 +3,7 @@ package entity;
 import colliders.CircleCollider;
 import colliders.Collider;
 import main.CollisionGroup;
+import main.ZIndex;
 import scenes.game.GameScene;
 import sprites.DashSprite;
 import sprites.GunSprite;
@@ -60,8 +61,10 @@ public class Player extends Entity {
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
         registerIntervalFor("shoot", 250);
         registerIntervalFor("dash", 1000);
+        this.setZIndex(ZIndex.PLAYER);
     }
     
+    @Override
     public void render(GraphicsContext ctx) {
         // render dash smoke
         if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength(DashSprite.Animation.Default.name())) {
