@@ -13,6 +13,7 @@ import maps.CityMap;
 import map.Map;
 import utils.Bounds;
 import utils.Camera;
+import utils.GameUtils;
 import utils.Quadtree;
 
 import java.util.ArrayList;
@@ -40,8 +41,8 @@ public class World {
         this.gameApplication = gameApplication;
         this.ui = new UI(gameApplication);
         Bounds mapBounds = new Bounds(
-            0,
-            0,
+            (float) -map.getTileSize() / 2,
+            (float) -map.getTileSize() / 2,
             map.getTotalWidth(),
             map.getTotalHeight()
         );
@@ -53,20 +54,21 @@ public class World {
         this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
-        // this.map.setRenderTileViewportOffset(2, 2);
-        // this.map.initializeColliders(this.colliderWorld);
+        map.addCollidersToWorld(colliderWorld);
     }
     
     public void setup() {
         this.player = new Player(gameApplication);
-        // for (int i = 0; i < 1; i++) {
-        //     Zombie enemy = new Zombie(gameApplication);
-        //     enemy.getCollider().getPosition().set(
-        //         GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
-        //         GameUtils.random(-map.getTotalHeight() / 2, map.getTotalHeight() / 2)
-        //     );
-        //     zombies.add(enemy);
-        // }
+        float halfMapWidth = (float) map.getTotalWidth() / 2;
+        float halfMapHeight = (float) map.getTotalHeight() / 2;
+        for (int i = 0; i < 50; i++) {
+            Zombie enemy = new Zombie(gameApplication);
+            enemy.getCollider().getPosition().set(
+                GameUtils.random(-halfMapWidth, halfMapWidth),
+                GameUtils.random(-halfMapHeight, halfMapHeight)
+            );
+            zombies.add(enemy);
+        }
     }
     
     public void render(GraphicsContext ctx) {
@@ -74,29 +76,16 @@ public class World {
         
         this.camera.begin();
         
-        // map.getLayer(CityMap.Layers.FLOOR).render(ctx);
-        
-        for (Bullet bullet : bullets) {
-            boolean isInViewport = this.camera.isInViewport(
-                bullet.getPosition(),
-                renderDistanceOffset
-            );
-            if (isInViewport) {
-                bullet.render(ctx);
-            }
-        }
-        
-        // render entities according to y position
+        // render things
         ArrayList<Thing> things = new ArrayList<>();
         things.add(player);
         things.addAll(zombies);
-        // things.addAll(map.getLayer(CityMap.Layers.DECORATIONS).getTiles());
         ArrayList<Layer> layers = map.getLayers();
         for (Layer layer : layers) {
             things.addAll(layer.getMaterials());
         }
         
-        // exclude entities that are not in viewport
+        // exclude things that are not in viewport
         for (int i = things.size() - 1; i >= 0; i--) {
             Thing thing = things.get(i);
             boolean isInViewport = this.camera.isInViewport(
@@ -121,6 +110,16 @@ public class World {
         
         for (Thing thing : things) {
             thing.render(ctx);
+        }
+        
+        for (Bullet bullet : bullets) {
+            boolean isInViewport = this.camera.isInViewport(
+                bullet.getPosition(),
+                renderDistanceOffset
+            );
+            if (isInViewport) {
+                bullet.render(ctx);
+            }
         }
         
         this.renderMeta(ctx);
@@ -160,7 +159,8 @@ public class World {
     public void update(float deltaTime) {
         this.quadtree.clear();
         this.handleBulletDisposal();
-        // this.map.putCollidersInQuadtree(this.quadtree);
+        map.putCollidersInQuadtree(this.quadtree);
+        map.update(deltaTime);
         
         player.update(deltaTime);
         
@@ -175,13 +175,6 @@ public class World {
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
         colliderWorld.update(deltaTime);
-        
-        // this.map.setViewport(
-        //     camera.getViewport().getTop(),
-        //     camera.getViewport().getBottom(),
-        //     camera.getViewport().getLeft(),
-        //     camera.getViewport().getRight()
-        // );
     }
     
     public Quadtree<Collider> getQuadtree() {

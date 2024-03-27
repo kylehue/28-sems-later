@@ -12,7 +12,7 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
-        if (!circleA.isGroupedWith(circleB)) return;
+        if (!circleA.isGroupedWith(circleB) && !circleB.isGroupedWith(circleA)) return;
         
         float distance = circleA
             .getPosition()
@@ -60,7 +60,7 @@ public abstract class CollisionResolvers {
         CircleCollider circle,
         PolygonCollider polygon
     ) {
-        if (!circle.isGroupedWith(polygon)) return;
+        if (!circle.isGroupedWith(polygon) && !polygon.isGroupedWith(circle)) return;
         
         int vertexCount = polygon.getVertices().length;
         
@@ -220,7 +220,7 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
-        if (!polygonA.isGroupedWith(polygonB)) return;
+        if (!polygonA.isGroupedWith(polygonB) && !polygonB.isGroupedWith(polygonA)) return;
         
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;

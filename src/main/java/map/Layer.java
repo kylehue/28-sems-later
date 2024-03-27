@@ -1,5 +1,6 @@
 package map;
 
+import colliders.Collider;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.BufferedReader;
@@ -14,6 +15,8 @@ public class Layer {
     private final ArrayList<Material> materials = new ArrayList<>();
     private String matrixSeparator = " ";
     private String matrix = "";
+    private int totalWidth = 0;
+    private int totalHeight = 0;
     
     public Layer(Map map) {
         this.map = map;
@@ -32,6 +35,8 @@ public class Layer {
             reader.close();
             this.matrix = content.toString();
             this.matrixSeparator = matrixSeparator;
+            this.updateTotalSize();
+            map.updateTotalSize();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,6 +44,7 @@ public class Layer {
     
     public void registerMaterial(String tileId, Material material) {
         registeredMaterials.put(tileId, material);
+        material.setTileSize(map.tileSize);
     }
     
     public void distributeMaterials() {
@@ -50,16 +56,47 @@ public class Layer {
                 String tileId = row[colIndex];
                 Material registedMaterial = registeredMaterials.get(tileId);
                 if (registedMaterial == null) continue;
-
+                Material material = registedMaterial.clone();
                 float x = colIndex * map.tileSize;
                 float y = rowIndex * map.tileSize;
-                registedMaterial.getPosition().set(x, y);
-                materials.add(registedMaterial.clone());
+                material.getPosition().add(x, y);
+                Collider collider = material.getCollider();
+                if (collider != null) {
+                    collider.getPosition().set(material.getPosition());
+                }
+                
+                materials.add(material);
             }
         }
     }
     
     public ArrayList<Material> getMaterials() {
         return this.materials;
+    }
+    
+    public void update(float deltaTime) {
+        for (Material material : materials) {
+            material.update(deltaTime);
+        }
+    }
+    
+    private void updateTotalSize() {
+        String[] rows = matrix.split("\n");
+        int maxWidth = 0;
+        for (int i = 0; i < rows.length; i++) {
+            String[] row = rows[i].split(matrixSeparator);
+            maxWidth = Math.max(maxWidth, row.length);
+        }
+        
+        this.totalWidth = maxWidth * map.tileSize;
+        this.totalHeight = rows.length * map.tileSize;
+    }
+    
+    public int getTotalWidth() {
+        return this.totalWidth;
+    }
+    
+    public int getTotalHeight() {
+        return this.totalHeight;
     }
 }
