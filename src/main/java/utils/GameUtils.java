@@ -26,4 +26,8 @@ public abstract class GameUtils {
     public static float clamp(float n, float min, float max) {
         return Math.max(min, Math.min(max, n));
     }
+    
+    public static int cantor(int x, int y) {
+        return ((x + y) * (x + y + 1)) / 2 + y;
+    }
 }

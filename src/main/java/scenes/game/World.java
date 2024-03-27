@@ -2,16 +2,14 @@ package scenes.game;
 
 import colliders.Collider;
 import colliders.ColliderWorld;
-import entity.Bullet;
-import entity.Entity;
-import entity.Zombie;
-import entity.Player;
+import entity.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import main.GameApplication;
-import map.CityMap;
+import map.Layer;
+import maps.CityMap;
 import map.Map;
 import utils.Bounds;
 import utils.Camera;
@@ -43,8 +41,8 @@ public class World {
         this.gameApplication = gameApplication;
         this.ui = new UI(gameApplication);
         Bounds mapBounds = new Bounds(
-            -map.getTotalWidth() / 2 - map.getTileWidth() / 2,
-            -map.getTotalHeight() / 2 - map.getTileHeight() / 2,
+            (float) -map.getTileSize() / 2,
+            (float) -map.getTileSize() / 2,
             map.getTotalWidth(),
             map.getTotalHeight()
         );
@@ -56,17 +54,18 @@ public class World {
         this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(gameApplication.getGameScene().getGraphicsContext());
-        this.map.setRenderTileViewportOffset(2, 2);
-        this.map.initializeColliders(this.colliderWorld);
+        map.addCollidersToWorld(colliderWorld);
     }
     
     public void setup() {
         this.player = new Player(gameApplication);
-        for (int i = 0; i < 10; i++) {
+        float halfMapWidth = (float) map.getTotalWidth() / 2;
+        float halfMapHeight = (float) map.getTotalHeight() / 2;
+        for (int i = 0; i < 50; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
-                GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
-                GameUtils.random(-map.getTotalHeight() / 2, map.getTotalHeight() / 2)
+                GameUtils.random(-halfMapWidth, halfMapWidth),
+                GameUtils.random(-halfMapHeight, halfMapHeight)
             );
             zombies.add(enemy);
         }
@@ -76,36 +75,41 @@ public class World {
         float renderDistanceOffset = 50;
         
         this.camera.begin();
-        map.render(ctx);
         
-        // render entities according to y position
-        ArrayList<Entity> entities = new ArrayList<>();
-        entities.add(player);
-        entities.addAll(zombies);
+        // render things
+        ArrayList<Thing> things = new ArrayList<>();
+        things.add(player);
+        things.addAll(zombies);
+        ArrayList<Layer> layers = map.getLayers();
+        for (Layer layer : layers) {
+            things.addAll(layer.getMaterials());
+        }
         
-        // exclude entities that are not in viewport
-        for (int i = entities.size() - 1; i >= 0; i--) {
-            Entity entity = entities.get(i);
+        // exclude things that are not in viewport
+        for (int i = things.size() - 1; i >= 0; i--) {
+            Thing thing = things.get(i);
             boolean isInViewport = this.camera.isInViewport(
-                entity.getPosition(),
+                thing.getPosition(),
                 renderDistanceOffset
             );
             if (!isInViewport) {
-                entities.remove(i);
+                things.remove(i);
             }
         }
         
         // TODO: project requirements application: apply insertion sort
-        entities.sort((a, b) -> {
+        things.sort((a, b) -> {
             float ay = a.getPosition().getY();
             float by = b.getPosition().getY();
+            if (a.getZIndex() < b.getZIndex()) return -1;
+            else if (a.getZIndex() > b.getZIndex()) return 1;
             if (ay < by) return -1;
             else if (ay > by) return 1;
             return 0;
         });
         
-        for (Entity entity : entities) {
-            entity.render(ctx);
+        for (Thing thing : things) {
+            thing.render(ctx);
         }
         
         for (Bullet bullet : bullets) {
@@ -118,7 +122,7 @@ public class World {
             }
         }
         
-         // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {
@@ -129,7 +133,7 @@ public class World {
         
         this.camera.end();
         ui.render(ctx);
-        // this.renderFPS(ctx);
+        this.renderFPS(ctx);
     }
     
     private void renderFPS(GraphicsContext ctx) {
@@ -155,7 +159,8 @@ public class World {
     public void update(float deltaTime) {
         this.quadtree.clear();
         this.handleBulletDisposal();
-        this.map.putCollidersInQuadtree(this.quadtree);
+        map.putCollidersInQuadtree(this.quadtree);
+        map.update(deltaTime);
         
         player.update(deltaTime);
         
@@ -170,13 +175,6 @@ public class World {
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
         colliderWorld.update(deltaTime);
-        
-        this.map.setViewport(
-            camera.getViewport().getTop(),
-            camera.getViewport().getBottom(),
-            camera.getViewport().getLeft(),
-            camera.getViewport().getRight()
-        );
     }
     
     public Quadtree<Collider> getQuadtree() {

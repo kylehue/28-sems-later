@@ -4,6 +4,7 @@ import colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
 import main.CollisionGroup;
 import main.GameApplication;
+import main.ZIndex;
 import sprites.ZombieSprite;
 import utils.Bounds;
 import utils.GameUtils;
@@ -38,8 +39,10 @@ public class Zombie extends Entity {
         this.collider.setRadius(5);
         this.collider.setMass(1);
         registerIntervalFor("zombie", 5000);
+        this.setZIndex(ZIndex.ZOMBIE);
     }
     
+    @Override
     public void render(GraphicsContext ctx) {
         this.sprite.render(ctx);
     }

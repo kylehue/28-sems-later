@@ -12,6 +12,15 @@ public abstract class Entity {
     private final Vector position = new Vector();
     private int currentHealth = 100;
     private int maxHealth = 100;
+    private int zIndex = 0;
+    
+    public int getZIndex() {
+        return this.zIndex;
+    }
+    
+    public void setZIndex(int zIndex) {
+        this.zIndex = zIndex;
+    }
     private boolean isDisposedProperty = true;
     
     public Vector getPosition() {
@@ -68,6 +77,7 @@ public abstract class Entity {
     }
     
     // to be overridden
+    @Override
     public void render(GraphicsContext ctx) {
     
     }
