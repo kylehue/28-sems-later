@@ -32,6 +32,8 @@ public class Zombie extends Entity {
         this.collider.addToGroup(CollisionGroup.MAP_BOUNDS);
         this.collider.addToGroup(CollisionGroup.MAP_TILES);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
+        this.collider.addToGroup(CollisionGroup.BULLETS);
+        this.collider.excludeResolutionToGroup(CollisionGroup.BULLETS);
         
         this.collider.setRadius(5);
         this.collider.setMass(1);

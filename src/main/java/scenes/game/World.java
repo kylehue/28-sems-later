@@ -62,7 +62,7 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-map.getTotalWidth() / 2, map.getTotalWidth() / 2),
@@ -118,7 +118,7 @@ public class World {
             }
         }
         
-         this.renderMeta(ctx);
+         // this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {
@@ -129,7 +129,7 @@ public class World {
         
         this.camera.end();
         ui.render(ctx);
-        this.renderFPS(ctx);
+        // this.renderFPS(ctx);
     }
     
     private void renderFPS(GraphicsContext ctx) {
@@ -195,6 +195,10 @@ public class World {
         return bullets;
     }
     
+    public ArrayList<Zombie> getZombies() {
+        return zombies;
+    }
+    
     public Bullet spawnBullet(float x, float y, float angle) {
         Bullet bullet = new Bullet(this.gameApplication, x, y, angle);
         this.bullets.add(bullet);
@@ -208,6 +212,7 @@ public class World {
             float distance = bullet.getPosition().getDistanceFrom(bullet.getInitialPosition());
             if (distance > bullet.getMaxDistance()) {
                 bullets.remove(i);
+                colliderWorld.removeCollider(bullet.getCollider());
             }
         }
     }

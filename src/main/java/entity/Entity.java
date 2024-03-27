@@ -1,6 +1,7 @@
 package entity;
 
 import javafx.scene.canvas.GraphicsContext;
+import utils.GameUtils;
 import utils.Vector;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ public abstract class Entity {
     private final Vector position = new Vector();
     private int currentHealth = 100;
     private int maxHealth = 100;
+    private boolean isDisposedProperty = true;
     
     public Vector getPosition() {
         return position;
@@ -29,7 +31,11 @@ public abstract class Entity {
     }
     
     public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
+        this.currentHealth = (int) GameUtils.clamp(
+            currentHealth,
+            0,
+            this.maxHealth
+        );
     }
     
     private static class Interval {
@@ -68,6 +74,10 @@ public abstract class Entity {
     
     // to be overridden
     public void update(float deltaTime) {
+    
+    }
+    
+    public void dispose(Entity entity) {
     
     }
 }
