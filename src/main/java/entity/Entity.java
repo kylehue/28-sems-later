@@ -7,12 +7,13 @@ import utils.Vector;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Entity {
+public abstract class Entity implements Thing {
     private final HashMap<String, Interval> registeredIntervals = new HashMap<>();
     private final Vector position = new Vector();
     private int currentHealth = 100;
     private int maxHealth = 100;
     private int zIndex = 0;
+    private boolean isDisposedProperty = true;
     
     public int getZIndex() {
         return this.zIndex;
@@ -21,7 +22,6 @@ public abstract class Entity {
     public void setZIndex(int zIndex) {
         this.zIndex = zIndex;
     }
-    private boolean isDisposedProperty = true;
     
     public Vector getPosition() {
         return position;
