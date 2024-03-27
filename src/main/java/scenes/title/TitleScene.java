@@ -27,12 +27,12 @@ public class TitleScene extends GameApplicationScene {
         
         // Set up background (parallax)
         Parallax parallax = new Parallax(this.getScene());
-        parallax.addLayer(0, LayoutUtils.loadImage("/backgrounds/parallax/main/1.png"));
-        parallax.addLayer(1, LayoutUtils.loadImage("/backgrounds/parallax/main/2.png"));
-        parallax.addLayer(2, LayoutUtils.loadImage("/backgrounds/parallax/main/3.png"));
-        parallax.addLayer(3, LayoutUtils.loadImage("/backgrounds/parallax/main/4.png"));
-        parallax.addLayer(4, LayoutUtils.loadImage("/backgrounds/parallax/main/5.png"));
-        // parallax.addLayer(5, LayoutUtils.loadImage("/backgrounds/parallax/main/6.png"));
+        parallax.addLayer(0, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-6.png"));
+        parallax.addLayer(1, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-5.png"));
+        parallax.addLayer(2, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-4.png"));
+        parallax.addLayer(3, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-3.png"));
+        parallax.addLayer(4, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-2.png"));
+        parallax.addLayer(5, LayoutUtils.loadImage("/backgrounds/parallax/main/layer-1.png"));
         parallax.startLoop();
         parallax.getCanvas().widthProperty().bind(root.widthProperty());
         parallax.getCanvas().heightProperty().bind(root.heightProperty());
