@@ -15,17 +15,6 @@ public class CityMap extends Map {
         super(32);
         
         // MATERIALS
-        SplittedMaterial tileSheet = new SplittedMaterial(
-            "/maps/city/tile-sheet.png",
-            32
-        );
-        
-        Material sidewalk = tileSheet.get(0, 0);
-        sidewalk.setZIndex(ZIndex.MAP_TILES);
-        
-        Material road = tileSheet.get(1, 2);
-        road.setZIndex(ZIndex.MAP_TILES);
-        
         Material barrel = new Material("/maps/city/decorations/barrel.png");
         barrel.setZIndex(ZIndex.MAP_DECORATIONS);
         barrel.setPositionOrigin(Material.PositionOrigin.BOTTOM);
@@ -66,11 +55,11 @@ public class CityMap extends Map {
         stopSign.setCollider(stopSignCollider);
         
         // LAYERS
-        Layer layerTiles = this.addLayer();
-        layerTiles.setMatrix("/maps/city/layers/layer-1.txt", " ");
-        layerTiles.registerMaterial("0", road);
-        layerTiles.registerMaterial("1", sidewalk);
-        layerTiles.distributeMaterials();
+        // Layer layerTiles = this.addLayer();
+        // layerTiles.setMatrix("/maps/city/layers/layer-1.txt", " ");
+        // layerTiles.registerMaterial("0", road);
+        // layerTiles.registerMaterial("1", sidewalk);
+        // layerTiles.distributeMaterials();
         
         Layer layerDecors = this.addLayer();
         layerDecors.setMatrix("/maps/city/layers/layer-2.txt", " ");
