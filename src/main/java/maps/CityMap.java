@@ -16,14 +16,14 @@ public class CityMap extends Map {
         
         // MATERIALS
         SplittedMaterial tileSheet = new SplittedMaterial(
-            "/maps/city/tilesheet.png",
+            "/maps/city/tile-sheet.png",
             32
         );
         
         Material sidewalk = tileSheet.get(0, 0);
         sidewalk.setZIndex(ZIndex.MAP_TILES);
         
-        Material road = tileSheet.get(0, 9);
+        Material road = tileSheet.get(1, 2);
         road.setZIndex(ZIndex.MAP_TILES);
         
         Material barrel = new Material("/maps/city/decorations/barrel.png");
