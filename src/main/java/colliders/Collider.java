@@ -202,6 +202,7 @@ public abstract class Collider {
         collider.groupId = groupId;
         collider.mass = mass;
         collider.friction = friction;
+        collider.position.set(this.position);
     }
     
     // to be overridden

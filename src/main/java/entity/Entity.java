@@ -78,6 +78,12 @@ public abstract class Entity implements Thing {
     
     // to be overridden
     @Override
+    public Vector getRenderPosition() {
+        return this.position;
+    }
+    
+    // to be overridden
+    @Override
     public void render(GraphicsContext ctx) {
     
     }

@@ -17,9 +17,14 @@ public class Layer {
     private String matrix = "";
     private int totalWidth = 0;
     private int totalHeight = 0;
+    private int zIndex = 0;
     
     public Layer(Map map) {
         this.map = map;
+    }
+    
+    public void setZIndex(int zIndex) {
+        this.zIndex = zIndex;
     }
     
     public void setMatrix(String url, String matrixSeparator) {
@@ -60,9 +65,10 @@ public class Layer {
                 float x = colIndex * map.tileSize;
                 float y = rowIndex * map.tileSize;
                 material.getPosition().add(x, y);
+                material.setZIndex(this.zIndex);
                 Collider collider = material.getCollider();
                 if (collider != null) {
-                    collider.getPosition().set(material.getPosition());
+                    collider.getPosition().add(material.getPosition());
                 }
                 
                 materials.add(material);

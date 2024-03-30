@@ -48,6 +48,7 @@ public class LayoutUtils {
         try {
             return new Image(LayoutUtils.class.getResource(url).toURI().toString());
         } catch (Exception e) {
+            System.out.println(url);
             throw new Error(e);
         }
     }

@@ -2,7 +2,6 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
-import javafx.scene.paint.Paint;
 import main.CollisionGroup;
 import main.ZIndex;
 import scenes.game.GameScene;
@@ -13,10 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import event.KeyHandler;
 import utils.Bounds;
-import utils.Quadtree;
 import utils.Vector;
-
-import java.util.concurrent.TimeUnit;
 
 public class Player extends Entity {
     // basic characteristics
@@ -54,8 +50,8 @@ public class Player extends Entity {
         );
         
         this.collider.setGroup(CollisionGroup.PLAYER);
-        this.collider.addToGroup(CollisionGroup.MAP_BOUNDS);
-        this.collider.addToGroup(CollisionGroup.MAP_TILES);
+        this.collider.addToGroup(CollisionGroup.MAP);
+        this.collider.addToGroup(CollisionGroup.MAP);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
         this.collider.setMass(250);
         

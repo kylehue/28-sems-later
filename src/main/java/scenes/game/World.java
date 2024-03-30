@@ -61,7 +61,7 @@ public class World {
         this.player = new Player(gameApplication);
         float halfMapWidth = (float) map.getTotalWidth() / 2;
         float halfMapHeight = (float) map.getTotalHeight() / 2;
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 300; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
@@ -72,7 +72,7 @@ public class World {
     }
     
     public void render(GraphicsContext ctx) {
-        float renderDistanceOffset = 50;
+        float renderDistanceOffset = 100;
         
         this.camera.begin();
         
@@ -89,7 +89,7 @@ public class World {
         for (int i = things.size() - 1; i >= 0; i--) {
             Thing thing = things.get(i);
             boolean isInViewport = this.camera.isInViewport(
-                thing.getPosition(),
+                thing.getRenderPosition(),
                 renderDistanceOffset
             );
             if (!isInViewport) {
@@ -99,8 +99,8 @@ public class World {
         
         // TODO: project requirements application: apply insertion sort
         things.sort((a, b) -> {
-            float ay = a.getPosition().getY();
-            float by = b.getPosition().getY();
+            float ay = a.getRenderPosition().getY();
+            float by = b.getRenderPosition().getY();
             if (a.getZIndex() < b.getZIndex()) return -1;
             else if (a.getZIndex() > b.getZIndex()) return 1;
             if (ay < by) return -1;
@@ -122,7 +122,7 @@ public class World {
             }
         }
         
-        this.renderMeta(ctx);
+        // this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {

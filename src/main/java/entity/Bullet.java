@@ -1,17 +1,13 @@
 package entity;
 
 import colliders.CircleCollider;
-import colliders.Collider;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import main.CollisionGroup;
 import main.GameApplication;
 import sprites.BulletSprite;
-import sprites.PlayerSprite;
 import utils.Vector;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class Bullet extends Entity{
     private final GameApplication gameApplication;
@@ -34,7 +30,7 @@ public class Bullet extends Entity{
         this.initialPosition.set(x, y);
         this.angle = angle;
         this.collider.setGroup(CollisionGroup.BULLETS);
-        this.collider.addToGroup(CollisionGroup.MAP_TILES);
+        this.collider.addToGroup(CollisionGroup.MAP);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
         this.collider.addToGroup(CollisionGroup.BULLETS);
         this.collider.setRadius(2);
@@ -106,8 +102,6 @@ public class Bullet extends Entity{
                 zombie.setCurrentHealth(zombie.getCurrentHealth() - damage);
                 this.setCurrentHealth(this.getCurrentHealth() - penetration);
                 resetIntervalFor("bullet");
-                System.out.println("zombie" + zombie.getCurrentHealth());
-                System.out.println("bullet" + this.getCurrentHealth());
             }
             // if(this.collider.isCollidingWith(polygonCollider)){}
         }

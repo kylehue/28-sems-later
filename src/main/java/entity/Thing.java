@@ -8,6 +8,7 @@ import utils.Vector;
  */
 public interface Thing {
     Vector getPosition();
+    Vector getRenderPosition();
     int getZIndex();
     void render(GraphicsContext graphicsContext);
 }

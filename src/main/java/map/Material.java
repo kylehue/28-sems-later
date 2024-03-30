@@ -5,6 +5,8 @@ import colliders.PolygonCollider;
 import entity.Thing;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Paint;
+import scenes.game.World;
 import utils.LayoutUtils;
 import utils.Vector;
 
@@ -12,6 +14,7 @@ public class Material implements Thing {
     private final Image image;
     private final Vector position = new Vector();
     private final Vector originOffset = new Vector();
+    private final Vector colliderPositionOffset = new Vector();
     private Collider collider = null;
     private int zIndex = 0;
     private boolean isHorizontallyFlipped = false;
@@ -95,26 +98,41 @@ public class Material implements Thing {
     
     public void setPositionOrigin(PositionOrigin positionOrigin) {
         this.positionOrigin = positionOrigin;
+        float halfTileSize = (float) tileSize / 2;
+        switch (positionOrigin) {
+            case TOP -> originOffset.setY(-halfTileSize);
+            case BOTTOM -> originOffset.setY(halfTileSize);
+            case LEFT -> originOffset.setX(-halfTileSize);
+            case RIGHT -> originOffset.setX(halfTileSize);
+        }
     }
     
     public Vector getOriginOffset() {
         return originOffset;
     }
     
+    public Vector getColliderPositionOffset() {
+        return colliderPositionOffset;
+    }
+    
     protected Vector getOrigin() {
-        float halfTileSize = (float) tileSize / 2;
         float imgWidth = (float) image.getWidth();
         float imgHeight = (float) image.getHeight();
         float x = -imgWidth / 2;
         float y = -imgHeight / 2;
         switch (positionOrigin) {
-            case TOP -> y += halfTileSize;
-            case BOTTOM -> y -= halfTileSize;
-            case LEFT -> x += halfTileSize;
-            case RIGHT -> x -= halfTileSize;
+            case TOP -> y += imgHeight / 2;
+            case BOTTOM -> y -= imgHeight / 2;
+            case LEFT -> x += imgWidth / 2;
+            case RIGHT -> x -= imgWidth / 2;
         }
         
         return new Vector(x + originOffset.getX(), y + originOffset.getY());
+    }
+    
+    @Override
+    public Vector getRenderPosition() {
+        return this.position.clone().add(originOffset.getX(), originOffset.getY());
     }
     
     @Override
@@ -139,7 +157,9 @@ public class Material implements Thing {
     
     public void update(float deltaTime) {
         if (collider != null) {
-            position.set(collider.getPosition());
+            if (!collider.isStatic()) {
+                position.set(collider.getPosition());
+            }
             
             if (collider instanceof PolygonCollider polygonCollider) {
                 polygonCollider.setAngle((float) Math.toRadians(rotation));
