@@ -61,7 +61,7 @@ public class World {
         this.player = new Player(gameApplication);
         float halfMapWidth = (float) map.getTotalWidth() / 2;
         float halfMapHeight = (float) map.getTotalHeight() / 2;
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 0; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
@@ -122,7 +122,7 @@ public class World {
             }
         }
         
-        // this.renderMeta(ctx);
+        this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {

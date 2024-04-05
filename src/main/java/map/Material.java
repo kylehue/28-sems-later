@@ -6,7 +6,6 @@ import entity.Thing;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
-import scenes.game.World;
 import utils.LayoutUtils;
 import utils.Vector;
 
@@ -14,14 +13,25 @@ public class Material implements Thing {
     private final Image image;
     private final Vector position = new Vector();
     private final Vector originOffset = new Vector();
-    private final Vector colliderPositionOffset = new Vector();
+    private final Vector renderPositionOffset = new Vector();
     private Collider collider = null;
     private int zIndex = 0;
     private boolean isHorizontallyFlipped = false;
     private boolean isVerticallyFlipped = false;
     private int rotation = 0;
-    private PositionOrigin positionOrigin = PositionOrigin.CENTER;
     private int tileSize = 32;
+    
+    public enum PositionOrigin {
+        TOP,
+        LEFT,
+        BOTTOM,
+        RIGHT,
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+        CENTER
+    }
     
     public Material(String imageUrl) {
         this.image = LayoutUtils.loadImage(imageUrl);
@@ -29,14 +39,6 @@ public class Material implements Thing {
     
     public Material(Image image) {
         this.image = image;
-    }
-    
-    public enum PositionOrigin {
-        TOP,
-        RIGHT,
-        BOTTOM,
-        LEFT,
-        CENTER
     }
     
     public Image getImage() {
@@ -92,27 +94,76 @@ public class Material implements Thing {
         this.rotation = rotationInDegrees;
     }
     
-    public PositionOrigin getPositionOrigin() {
-        return positionOrigin;
+    private float[] computePositionOriginScalar(PositionOrigin positionOrigin) {
+        float x = 0;
+        float y = 0;
+        switch (positionOrigin) {
+            case TOP -> y = -1;
+            case BOTTOM -> y = 1;
+            case LEFT -> x = -1;
+            case RIGHT -> x = 1;
+            case TOP_LEFT -> {
+                x = -1;
+                y = -1;
+            }
+            case TOP_RIGHT -> {
+                x = 1;
+                y = -1;
+            }
+            case BOTTOM_LEFT -> {
+                x = -1;
+                y = 1;
+            }
+            case BOTTOM_RIGHT -> {
+                x = 1;
+                y = 1;
+            }
+        }
+        
+        return new float[]{x, y};
+    }
+    
+    /**
+     * Sets origin starting from top-left of the image.
+     */
+    public void setPositionOrigin(float x, float y) {
+        originOffset.set(
+            (float) (image.getWidth() / 2) - x,
+            (float) (image.getHeight() / 2) - y
+        );
     }
     
     public void setPositionOrigin(PositionOrigin positionOrigin) {
-        this.positionOrigin = positionOrigin;
+        float[] scalar = computePositionOriginScalar(positionOrigin);
         float halfTileSize = (float) tileSize / 2;
-        switch (positionOrigin) {
-            case TOP -> originOffset.setY(-halfTileSize);
-            case BOTTOM -> originOffset.setY(halfTileSize);
-            case LEFT -> originOffset.setX(-halfTileSize);
-            case RIGHT -> originOffset.setX(halfTileSize);
-        }
+        float offsetX = 0;
+        float offsetY = 0;
+        if (scalar[0] >= 0) offsetX += (float) image.getWidth();
+        if (scalar[1] >= 0) offsetY += (float) image.getHeight();
+        
+        this.setPositionOrigin(
+            halfTileSize * -scalar[0] + offsetX,
+            halfTileSize * -scalar[1] + offsetY
+        );
     }
     
-    public Vector getOriginOffset() {
-        return originOffset;
+    /**
+     * Sets render position starting from top-left of the image.
+     */
+    public void setRenderPosition(float x, float y) {
+        renderPositionOffset.set(
+            (float) -(image.getWidth() / 2) + x,
+            (float) -(image.getHeight() / 2) + y
+        );
     }
     
-    public Vector getColliderPositionOffset() {
-        return colliderPositionOffset;
+    public void setRenderPosition(PositionOrigin positionOrigin) {
+        float[] scalar = computePositionOriginScalar(positionOrigin);
+        float halfTileSize = (float) tileSize / 2;
+        this.setRenderPosition(
+            halfTileSize + halfTileSize * scalar[0],
+            halfTileSize + halfTileSize * scalar[1]
+        );
     }
     
     protected Vector getOrigin() {
@@ -120,19 +171,13 @@ public class Material implements Thing {
         float imgHeight = (float) image.getHeight();
         float x = -imgWidth / 2;
         float y = -imgHeight / 2;
-        switch (positionOrigin) {
-            case TOP -> y += imgHeight / 2;
-            case BOTTOM -> y -= imgHeight / 2;
-            case LEFT -> x += imgWidth / 2;
-            case RIGHT -> x -= imgWidth / 2;
-        }
         
         return new Vector(x + originOffset.getX(), y + originOffset.getY());
     }
     
     @Override
     public Vector getRenderPosition() {
-        return this.position.clone().add(originOffset.getX(), originOffset.getY());
+        return this.position.clone().add(renderPositionOffset).add(originOffset);
     }
     
     @Override
@@ -147,12 +192,43 @@ public class Material implements Thing {
         ctx.translate(position.getX(), position.getY());
         ctx.scale(isHorizontallyFlipped ? -1 : 1, isVerticallyFlipped ? -1 : 1);
         ctx.rotate(rotation);
+        
+        // Image
         ctx.drawImage(
             image,
             origin.getX(),
             origin.getY()
         );
+        
+        // // Bounds
+        // ctx.beginPath();
+        // ctx.setStroke(Paint.valueOf("red"));
+        // ctx.strokeRect(origin.getX(), origin.getY(), image.getWidth(), image.getHeight());
+        // ctx.closePath();
+        
+        // Origin
+        ctx.beginPath();
+        ctx.setFill(Paint.valueOf("yellow"));
+        ctx.fillOval(
+            -2,
+            -2,
+            4,
+            4
+        );
+        ctx.closePath();
+        
         ctx.restore();
+        
+        // Render position
+        ctx.beginPath();
+        ctx.setFill(Paint.valueOf("white"));
+        ctx.fillOval(
+            getRenderPosition().getX() - 1,
+            getRenderPosition().getY() - 1,
+            2,
+            2
+        );
+        ctx.closePath();
     }
     
     public void update(float deltaTime) {
@@ -174,7 +250,8 @@ public class Material implements Thing {
         clone.setZIndex(this.zIndex);
         clone.setHorizontallyFlipped(this.isHorizontallyFlipped);
         clone.setVerticallyFlipped(this.isVerticallyFlipped);
-        clone.setPositionOrigin(this.positionOrigin);
+        // clone.setPositionOrigin(this.positionOrigin);
+        clone.renderPositionOffset.set(this.renderPositionOffset);
         if (collider != null) clone.setCollider(collider.clone());
         clone.originOffset.set(this.originOffset);
         clone.position.set(this.position);

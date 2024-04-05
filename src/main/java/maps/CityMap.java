@@ -1,7 +1,6 @@
 package maps;
 
 import colliders.CircleCollider;
-import colliders.Collider;
 import colliders.PolygonCollider;
 import main.CollisionGroup;
 import main.ZIndex;
@@ -17,28 +16,42 @@ public class CityMap extends Map {
         
         float halfTile = ((float) this.getTileSize()) / 2;
         float wallThickness = 5; // this value doubles so 4 becomes 8-pixel thick
-        PolygonCollider bottomWallCollider = new PolygonCollider(new Vector[]{
+        PolygonCollider roomWallBottomCollider = new PolygonCollider(new Vector[]{
             new Vector(-halfTile, -wallThickness),
             new Vector(halfTile, -wallThickness),
             new Vector(halfTile, wallThickness),
             new Vector(-halfTile, wallThickness)
         });
-        bottomWallCollider.setGroup(CollisionGroup.MAP);
-        bottomWallCollider.setStatic(true);
-        bottomWallCollider.getPosition().setY(halfTile - wallThickness);
-        
-        PolygonCollider leftWallCollider = new PolygonCollider(new Vector[]{
+        roomWallBottomCollider.setGroup(CollisionGroup.MAP);
+        roomWallBottomCollider.setStatic(true);
+        roomWallBottomCollider.getPosition().setY(halfTile - wallThickness);
+
+        PolygonCollider roomWallLeftCollider = new PolygonCollider(new Vector[]{
             new Vector(-wallThickness, -halfTile),
             new Vector(wallThickness, -halfTile),
             new Vector(wallThickness, halfTile),
             new Vector(-wallThickness, halfTile)
         });
-        leftWallCollider.setGroup(CollisionGroup.MAP);
-        leftWallCollider.setStatic(true);
-        leftWallCollider.getPosition().setX(-halfTile + wallThickness);
+        roomWallLeftCollider.setGroup(CollisionGroup.MAP);
+        roomWallLeftCollider.setStatic(true);
+        roomWallLeftCollider.getPosition().setX(-halfTile + wallThickness);
+
+        PolygonCollider roomWallRightCollider = roomWallLeftCollider.clone();
+        roomWallRightCollider.getPosition().setX(halfTile - wallThickness);
         
-        PolygonCollider rightWallCollider = leftWallCollider.clone();
-        rightWallCollider.getPosition().setX(halfTile - wallThickness);
+        PolygonCollider roomWallTurnLeftCollider = new PolygonCollider(new Vector[]{
+            new Vector(-wallThickness, -wallThickness),
+            new Vector(wallThickness, -wallThickness),
+            new Vector(wallThickness, wallThickness),
+            new Vector(-wallThickness, wallThickness)
+        });
+        roomWallTurnLeftCollider.setGroup(CollisionGroup.MAP);
+        roomWallTurnLeftCollider.setStatic(true);
+        roomWallTurnLeftCollider.getPosition().setX(halfTile - wallThickness);
+        roomWallTurnLeftCollider.getPosition().setY(halfTile - wallThickness);
+        
+        PolygonCollider roomWallTurnRightCollider = roomWallTurnLeftCollider.clone();
+        roomWallTurnRightCollider.getPosition().setX(-halfTile + wallThickness);
         
         // TODO: make grouped collider because we don't allow concave shapes
         // PolygonCollider topLeftCorner = new PolygonCollider(new Vector[]{
@@ -53,40 +66,12 @@ public class CityMap extends Map {
         // topLeftCorner.setGroup(CollisionGroup.MAP);
         // topLeftCorner.setStatic(true);
         
-        // MATERIALS
-        Material fenceBackSignedLeft = new Material("/maps/city/tiles/fence-back-signed-left.png");
-        fenceBackSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceBackSignedRight1 = new Material("/maps/city/tiles/fence-back-signed-right-1.png");
-        fenceBackSignedRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceBackSignedRight = new Material("/maps/city/tiles/fence-back-signed-right.png");
-        fenceBackSignedRight.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceFrontSignedLeft = new Material("/maps/city/tiles/fence-front-signed-left.png");
-        fenceFrontSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceLeft = new Material("/maps/city/tiles/fence-left.png");
-        fenceLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceMiddle = new Material("/maps/city/tiles/fence-middle.png");
-        fenceMiddle.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceRight = new Material("/maps/city/tiles/fence-right.png");
-        fenceRight.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material fenceSideLeft = new Material("/maps/city/tiles/fence-side-left.png");
-        fenceSideLeft.setPositionOrigin(Material.PositionOrigin.LEFT);
-        Material fenceSideRight = new Material("/maps/city/tiles/fence-side-right.png");
-        fenceSideRight.setPositionOrigin(Material.PositionOrigin.RIGHT);
+        // MATERIALS (LOW)
         Material grass0 = new Material("/maps/city/tiles/grass-0.png");
         Material grass1 = new Material("/maps/city/tiles/grass-1.png");
         Material grass2 = new Material("/maps/city/tiles/grass-2.png");
         Material grass3 = new Material("/maps/city/tiles/grass-3.png");
         Material grass4 = new Material("/maps/city/tiles/grass-4.png");
-        Material plankBottomShort = new Material("/maps/city/decorations/plank-bottom-short.png");
-        plankBottomShort.setPositionOrigin(Material.PositionOrigin.TOP);
-        Material plankBottom = new Material("/maps/city/decorations/plank-bottom.png");
-        Material plankCrossed = new Material("/maps/city/decorations/plank-crossed.png");
-        Material plankHorizontalMiddle = new Material("/maps/city/decorations/plank-horizontal-middle.png");
-        Material plankVerticalMiddle = plankHorizontalMiddle.clone();
-        plankVerticalMiddle.setRotation(-90);
-        Material plankLeft = new Material("/maps/city/decorations/plank-left.png");
-        Material plankRight = new Material("/maps/city/decorations/plank-right.png");
-        Material plankTop = new Material("/maps/city/decorations/plank-top.png");
         Material roadCornerBottomLeftGrassy = new Material("/maps/city/tiles/road-corner-bottom-left-grassy.png");
         Material roadCornerBottomLeftSandy = new Material("/maps/city/tiles/road-corner-bottom-left-sandy.png");
         Material roadCornerBottomLeft = new Material("/maps/city/tiles/road-corner-bottom-left.png");
@@ -144,81 +129,10 @@ public class CityMap extends Map {
         Material roadSideTopSandy3 = new Material("/maps/city/tiles/road-side-top-sandy-3.png");
         Material roadSideTop = new Material("/maps/city/tiles/road-side-top.png");
         Material road = new Material("/maps/city/tiles/road.png");
-        Material roofRustySlantedLeft = new Material("/maps/city/decorations/roof-rusty-slanted-left.png");
-        Material roofRustySlantedRight = new Material("/maps/city/decorations/roof-rusty-slanted-right.png");
-        Material roofRusty = new Material("/maps/city/decorations/roof-rusty.png");
-        Material roofSlantedLeft = new Material("/maps/city/decorations/roof-slanted-left.png");
-        Material roofSlantedRight = new Material("/maps/city/decorations/roof-slanted-right.png");
-        Material roof = new Material("/maps/city/decorations/roof.png");
         Material roomFloor0 = new Material("/maps/city/tiles/room-floor-0.png");
         Material roomFloor1 = new Material("/maps/city/tiles/room-floor-1.png");
         Material roomFloor2 = new Material("/maps/city/tiles/room-floor-2.png");
         Material roomFloor3 = new Material("/maps/city/tiles/room-floor-3.png");
-        Material roomWallCornerBottomLeft0 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-0.png");
-        roomWallCornerBottomLeft0.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerBottomLeft1 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-1.png");
-        roomWallCornerBottomLeft1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerBottomLeft2 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-2.png");
-        roomWallCornerBottomLeft2.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerBottomRight0 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-0.png");
-        roomWallCornerBottomRight0.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerBottomRight1 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-1.png");
-        roomWallCornerBottomRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerBottomRight2 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-2.png");
-        roomWallCornerBottomRight2.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallCornerTopLeft0 = new Material("/maps/city/tiles/room-wall-corner-top-left-0.png");
-        roomWallCornerTopLeft0.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopLeft0.setCollider(bottomWallCollider.clone());
-        Material roomWallCornerTopLeft1 = new Material("/maps/city/tiles/room-wall-corner-top-left-1.png");
-        roomWallCornerTopLeft1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopLeft1.setCollider(bottomWallCollider.clone());
-        Material roomWallCornerTopLeft2 = new Material("/maps/city/tiles/room-wall-corner-top-left-2.png");
-        roomWallCornerTopLeft2.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopLeft2.setCollider(bottomWallCollider.clone());
-        Material roomWallCornerTopRight0 = new Material("/maps/city/tiles/room-wall-corner-top-right-0.png");
-        roomWallCornerTopRight0.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopRight0.setCollider(bottomWallCollider.clone());
-        Material roomWallCornerTopRight1 = new Material("/maps/city/tiles/room-wall-corner-top-right-1.png");
-        roomWallCornerTopRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopRight1.setCollider(bottomWallCollider.clone());
-        Material roomWallCornerTopRight2 = new Material("/maps/city/tiles/room-wall-corner-top-right-2.png");
-        roomWallCornerTopRight2.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallCornerTopRight2.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle0 = new Material("/maps/city/tiles/room-wall-middle-0.png");
-        roomWallMiddle0.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle0.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle1 = new Material("/maps/city/tiles/room-wall-middle-1.png");
-        roomWallMiddle1.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle1.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle2 = new Material("/maps/city/tiles/room-wall-middle-2.png");
-        roomWallMiddle2.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle2.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle3 = new Material("/maps/city/tiles/room-wall-middle-3.png");
-        roomWallMiddle3.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle3.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle4 = new Material("/maps/city/tiles/room-wall-middle-4.png");
-        roomWallMiddle4.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle4.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle5 = new Material("/maps/city/tiles/room-wall-middle-5.png");
-        roomWallMiddle5.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle5.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle6 = new Material("/maps/city/tiles/room-wall-middle-6.png");
-        roomWallMiddle6.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle6.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle7 = new Material("/maps/city/tiles/room-wall-middle-7.png");
-        roomWallMiddle7.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle7.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle8 = new Material("/maps/city/tiles/room-wall-middle-8.png");
-        roomWallMiddle8.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        roomWallMiddle8.setCollider(bottomWallCollider.clone());
-        Material roomWallMiddle9 = new Material("/maps/city/tiles/room-wall-middle-9.png");
-        roomWallMiddle9.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        Material roomWallSideRight = new Material("/maps/city/tiles/room-wall-side.png");
-        roomWallSideRight.setPositionOrigin(Material.PositionOrigin.RIGHT);
-        roomWallSideRight.setCollider(rightWallCollider.clone());
-        Material roomWallSideLeft = roomWallSideRight.clone();
-        roomWallSideLeft.setPositionOrigin(Material.PositionOrigin.LEFT);
-        roomWallSideLeft.setCollider(leftWallCollider.clone());
         Material sand0 = new Material("/maps/city/tiles/sand-0.png");
         Material sand1 = new Material("/maps/city/tiles/sand-1.png");
         Material sand2 = new Material("/maps/city/tiles/sand-2.png");
@@ -227,35 +141,208 @@ public class CityMap extends Map {
         Material sidewalk1 = new Material("/maps/city/tiles/sidewalk-1.png");
         Material sidewalk2 = new Material("/maps/city/tiles/sidewalk-2.png");
         Material sidewalk3 = new Material("/maps/city/tiles/sidewalk-3.png");
+        
+        // MATERIALS (MID)
+        Material fenceBackSignedLeft = new Material("/maps/city/tiles/fence-back-signed-left.png");
+        fenceBackSignedLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceBackSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceBackSignedRight1 = new Material("/maps/city/tiles/fence-back-signed-right-1.png");
+        fenceBackSignedRight1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceBackSignedRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceBackSignedRight = new Material("/maps/city/tiles/fence-back-signed-right.png");
+        fenceBackSignedRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceBackSignedRight.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceFrontSignedLeft = new Material("/maps/city/tiles/fence-front-signed-left.png");
+        fenceFrontSignedLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceFrontSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceLeft = new Material("/maps/city/tiles/fence-left.png");
+        fenceLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceMiddle = new Material("/maps/city/tiles/fence-middle.png");
+        fenceMiddle.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceMiddle.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceRight = new Material("/maps/city/tiles/fence-right.png");
+        fenceRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceRight.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material fenceSideLeft = new Material("/maps/city/tiles/fence-side-left.png");
+        fenceSideLeft.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        fenceSideLeft.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
+        
+        Material fenceSideRight = new Material("/maps/city/tiles/fence-side-right.png");
+        fenceSideRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        fenceSideRight.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
+        
+        Material roomWallCornerBottomLeft0 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-0.png");
+        roomWallCornerBottomLeft0.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomLeft0.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerBottomLeft1 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-1.png");
+        roomWallCornerBottomLeft1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomLeft1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerBottomLeft2 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-2.png");
+        roomWallCornerBottomLeft2.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomLeft2.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerBottomRight0 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-0.png");
+        roomWallCornerBottomRight0.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomRight0.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerBottomRight1 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-1.png");
+        roomWallCornerBottomRight1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerBottomRight2 = new Material("/maps/city/tiles/room-wall-corner-bottom-right-2.png");
+        roomWallCornerBottomRight2.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerBottomRight2.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallCornerTopLeft0 = new Material("/maps/city/tiles/room-wall-corner-top-left-0.png");
+        roomWallCornerTopLeft0.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopLeft0.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopLeft0.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallCornerTopLeft1 = new Material("/maps/city/tiles/room-wall-corner-top-left-1.png");
+        roomWallCornerTopLeft1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopLeft1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopLeft1.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallCornerTopLeft2 = new Material("/maps/city/tiles/room-wall-corner-top-left-2.png");
+        roomWallCornerTopLeft2.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopLeft2.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopLeft2.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallCornerTopRight0 = new Material("/maps/city/tiles/room-wall-corner-top-right-0.png");
+        roomWallCornerTopRight0.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopRight0.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopRight0.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallCornerTopRight1 = new Material("/maps/city/tiles/room-wall-corner-top-right-1.png");
+        roomWallCornerTopRight1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopRight1.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallCornerTopRight2 = new Material("/maps/city/tiles/room-wall-corner-top-right-2.png");
+        roomWallCornerTopRight2.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallCornerTopRight2.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallCornerTopRight2.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle0 = new Material("/maps/city/tiles/room-wall-middle-0.png");
+        roomWallMiddle0.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle0.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle0.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle1 = new Material("/maps/city/tiles/room-wall-middle-1.png");
+        roomWallMiddle1.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle1.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle2 = new Material("/maps/city/tiles/room-wall-middle-2.png");
+        roomWallMiddle2.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle2.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle2.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle3 = new Material("/maps/city/tiles/room-wall-middle-3.png");
+        roomWallMiddle3.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle3.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle3.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle4 = new Material("/maps/city/tiles/room-wall-middle-4.png");
+        roomWallMiddle4.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle4.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle4.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle5 = new Material("/maps/city/tiles/room-wall-middle-5.png");
+        roomWallMiddle5.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle5.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle5.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle6 = new Material("/maps/city/tiles/room-wall-middle-6.png");
+        roomWallMiddle6.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle6.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle6.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle7 = new Material("/maps/city/tiles/room-wall-middle-7.png");
+        roomWallMiddle7.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle7.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle7.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle8 = new Material("/maps/city/tiles/room-wall-middle-8.png");
+        roomWallMiddle8.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle8.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        roomWallMiddle8.setCollider(roomWallBottomCollider.clone());
+        
+        Material roomWallMiddle9 = new Material("/maps/city/tiles/room-wall-middle-9.png");
+        roomWallMiddle9.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        roomWallMiddle9.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        
+        Material roomWallSideRight = new Material("/maps/city/tiles/room-wall-side.png");
+        roomWallSideRight.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
+        roomWallSideRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        roomWallSideRight.setCollider(roomWallRightCollider);
+        
+        Material roomWallSideLeft = roomWallSideRight.clone();
+        roomWallSideLeft.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
+        roomWallSideLeft.setCollider(roomWallLeftCollider);
+        
+        Material roomWallSideTurnRight = new Material("/maps/city/tiles/room-wall-side-turn-right.png");
+        roomWallSideTurnRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        roomWallSideTurnRight.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
+        roomWallSideTurnRight.setCollider(roomWallTurnRightCollider);
+        
+        Material roomWallSideTurnLeft = new Material("/maps/city/tiles/room-wall-side-turn-left.png");
+        roomWallSideTurnLeft.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        roomWallSideTurnLeft.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
+        roomWallSideTurnLeft.setCollider(roomWallTurnLeftCollider);
+        
+        // MATERIALS (HIGH)
+        Material plankBottomShort = new Material("/maps/city/decorations/plank-bottom-short.png");
+        // plankBottomShort.setPositionOrigin(Material.PositionOrigin.TOP);
+        Material plankBottom = new Material("/maps/city/decorations/plank-bottom.png");
+        Material plankCrossed = new Material("/maps/city/decorations/plank-crossed.png");
+        Material plankHorizontalMiddle = new Material("/maps/city/decorations/plank-horizontal-middle.png");
+        Material plankVerticalMiddle = plankHorizontalMiddle.clone();
+        plankVerticalMiddle.setRotation(-90);
+        Material plankLeft = new Material("/maps/city/decorations/plank-left.png");
+        Material plankRight = new Material("/maps/city/decorations/plank-right.png");
+        Material plankTop = new Material("/maps/city/decorations/plank-top.png");
+        
+        // MATERIALS (HIGHER)
+        Material roofRustySlantedLeft = new Material("/maps/city/decorations/roof-rusty-slanted-left.png");
+        Material roofRustySlantedRight = new Material("/maps/city/decorations/roof-rusty-slanted-right.png");
+        Material roofRusty = new Material("/maps/city/decorations/roof-rusty.png");
+        Material roofSlantedLeft = new Material("/maps/city/decorations/roof-slanted-left.png");
+        Material roofSlantedRight = new Material("/maps/city/decorations/roof-slanted-right.png");
+        Material roof = new Material("/maps/city/decorations/roof.png");
+        
+        // MATERIALS (DECORS)
         Material stopSign = new Material("/maps/city/decorations/stop-sign.png");
-        stopSign.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        stopSign.getPosition().addY(
-            (float) -this.getTileSize() / 2
-        );
+        stopSign.setPositionOrigin(7, 37);
+        stopSign.setRenderPosition(7, 35);
         CircleCollider stopSignCollider = new CircleCollider();
         stopSignCollider.setRadius(3);
         stopSignCollider.setGroup(CollisionGroup.MAP);
         stopSignCollider.setStatic(true);
-        stopSignCollider.getPosition().setY(halfTile);
         stopSign.setCollider(stopSignCollider);
         
-        
         Material streetLamp = new Material("/maps/city/decorations/street-lamp.png");
-        streetLamp.getPosition().add(
-            (float) this.getTileSize() / 2,
-            (float) -this.getTileSize() / 2
-        );
-        streetLamp.setPositionOrigin(Material.PositionOrigin.BOTTOM);
+        streetLamp.setPositionOrigin(20, 106);
+        streetLamp.setRenderPosition(20, 103);
         CircleCollider streetLampCollider = new CircleCollider();
         streetLampCollider.setRadius(3);
         streetLampCollider.setGroup(CollisionGroup.MAP);
         streetLampCollider.setStatic(true);
-        streetLampCollider.getPosition().set(-halfTile, halfTile);
         streetLamp.setCollider(streetLampCollider);
         
         Material trashCan = new Material("/maps/city/decorations/trash-can.png");
-        trashCan.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        trashCan.getOriginOffset().addY(-10);
+        trashCan.setPositionOrigin(7, 14);
+        trashCan.setRenderPosition(7, 12);
         CircleCollider trashCanCollider = new CircleCollider();
         trashCanCollider.setRadius(5);
         trashCanCollider.setGroup(CollisionGroup.MAP);
@@ -264,8 +351,8 @@ public class CityMap extends Map {
         trashCan.setCollider(trashCanCollider);
         
         Material barrel = new Material("/maps/city/decorations/barrel.png");
-        barrel.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        barrel.getOriginOffset().addY(-6);
+        barrel.setPositionOrigin(9, 18);
+        barrel.setRenderPosition(9, 18);
         CircleCollider barrelCollider = new CircleCollider();
         barrelCollider.setRadius(8);
         barrelCollider.setGroup(CollisionGroup.MAP);
@@ -274,8 +361,10 @@ public class CityMap extends Map {
         barrel.setCollider(barrelCollider);
         
         Material car = new Material("/maps/city/decorations/car.png");
+        car.setPositionOrigin(28, 18);
+        car.setRenderPosition(28, 12);
         float carWidthHalf = (float) car.getImage().getWidth() / 2;
-        float carHeightHalf = (float) car.getImage().getHeight() / 3;
+        float carHeightHalf = 16f / 2f;
         PolygonCollider carCollider = new PolygonCollider(new Vector[]{
             new Vector(-carWidthHalf, -carHeightHalf),
             new Vector(carWidthHalf, -carHeightHalf),
@@ -287,54 +376,7 @@ public class CityMap extends Map {
         carCollider.setMass(20000);
         car.setCollider(carCollider);
         
-        // Material barrel = new Material("/maps/city/decorations/barrel.png");
-        // barrel.setZIndex(ZIndex.MAP_DECORATIONS);
-        // barrel.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        // barrel.getOriginOffset().addY(10);
-        //
-        // CircleCollider barrelCollider = new CircleCollider();
-        // barrelCollider.setRadius(10);
-        // barrelCollider.setGroup(CollisionGroup.MAP_TILES);
-        // barrelCollider.addToGroup(CollisionGroup.MAP_TILES);
-        // barrelCollider.setMass(400);
-        // barrel.setCollider(barrelCollider);
-        //
-        // Material car = new Material("/maps/city/decorations/car.png");
-        // car.setZIndex(ZIndex.MAP_DECORATIONS);
-        // car.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        // car.getOriginOffset().addY(15);
-        //
-        // float carWidthHalf = (float) car.getImage().getWidth() / 2;
-        // float carHeightHalf = (float) car.getImage().getHeight() / 3;
-        // PolygonCollider carCollider = new PolygonCollider(new Vector[]{
-        //     new Vector(-carWidthHalf, -carHeightHalf),
-        //     new Vector(carWidthHalf, -carHeightHalf),
-        //     new Vector(carWidthHalf, carHeightHalf),
-        //     new Vector(-carWidthHalf, carHeightHalf)
-        // });
-        // carCollider.setGroup(CollisionGroup.MAP_TILES);
-        // carCollider.setMass(10000);
-        // car.setCollider(carCollider);
-        //
-        // Material stopSign = new Material("/maps/city/decorations/stop-sign.png");
-        // stopSign.setZIndex(ZIndex.MAP_DECORATIONS);
-        // stopSign.setPositionOrigin(Material.PositionOrigin.BOTTOM);
-        //
-        // CircleCollider stopSignCollider = new CircleCollider();
-        // stopSignCollider.setRadius(2);
-        // stopSignCollider.setStatic(true);
-        // stopSignCollider.setGroup(CollisionGroup.MAP_TILES);
-        // stopSign.setCollider(stopSignCollider);
-        
         // LAYERS
-        
-        // Layer layerLow = this.addLayer();
-        // layerLow.setMatrix("/maps/city/layers/low.txt", " ");
-        // layerLow.registerMaterial("0", barrel);
-        // layerLow.registerMaterial("1", car);
-        // layerLow.registerMaterial("2", stopSign);
-        // layerLow.distributeMaterials();
-        
         Layer layerLow = this.addLayer();
         layerLow.setZIndex(ZIndex.MAP_FLOOR);
         layerLow.setMatrix("/maps/city/layers/low.txt", " ");
@@ -450,6 +492,8 @@ public class CityMap extends Map {
         layerMid.registerMaterial("room-wall-middle-9.png", roomWallMiddle9);
         layerMid.registerMaterial("room-wall-side-right.png", roomWallSideRight);
         layerMid.registerMaterial("room-wall-side-left.png", roomWallSideLeft);
+        layerMid.registerMaterial("room-wall-side-turn-left.png", roomWallSideTurnLeft);
+        layerMid.registerMaterial("room-wall-side-turn-right.png", roomWallSideTurnRight);
         layerMid.distributeMaterials();
         
         Layer layerDecor = this.addLayer();
@@ -462,28 +506,28 @@ public class CityMap extends Map {
         layerDecor.registerMaterial("trash-can.png", trashCan);
         layerDecor.distributeMaterials();
         
-        Layer layerHigh = this.addLayer();
-        layerHigh.setZIndex(ZIndex.MAP_HIGH);
-        layerHigh.setMatrix("/maps/city/layers/high.txt", " ");
-        layerHigh.registerMaterial("plank-bottom-short.png", plankBottomShort);
-        layerHigh.registerMaterial("plank-bottom.png", plankBottom);
-        layerHigh.registerMaterial("plank-crossed.png", plankCrossed);
-        layerHigh.registerMaterial("plank-horizontal-middle.png", plankHorizontalMiddle);
-        layerHigh.registerMaterial("plank-vertical-middle.png", plankVerticalMiddle);
-        layerHigh.registerMaterial("plank-left.png", plankLeft);
-        layerHigh.registerMaterial("plank-right.png", plankRight);
-        layerHigh.registerMaterial("plank-top.png", plankTop);
-        layerHigh.distributeMaterials();
-        
-        Layer layerHigher = this.addLayer();
-        layerHigher.setZIndex(ZIndex.MAP_HIGH + 1);
-        layerHigher.setMatrix("/maps/city/layers/higher.txt", " ");
-        layerHigher.registerMaterial("roof-rusty-slanted-left.png", roofRustySlantedLeft);
-        layerHigher.registerMaterial("roof-rusty-slanted-right.png", roofRustySlantedRight);
-        layerHigher.registerMaterial("roof-rusty.png", roofRusty);
-        layerHigher.registerMaterial("roof-slanted-left.png", roofSlantedLeft);
-        layerHigher.registerMaterial("roof-slanted-right.png", roofSlantedRight);
-        layerHigher.registerMaterial("roof.png", roof);
-        layerHigher.distributeMaterials();
+        // Layer layerHigh = this.addLayer();
+        // layerHigh.setZIndex(ZIndex.MAP_HIGH);
+        // layerHigh.setMatrix("/maps/city/layers/high.txt", " ");
+        // layerHigh.registerMaterial("plank-bottom-short.png", plankBottomShort);
+        // layerHigh.registerMaterial("plank-bottom.png", plankBottom);
+        // layerHigh.registerMaterial("plank-crossed.png", plankCrossed);
+        // layerHigh.registerMaterial("plank-horizontal-middle.png", plankHorizontalMiddle);
+        // layerHigh.registerMaterial("plank-vertical-middle.png", plankVerticalMiddle);
+        // layerHigh.registerMaterial("plank-left.png", plankLeft);
+        // layerHigh.registerMaterial("plank-right.png", plankRight);
+        // layerHigh.registerMaterial("plank-top.png", plankTop);
+        // layerHigh.distributeMaterials();
+        //
+        // Layer layerHigher = this.addLayer();
+        // layerHigher.setZIndex(ZIndex.MAP_HIGH + 1);
+        // layerHigher.setMatrix("/maps/city/layers/higher.txt", " ");
+        // layerHigher.registerMaterial("roof-rusty-slanted-left.png", roofRustySlantedLeft);
+        // layerHigher.registerMaterial("roof-rusty-slanted-right.png", roofRustySlantedRight);
+        // layerHigher.registerMaterial("roof-rusty.png", roofRusty);
+        // layerHigher.registerMaterial("roof-slanted-left.png", roofSlantedLeft);
+        // layerHigher.registerMaterial("roof-slanted-right.png", roofSlantedRight);
+        // layerHigher.registerMaterial("roof.png", roof);
+        // layerHigher.distributeMaterials();
     }
 }

@@ -2,6 +2,7 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
+import javafx.scene.paint.Paint;
 import main.CollisionGroup;
 import main.ZIndex;
 import scenes.game.GameScene;
@@ -36,7 +37,6 @@ public class Player extends Entity {
     private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
     private float angleToMouse = 0;
-    private final Vector renderPosition = new Vector();
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
@@ -83,16 +83,25 @@ public class Player extends Entity {
         
         // render body
         this.bodySprite.render(ctx);
+        this.bodySprite.setPosition(
+            getPosition().getX(),
+            getPosition().getY()
+        );
         
         // render gun
         ctx.save();
         ctx.translate(
-            renderPosition.getX(),
-            renderPosition.getY()
+            getPosition().getX(),
+            getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
         this.gunSprite.render(ctx);
         ctx.restore();
+    }
+    
+    @Override
+    public Vector getRenderPosition() {
+        return collider.getPosition();
     }
     
     public void update(float deltaTime) {
@@ -128,8 +137,8 @@ public class Player extends Entity {
         if (isIntervalOverFor("shoot")) {
             float offset = 30;
             this.gameApplication.getGameScene().getWorld().spawnBullet(
-                (float) (renderPosition.getX() + Math.cos(this.angleToMouse) * offset),
-                (float) (renderPosition.getY() + Math.sin(this.angleToMouse) * offset),
+                (float) (getPosition().getX() + Math.cos(this.angleToMouse) * offset),
+                (float) (getPosition().getY() + Math.sin(this.angleToMouse) * offset),
                 this.angleToMouse
             );
             resetIntervalFor("shoot");
@@ -142,7 +151,7 @@ public class Player extends Entity {
         Vector mouseInWorld = gameScene.getWorld().getCamera().screenToWorld(
             gameScene.getMouseHandler().getPosition()
         );
-        this.angleToMouse = renderPosition.getAngle(mouseInWorld);
+        this.angleToMouse = getPosition().getAngle(mouseInWorld);
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
@@ -181,7 +190,7 @@ public class Player extends Entity {
         dashAngle = collider.getAcceleration().getAngle();
         
         this.dashSprite.resetFrames();
-        this.dashPosition.set(renderPosition);
+        this.dashPosition.set(getRenderPosition());
         resetIntervalFor("dash");
     }
     
@@ -196,8 +205,7 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        getPosition().set(collider.getPosition());
-        renderPosition.set(collider.getPosition().clone().subtractY(collider.getRadius()));
+        getPosition().set(collider.getPosition().clone().addY(-collider.getRadius()));
         
         // x controls
         float computedSpeed = speed * collider.getMass();
@@ -256,9 +264,5 @@ public class Player extends Entity {
         this.gunSprite.nextFrame();
         this.gunSprite.setPosition(15, 0);
         this.bodySprite.nextFrame();
-        this.bodySprite.setPosition(
-            renderPosition.getX(),
-            renderPosition.getY()
-        );
     }
 }

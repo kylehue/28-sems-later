@@ -65,7 +65,9 @@ public class Layer {
                 float x = colIndex * map.tileSize;
                 float y = rowIndex * map.tileSize;
                 material.getPosition().add(x, y);
-                material.setZIndex(this.zIndex);
+                if (material.getZIndex() == 0) {
+                    material.setZIndex(this.zIndex);
+                }
                 Collider collider = material.getCollider();
                 if (collider != null) {
                     collider.getPosition().add(material.getPosition());

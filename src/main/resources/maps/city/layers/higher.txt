@@ -46,9 +46,9 @@
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . roof-rusty.png roof-rusty-slanted-left.png roof-rusty.png roof-rusty.png . . . . . . roof-rusty.png roof.png roof-rusty.png roof-rusty.png roof-rusty-slanted-right.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . . . . . . . . . . . roof-rusty.png roof.png roof-rusty.png roof-rusty.png roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-. roof-rusty.png roof-rusty.png roof.png roof-rusty.png roof.png roof.png roof-rusty.png . . . roof-rusty.png roof.png roof-rusty-slanted-right.png . roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-. roof-rusty.png roof-rusty.png roof.png roof-rusty.png roof-rusty-slanted-right.png roof.png roof-rusty.png . . . roof-rusty.png roof-rusty.png . roof.png roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-. roof-rusty.png roof-rusty-slanted-right.png roof.png . . roof.png roof-rusty.png . . . roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty-slanted-left.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. roof-rusty.png roof-rusty.png roof.png roof-rusty.png roof.png . . . . . roof-rusty.png roof.png roof-rusty-slanted-right.png . roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. roof-rusty.png roof-rusty.png roof.png roof-rusty.png roof-rusty-slanted-right.png . . . . . roof-rusty.png roof-rusty.png . roof.png roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. roof-rusty.png roof-rusty-slanted-right.png roof.png . . roof.png . . . . roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty-slanted-left.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -57,7 +57,7 @@
 . roof-rusty.png roof.png . . . . . . . . roof-rusty.png roof.png roof-rusty.png roof-rusty-slanted-right.png roof-rusty.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . roof-rusty.png roof-rusty.png roof-rusty.png . . . . . . . roof.png roof.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . . . . . . . . . . . roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-. roof-rusty.png roof-rusty-slanted-left.png . roof-rusty.png roof.png roof-rusty.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+. roof-rusty.png roof-rusty-slanted-left.png . . roof.png roof-rusty.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . roof-rusty.png . roof.png roof-rusty.png roof.png roof-rusty-slanted-right.png roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png roof-rusty.png . roof-rusty.png . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
