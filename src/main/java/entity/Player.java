@@ -20,7 +20,7 @@ public class Player extends Entity {
     private final float speed = 1000;
     
     // dash
-    private float dashSpeed = 25000;
+    private float dashSpeed = 15000;
     private float dashAngle = 0;
     private final Vector dashPosition = new Vector();
     

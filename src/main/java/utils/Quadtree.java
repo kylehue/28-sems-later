@@ -78,6 +78,8 @@ public class Quadtree<T> {
         float subWidth = this.bounds.getWidth() / 2;
         float subHeight = this.bounds.getHeight() / 2;
         
+        if (subWidth < this.minWidth || subHeight < this.minHeight) return;
+        
         this.subnodes = new Subnodes<T>(
             new Quadtree<T>(
                 new Bounds(
@@ -193,29 +195,26 @@ public class Quadtree<T> {
         );
         
         // Max objects reached
-        if (
-            this.objects.size() > this.maxObjects &&
-                this.bounds.getWidth() / 2 > this.minWidth &&
-                this.bounds.getHeight() / 2 > this.minHeight
-        ) {
+        if (this.objects.size() > this.maxObjects) {
             // Split if we don't already have sub-nodes
             this.split();
-            
-            // Add all objects to their corresponding sub-node
-            for (QObject<T> _quadtreeObject : this.objects) {
-                HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(
-                    _quadtreeObject
-                );
-                for (SubnodeLocation subnodeLocation : subnodeLocations) {
-                    getSubnode(subnodeLocation).insert(
-                        _quadtreeObject.object,
+            if (this.subnodes != null) {
+                // Add all objects to their corresponding sub-node
+                for (QObject<T> _quadtreeObject : this.objects) {
+                    HashSet<SubnodeLocation> subnodeLocations = this.getNodeLocation(
                         _quadtreeObject
                     );
+                    for (SubnodeLocation subnodeLocation : subnodeLocations) {
+                        getSubnode(subnodeLocation).insert(
+                            _quadtreeObject.object,
+                            _quadtreeObject
+                        );
+                    }
                 }
+                
+                // Clean up this node
+                this.objects.clear();
             }
-            
-            // Clean up this node
-            this.objects.clear();
         }
     }
     

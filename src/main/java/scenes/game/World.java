@@ -49,7 +49,7 @@ public class World {
         this.quadtree = new Quadtree<>(
             mapBounds,
             12,
-            15
+            10
         );
         this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
@@ -59,9 +59,9 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        float halfMapWidth = (float) map.getTotalWidth() / 2;
-        float halfMapHeight = (float) map.getTotalHeight() / 2;
-        for (int i = 0; i < 0; i++) {
+        float halfMapWidth = (float) map.getTotalWidth() / 2 * 0;
+        float halfMapHeight = (float) map.getTotalHeight() / 2 * 0;
+        for (int i = 0; i < 1000; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),

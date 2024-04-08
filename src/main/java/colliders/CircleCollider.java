@@ -46,7 +46,8 @@ public class CircleCollider extends Collider {
     @Override
     public void render(GraphicsContext ctx) {
         ctx.beginPath();
-        ctx.setStroke(Paint.valueOf("yellow"));
+        String color = isAsleep() ? "#000" : isColliding() ? "#ff0000" : "#00ff00";
+        ctx.setStroke(Paint.valueOf(color));
         ctx.strokeOval(
             getPosition().getX() - radius,
             getPosition().getY() - radius,

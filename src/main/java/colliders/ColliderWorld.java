@@ -34,15 +34,17 @@ public class ColliderWorld {
     
     public void removeCollider(String id) {
         for (int i = colliders.size() - 1; i >= 0; i--) {
-            if (colliders.get(i).getId().equals(id)) {
+            Collider collider = colliders.get(i);
+            if (collider.getId().equals(id)) {
                 this.colliders.remove(i);
                 break;
             }
+            collider.getContacts().remove(id);
         }
     }
     
     public void removeCollider(Collider collider) {
-        this.colliders.remove(collider);
+        removeCollider(collider.getId());
     }
     
     public void setQuadtree(Quadtree<Collider> quadtree) {
@@ -50,6 +52,11 @@ public class ColliderWorld {
     }
     
     public void update(float deltaTime) {
+        // Reset
+        // for (Collider collider : this.colliders) {
+        //     collider.getContacts().clear();
+        // }
+        
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
             colliderA.update(deltaTime);
@@ -74,6 +81,9 @@ public class ColliderWorld {
             // Resolve
             for (Collider colliderB : otherColliders) {
                 if (colliderA.getId().equals(colliderB.getId())) continue;
+                if (colliderA.isAsleep() && colliderB.isAsleep()) {
+                    continue;
+                }
                 
                 /*
                  * Pair to avoid redundant collisions. For example, if we
@@ -87,7 +97,6 @@ public class ColliderWorld {
                 }
                 pairs.add(combinationA);
                 pairs.add(combinationB);
-                
                 colliderA.resolveCollision(colliderB);
             }
         }

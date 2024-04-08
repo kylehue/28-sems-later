@@ -15,43 +15,68 @@ public class CityMap extends Map {
         // BASIC COLLIDERS
         
         float halfTile = ((float) this.getTileSize()) / 2;
-        float wallThickness = 5; // this value doubles so 4 becomes 8-pixel thick
+        float roomWallThickness = 5; // this value doubles so 4 becomes 8-pixel thick
         PolygonCollider roomWallBottomCollider = new PolygonCollider(new Vector[]{
-            new Vector(-halfTile, -wallThickness),
-            new Vector(halfTile, -wallThickness),
-            new Vector(halfTile, wallThickness),
-            new Vector(-halfTile, wallThickness)
+            new Vector(-halfTile, -roomWallThickness),
+            new Vector(halfTile, -roomWallThickness),
+            new Vector(halfTile, roomWallThickness),
+            new Vector(-halfTile, roomWallThickness)
         });
         roomWallBottomCollider.setGroup(CollisionGroup.MAP);
         roomWallBottomCollider.setStatic(true);
-        roomWallBottomCollider.getPosition().setY(halfTile - wallThickness);
+        roomWallBottomCollider.getPosition().setY(halfTile - roomWallThickness);
 
         PolygonCollider roomWallLeftCollider = new PolygonCollider(new Vector[]{
-            new Vector(-wallThickness, -halfTile),
-            new Vector(wallThickness, -halfTile),
-            new Vector(wallThickness, halfTile),
-            new Vector(-wallThickness, halfTile)
+            new Vector(-roomWallThickness, -halfTile),
+            new Vector(roomWallThickness, -halfTile),
+            new Vector(roomWallThickness, halfTile),
+            new Vector(-roomWallThickness, halfTile)
         });
         roomWallLeftCollider.setGroup(CollisionGroup.MAP);
         roomWallLeftCollider.setStatic(true);
-        roomWallLeftCollider.getPosition().setX(-halfTile + wallThickness);
+        roomWallLeftCollider.getPosition().setX(-halfTile + roomWallThickness);
 
         PolygonCollider roomWallRightCollider = roomWallLeftCollider.clone();
-        roomWallRightCollider.getPosition().setX(halfTile - wallThickness);
+        roomWallRightCollider.getPosition().setX(halfTile - roomWallThickness);
         
         PolygonCollider roomWallTurnLeftCollider = new PolygonCollider(new Vector[]{
-            new Vector(-wallThickness, -wallThickness),
-            new Vector(wallThickness, -wallThickness),
-            new Vector(wallThickness, wallThickness),
-            new Vector(-wallThickness, wallThickness)
+            new Vector(-roomWallThickness, -roomWallThickness),
+            new Vector(roomWallThickness, -roomWallThickness),
+            new Vector(roomWallThickness, roomWallThickness),
+            new Vector(-roomWallThickness, roomWallThickness)
         });
         roomWallTurnLeftCollider.setGroup(CollisionGroup.MAP);
         roomWallTurnLeftCollider.setStatic(true);
-        roomWallTurnLeftCollider.getPosition().setX(halfTile - wallThickness);
-        roomWallTurnLeftCollider.getPosition().setY(halfTile - wallThickness);
+        roomWallTurnLeftCollider.getPosition().setX(halfTile - roomWallThickness);
+        roomWallTurnLeftCollider.getPosition().setY(halfTile - roomWallThickness);
         
         PolygonCollider roomWallTurnRightCollider = roomWallTurnLeftCollider.clone();
-        roomWallTurnRightCollider.getPosition().setX(-halfTile + wallThickness);
+        roomWallTurnRightCollider.getPosition().setX(-halfTile + roomWallThickness);
+        
+        float fenceThickness = 2; // this value doubles so 4 becomes 8-pixel thick
+        PolygonCollider fenceBottomCollider = new PolygonCollider(new Vector[]{
+            new Vector(-halfTile, -fenceThickness),
+            new Vector(halfTile, -fenceThickness),
+            new Vector(halfTile, fenceThickness),
+            new Vector(-halfTile, fenceThickness)
+        });
+        fenceBottomCollider.setGroup(CollisionGroup.MAP);
+        fenceBottomCollider.setStatic(true);
+        fenceBottomCollider.getPosition().setY(halfTile - fenceThickness);
+        
+        PolygonCollider fenceLeftCollider = new PolygonCollider(new Vector[]{
+            new Vector(-fenceThickness, -halfTile),
+            new Vector(fenceThickness, -halfTile),
+            new Vector(fenceThickness, halfTile),
+            new Vector(-fenceThickness, halfTile)
+        });
+        fenceLeftCollider.setGroup(CollisionGroup.MAP);
+        fenceLeftCollider.setStatic(true);
+        fenceLeftCollider.getPosition().setX(-halfTile + fenceThickness);
+        
+        PolygonCollider fenceRightCollider = fenceLeftCollider.clone();
+        fenceRightCollider.getPosition().setX(halfTile - fenceThickness);
+        
         
         // TODO: make grouped collider because we don't allow concave shapes
         // PolygonCollider topLeftCorner = new PolygonCollider(new Vector[]{
@@ -146,38 +171,47 @@ public class CityMap extends Map {
         Material fenceBackSignedLeft = new Material("/maps/city/tiles/fence-back-signed-left.png");
         fenceBackSignedLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceBackSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceBackSignedLeft.setCollider(fenceBottomCollider);
         
         Material fenceBackSignedRight1 = new Material("/maps/city/tiles/fence-back-signed-right-1.png");
         fenceBackSignedRight1.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceBackSignedRight1.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceBackSignedRight1.setCollider(fenceBottomCollider);
         
         Material fenceBackSignedRight = new Material("/maps/city/tiles/fence-back-signed-right.png");
         fenceBackSignedRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceBackSignedRight.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceBackSignedRight.setCollider(fenceBottomCollider);
         
         Material fenceFrontSignedLeft = new Material("/maps/city/tiles/fence-front-signed-left.png");
         fenceFrontSignedLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceFrontSignedLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceFrontSignedLeft.setCollider(fenceBottomCollider);
         
         Material fenceLeft = new Material("/maps/city/tiles/fence-left.png");
         fenceLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceLeft.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceLeft.setCollider(fenceBottomCollider);
         
         Material fenceMiddle = new Material("/maps/city/tiles/fence-middle.png");
         fenceMiddle.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceMiddle.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceMiddle.setCollider(fenceBottomCollider);
         
         Material fenceRight = new Material("/maps/city/tiles/fence-right.png");
         fenceRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceRight.setPositionOrigin(Material.PositionOrigin.BOTTOM_LEFT);
+        fenceRight.setCollider(fenceBottomCollider);
         
         Material fenceSideLeft = new Material("/maps/city/tiles/fence-side-left.png");
         fenceSideLeft.setZIndex(ZIndex.MAP_DECORATIONS + 1);
         fenceSideLeft.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
+        fenceSideLeft.setCollider(fenceLeftCollider);
         
         Material fenceSideRight = new Material("/maps/city/tiles/fence-side-right.png");
         fenceSideRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
         fenceSideRight.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
+        fenceSideRight.setCollider(fenceRightCollider);
         
         Material roomWallCornerBottomLeft0 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-0.png");
         roomWallCornerBottomLeft0.setRenderPosition(Material.PositionOrigin.BOTTOM);

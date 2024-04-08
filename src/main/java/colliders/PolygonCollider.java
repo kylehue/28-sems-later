@@ -95,7 +95,8 @@ public class PolygonCollider extends Collider {
     public void render(GraphicsContext ctx) {
         if (vertices.length == 0) return;
         ctx.beginPath();
-        ctx.setStroke(Paint.valueOf("yellow"));
+        String color = isAsleep() ? "#000" : isColliding() ? "#ff0000" : "#00ff00";
+        ctx.setStroke(Paint.valueOf(color));
         float x = this.getPosition().getX();
         float y = this.getPosition().getY();
         ctx.moveTo(vertices[0].getX() + x, vertices[0].getY() + y);

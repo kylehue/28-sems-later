@@ -40,6 +40,11 @@ public abstract class Collider {
         return groupId;
     }
     
+    public boolean isAsleep() {
+        if (acceleration.getX() != 0 || acceleration.getY() != 0 ) return false;
+        return isStatic || velocity.getMagnitude() <= 0.001;
+    }
+    
     public boolean isGroupedWith(Collider collider) {
         return groups.contains(collider.groupId);
     }
@@ -67,7 +72,7 @@ public abstract class Collider {
     
     /* Physics / movement */
     public void setFriction(float friction) {
-        this.friction = friction;
+        this.friction = GameUtils.clamp(friction, 0, 1);
     }
     
     public float getFriction() {
@@ -75,7 +80,7 @@ public abstract class Collider {
     }
     
     public void setMass(float mass) {
-        this.mass = mass;
+        this.mass = GameUtils.clamp(mass, 1, Float.MAX_VALUE);
     }
     
     public float getMass() {
@@ -130,18 +135,19 @@ public abstract class Collider {
             return;
         }
         
-        Vector temp = position.clone();
         velocity.set(position.clone().subtract(oldPosition));
+        Vector temp = position.clone();
         
         // Update current position
+        float velocityX = velocity.getX();
+        float velocityY = velocity.getY();
+        float accelerationX = acceleration.getX();
+        float accelerationY = acceleration.getY();
+        float deltaTimeSquared = deltaTime * deltaTime;
         position.add(
-            velocity.clone().add(
-                acceleration.clone().scale(deltaTime * deltaTime)
-            )
+            (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX,
+            (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY
         );
-        
-        // Apply friction
-        position.subtract(velocity.clone().scale(friction));
         
         this.limitPositionToWorldBounds();
         

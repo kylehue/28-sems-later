@@ -8,21 +8,50 @@ import utils.Vector;
 import java.util.List;
 
 public abstract class CollisionResolvers {
+    private static boolean AABBTest(
+        float x1,
+        float y1,
+        float width1,
+        float height1,
+        float x2,
+        float y2,
+        float width2,
+        float height2
+    ) {
+        if (x1 + width1 < x2 || x2 + width2 < x1) return false;
+        if (y1 + height1 < y2 || y2 + height2 < y1) return false;
+        return true;
+    }
+    
     public static void circleToCircle(
         CircleCollider circleA,
         CircleCollider circleB
     ) {
         if (!circleA.isGroupedWith(circleB) && !circleB.isGroupedWith(circleA)) return;
         
+        // Detect (AABB)
+        boolean isCollidingAABB = AABBTest(
+            circleA.getPosition().getX() - circleA.getWidth() / 2,
+            circleA.getPosition().getY() - circleA.getHeight() / 2,
+            circleA.getWidth(),
+            circleA.getHeight(),
+            circleB.getPosition().getX() - circleB.getWidth() / 2,
+            circleB.getPosition().getY() - circleB.getHeight() / 2,
+            circleB.getWidth(),
+            circleB.getHeight()
+        );
+        if (!isCollidingAABB) {
+            return;
+        }
+        
+        // Detect (Pythagorean Theorem)
         float distance = circleA
             .getPosition()
             .getDistanceFrom(circleB.getPosition());
         float radiusSum = circleA.getRadius() + circleB.getRadius();
-        boolean isColliding = distance <= radiusSum;
+        boolean isColliding = distance < radiusSum;
         
         if (!isColliding) {
-            circleA.getContacts().remove(circleB.getId());
-            circleB.getContacts().remove(circleA.getId());
             return;
         }
         
@@ -62,14 +91,25 @@ public abstract class CollisionResolvers {
     ) {
         if (!circle.isGroupedWith(polygon) && !polygon.isGroupedWith(circle)) return;
         
-        int vertexCount = polygon.getVertices().length;
+        // Detect (AABB)
+        boolean isCollidingAABB = AABBTest(
+            circle.getPosition().getX() - circle.getWidth() / 2,
+            circle.getPosition().getY() - circle.getHeight() / 2,
+            circle.getWidth(),
+            circle.getHeight(),
+            polygon.getPosition().getX() - polygon.getWidth() / 2,
+            polygon.getPosition().getY() - polygon.getHeight() / 2,
+            polygon.getWidth(),
+            polygon.getHeight()
+        );
+        if (!isCollidingAABB) {
+            return;
+        }
         
-        // Minimum vertex to make a polygon is 3, so we return if it's less than 3
-        if (vertexCount < 3) return;
-        
-        // Perform separating axis theorem (polygon axes)
+        // Detect (Separating Axes Theorem)
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;
+        int vertexCount = polygon.getVertices().length;
         for (int i = 0; i < vertexCount; i++) {
             // Pair 2 points that will act as the line
             Vector pointA = polygon
@@ -107,8 +147,6 @@ public abstract class CollisionResolvers {
              * it means that both shapes aren't colliding, so we stop.
              */
             if (!isIntersecting) {
-                circle.getContacts().remove(polygon.getId());
-                polygon.getContacts().remove(circle.getId());
                 return;
             }
             
@@ -116,7 +154,7 @@ public abstract class CollisionResolvers {
             float overlap = Math.abs(Math.min(circleMax, polygonMax) - Math.max(circleMin, polygonMin));
             if (overlap < minOverlap) {
                 minOverlap = overlap;
-                mtv = normal.clone().normalize().scale(overlap);
+                mtv = normal.clone().normalize().scale(minOverlap);
             }
         }
         
@@ -168,8 +206,6 @@ public abstract class CollisionResolvers {
         // Stop if it's not intersecting (2 shapes are not colliding)
         boolean isIntersecting = polygonMax >= circleMin && circleMax >= polygonMin;
         if (!isIntersecting) {
-            circle.getContacts().remove(polygon.getId());
-            polygon.getContacts().remove(circle.getId());
             return;
         }
         
@@ -189,7 +225,7 @@ public abstract class CollisionResolvers {
         float overlap = Math.abs(Math.min(circleMax, polygonMax) - Math.max(circleMin, polygonMin));
         if (overlap < minOverlap) {
             minOverlap = overlap;
-            mtv = normal.clone().normalize().scale(overlap);
+            mtv = normal.clone().normalize().scale(minOverlap);
         }
         
         // Resolve
@@ -198,13 +234,13 @@ public abstract class CollisionResolvers {
                 circle.getPosition()
             );
             float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
-            
+
             mtv.scale(direction);
             if (!circle.isStatic() && !polygon.isStatic()) {
                 float totalMass = circle.getMass() + polygon.getMass();
                 float ratioA = polygon.getMass() / totalMass;
                 float ratioB = circle.getMass() / totalMass;
-                
+
                 // Apply MTV based on mass ratios
                 circle.getPosition().add(mtv.clone().scale(ratioA));
                 polygon.getPosition().subtract(mtv.clone().scale(ratioB));
@@ -222,6 +258,22 @@ public abstract class CollisionResolvers {
     ) {
         if (!polygonA.isGroupedWith(polygonB) && !polygonB.isGroupedWith(polygonA)) return;
         
+        // Detect (AABB)
+        boolean isCollidingAABB = AABBTest(
+            polygonA.getPosition().getX() - polygonA.getWidth() / 2,
+            polygonA.getPosition().getY() - polygonA.getHeight() / 2,
+            polygonA.getWidth(),
+            polygonA.getHeight(),
+            polygonB.getPosition().getX() - polygonB.getWidth() / 2,
+            polygonB.getPosition().getY() - polygonB.getHeight() / 2,
+            polygonB.getWidth(),
+            polygonB.getHeight()
+        );
+        if (!isCollidingAABB) {
+            return;
+        }
+        
+        // Detect (Separating Axes Theorem)
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;
         boolean swapped = false;
@@ -265,8 +317,6 @@ public abstract class CollisionResolvers {
             // If there's at least 1 case where the projections don't
             // intersect, it means that both shapes aren't colliding.
             if (!isIntersecting) {
-                polygonA.getContacts().remove(polygonB.getId());
-                polygonB.getContacts().remove(polygonA.getId());
                 return;
             }
             
@@ -274,7 +324,7 @@ public abstract class CollisionResolvers {
             float overlap = Math.abs(Math.min(polygonAMax, polygonBMax) - Math.max(polygonAMin, polygonBMin));
             if (overlap < minOverlap) {
                 minOverlap = overlap;
-                mtv = normal.clone().normalize().scale(overlap);
+                mtv = normal.clone().normalize().scale(minOverlap);
             }
             
             // Check other way around if the last axis still intersects
