@@ -10,6 +10,10 @@ import scenes.GameApplicationScene;
 import event.KeyHandler;
 import event.MouseHandler;
 import utils.AnimationLoop;
+import utils.Async;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GameScene extends GameApplicationScene {
     private final Canvas canvas = new Canvas();
@@ -78,13 +82,14 @@ public class GameScene extends GameApplicationScene {
     }
     
     public void startGame() {
-        if (this.world == null) {
-            // TODO: how can we assign the world to this.world BEFORE creating it?
-            this.world = new World(this.getGameApplication());
-            this.world.setup();
-        }
-        
-        this.animationLoop.startLoop();
+        Async.executorService.submit(() -> {
+            if (this.world == null) {
+                this.world = new World(this.getGameApplication());
+                this.world.setup();
+            }
+            
+            this.animationLoop.startLoop();
+        });
     }
     
     public void pauseGame() {
