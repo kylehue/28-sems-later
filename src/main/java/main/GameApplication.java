@@ -39,11 +39,6 @@ public class GameApplication {
         return titleScene;
     }
     
-    public void startGame() {
-        sceneManager.setScene(this.gameScene.getSceneId());
-        this.gameScene.startGame();
-    }
-    
     public SceneManager getSceneManager() {
         return sceneManager;
     }

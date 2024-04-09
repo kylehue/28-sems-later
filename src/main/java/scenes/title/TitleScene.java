@@ -55,8 +55,14 @@ public class TitleScene extends GameApplicationScene {
         btnRoot.add(startButton, 0, 1);
         
         startButton.setOnAction(e -> {
-            gameApplication.startGame();
-            parallax.pauseLoop();
+            startButton.setDisable(true);
+            startButton.setText("Loading...");
+            gameApplication.getGameScene().startGame().setOnSucceeded((t) -> {
+                gameApplication.getSceneManager().setScene(
+                    gameApplication.getGameScene().getSceneId()
+                );
+                parallax.pauseLoop();
+            });
         });
     }
 }

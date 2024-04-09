@@ -1,5 +1,6 @@
 package scenes.game;
 
+import javafx.concurrent.Task;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -14,6 +15,7 @@ import utils.Async;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class GameScene extends GameApplicationScene {
     private final Canvas canvas = new Canvas();
@@ -81,15 +83,22 @@ public class GameScene extends GameApplicationScene {
         return world;
     }
     
-    public void startGame() {
-        Async.executorService.submit(() -> {
-            if (this.world == null) {
-                this.world = new World(this.getGameApplication());
-                this.world.setup();
+    public Task<Void> startGame() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                if (world == null) {
+                    world = new World(getGameApplication());
+                    world.setup();
+                }
+                
+                animationLoop.startLoop();
+                return null;
             }
-            
-            this.animationLoop.startLoop();
-        });
+        };
+        
+        Async.executorService.submit(task);
+        return task;
     }
     
     public void pauseGame() {
