@@ -8,6 +8,7 @@ import main.ZIndex;
 import sprites.ZombieSprite;
 import utils.Bounds;
 import utils.GameUtils;
+import utils.Vector;
 
 public class Zombie extends Entity {
     // basic characteristics
@@ -20,7 +21,6 @@ public class Zombie extends Entity {
     private CircleCollider collider = new CircleCollider();
     private float angleToPlayer = 0;
     private boolean isFacingOnLeftSide = false;
-    
     
     public Zombie(GameApplication gameApplication) {
         this.gameApplication = gameApplication;
@@ -40,6 +40,11 @@ public class Zombie extends Entity {
         this.collider.setMass(1);
         registerIntervalFor("zombie", 5000);
         this.setZIndex(ZIndex.ZOMBIE);
+    }
+    
+    @Override
+    public Vector getRenderPosition() {
+        return collider.getPosition();
     }
     
     @Override
@@ -92,9 +97,8 @@ public class Zombie extends Entity {
     }
     
     private void handleMovements() {
-        this.getPosition().set(
-            collider.getPosition().clone().subtract(0, collider.getRadius())
-        );
+        getPosition().set(collider.getPosition().clone().addY(-collider.getRadius()));
+        
         this.collider.applyForce(
             (float) (Math.cos(angleToPlayer) * speed * collider.getMass()),
             (float) (Math.sin(angleToPlayer) * speed * collider.getMass())
