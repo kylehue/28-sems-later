@@ -52,15 +52,13 @@ public class ColliderWorld {
     }
     
     public void update(float deltaTime) {
-        // Reset
-        // for (Collider collider : this.colliders) {
-        //     collider.getContacts().clear();
-        // }
+        for (Collider collider : colliders) {
+            collider.getContacts().clear();
+            collider.update(deltaTime);
+        }
         
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
-            colliderA.update(deltaTime);
-            
             // If there's a quadtree, use it
             ArrayList<Collider> otherColliders;
             if (this.quadtree != null) {

@@ -11,7 +11,7 @@ import utils.GameUtils;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private float speed = 0.01f;
+    private float speed = GameUtils.random(150, 450);
     private int damage = 1;
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();

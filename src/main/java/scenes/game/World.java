@@ -11,10 +11,7 @@ import main.GameApplication;
 import map.Layer;
 import maps.CityMap;
 import map.Map;
-import utils.Bounds;
-import utils.Camera;
-import utils.GameUtils;
-import utils.Quadtree;
+import utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,8 +45,8 @@ public class World {
         );
         this.quadtree = new Quadtree<>(
             mapBounds,
-            12,
-            10
+            15,
+            30
         );
         this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
@@ -59,9 +56,13 @@ public class World {
     
     public void setup() {
         this.player = new Player(gameApplication);
-        float halfMapWidth = (float) map.getTotalWidth() / 2 * 0;
-        float halfMapHeight = (float) map.getTotalHeight() / 2 * 0;
-        for (int i = 0; i < 1000; i++) {
+        float halfMapWidth = (float) map.getTotalWidth() / 2;
+        float halfMapHeight = (float) map.getTotalHeight() / 2;
+        player.getCollider().getPosition().set(
+            halfMapWidth,
+            halfMapHeight
+        );
+        for (int i = 0; i < 500; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
