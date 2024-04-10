@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 public class Async {
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
-        Math.min(Runtime.getRuntime().availableProcessors(), 4),
+        1,
         (runnable) -> {
             Thread thread = new Thread(runnable);
             thread.setDaemon(true);

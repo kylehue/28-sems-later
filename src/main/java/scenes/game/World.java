@@ -9,6 +9,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import main.GameApplication;
 import map.Layer;
+import map.Material;
+import map.PathFinder;
 import maps.CityMap;
 import map.Map;
 import utils.*;
@@ -26,6 +28,7 @@ public class World {
     private final ColliderWorld colliderWorld = new ColliderWorld();
     private Player player;
     private final UI ui;
+    private final PathFinder pathFinder;
     
     /* For debugging */
     public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
@@ -38,8 +41,8 @@ public class World {
         this.gameApplication = gameApplication;
         this.ui = new UI(gameApplication);
         Bounds mapBounds = new Bounds(
-            (float) -map.getTileSize() / 2,
-            (float) -map.getTileSize() / 2,
+            (float) 0,
+            (float) 0,
             map.getTotalWidth(),
             map.getTotalHeight()
         );
@@ -47,6 +50,11 @@ public class World {
             mapBounds,
             15,
             30
+        );
+        pathFinder = new PathFinder(
+            map.getTileSize() / 4,
+            map.getTotalWidth(),
+            map.getTotalHeight()
         );
         this.colliderWorld.setBounds(mapBounds);
         this.colliderWorld.setQuadtree(this.quadtree);
@@ -70,6 +78,13 @@ public class World {
             );
             zombies.add(enemy);
         }
+        map.getLayers().forEach(layer -> {
+            for (Material material : layer.getMaterials()) {
+                Collider collider = material.getCollider();
+                if (collider == null) continue;
+                pathFinder.getObstacles().add(collider);
+            }
+        });
     }
     
     public void render(GraphicsContext ctx) {
@@ -156,7 +171,6 @@ public class World {
         }
     }
     
-    
     public void update(float deltaTime) {
         this.quadtree.clear();
         this.handleBulletDisposal();
@@ -176,6 +190,10 @@ public class World {
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
         colliderWorld.update(deltaTime);
+    }
+    
+    public PathFinder getPathFinder() {
+        return pathFinder;
     }
     
     public Quadtree<Collider> getQuadtree() {

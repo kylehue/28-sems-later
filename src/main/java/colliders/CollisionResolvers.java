@@ -8,7 +8,7 @@ import utils.Vector;
 import java.util.List;
 
 public abstract class CollisionResolvers {
-    private static boolean AABBTest(
+    public static boolean AABBTest(
         float x1,
         float y1,
         float width1,

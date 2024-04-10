@@ -3,6 +3,7 @@ package colliders;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import scenes.game.World;
+import utils.Bounds;
 import utils.GameUtils;
 import utils.Vector;
 
@@ -41,7 +42,7 @@ public abstract class Collider {
     }
     
     public boolean isAsleep() {
-        if (acceleration.getX() != 0 || acceleration.getY() != 0 ) return false;
+        if (acceleration.getX() != 0 || acceleration.getY() != 0) return false;
         return isStatic || velocity.getMagnitude() <= 0.001;
     }
     
@@ -64,6 +65,19 @@ public abstract class Collider {
     
     public boolean isCollidingWith(Collider collider) {
         return contacts.contains(collider.getId());
+    }
+    
+    public boolean isCollidingWith(Bounds bounds) {
+        return CollisionResolvers.AABBTest(
+            position.getX() - getWidth() / 2,
+            position.getY() - getHeight() / 2,
+            getWidth(),
+            getHeight(),
+            bounds.getX(),
+            bounds.getY(),
+            bounds.getWidth(),
+            bounds.getHeight()
+        );
     }
     
     public boolean isColliding() {

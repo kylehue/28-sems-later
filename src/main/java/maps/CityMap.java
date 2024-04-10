@@ -53,7 +53,7 @@ public class CityMap extends Map {
         PolygonCollider roomWallTurnRightCollider = roomWallTurnLeftCollider.clone();
         roomWallTurnRightCollider.getPosition().setX(-halfTile + roomWallThickness);
         
-        float fenceThickness = 2; // this value doubles so 4 becomes 8-pixel thick
+        float fenceThickness = 2.5f; // this value doubles so 4 becomes 8-pixel thick
         PolygonCollider fenceBottomCollider = new PolygonCollider(new Vector[]{
             new Vector(-halfTile, -fenceThickness),
             new Vector(halfTile, -fenceThickness),

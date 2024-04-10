@@ -62,8 +62,8 @@ public class Layer {
                 Material registedMaterial = registeredMaterials.get(tileId);
                 if (registedMaterial == null) continue;
                 Material material = registedMaterial.clone();
-                float x = colIndex * map.tileSize;
-                float y = rowIndex * map.tileSize;
+                float x = colIndex * map.tileSize + (float) map.tileSize / 2;
+                float y = rowIndex * map.tileSize + (float) map.tileSize / 2;
                 material.getPosition().add(x, y);
                 if (material.getZIndex() == 0) {
                     material.setZIndex(this.zIndex);
