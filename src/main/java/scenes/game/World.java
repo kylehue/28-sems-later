@@ -52,7 +52,7 @@ public class World {
             30
         );
         pathFinder = new PathFinder(
-            map.getTileSize() / 4,
+            map.getTileSize() / 2,
             map.getTotalWidth(),
             map.getTotalHeight()
         );

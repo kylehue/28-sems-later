@@ -8,14 +8,13 @@ import utils.GameUtils;
 import utils.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
 public class PathFinder {
     private final int nodeSize;
     private final HashSet<Collider> obstacles = new HashSet<>();
-    private final Node[][] nodes;
+    private Node[][] nodes;
     private int totalWidth = 0;
     private int totalHeight = 0;
     private int gridLengthX = 0;
@@ -30,22 +29,25 @@ public class PathFinder {
         this.nodes = new Node[gridLengthX][gridLengthY];
     }
     
+    public int getNodeSize() {
+        return nodeSize;
+    }
+    
     public HashSet<Collider> getObstacles() {
         return obstacles;
     }
     
+    private final Vector lastGoalNodeNotObstacle = new Vector();
+    private final Vector lastStartNodeNotObstacle = new Vector();
+    
     public ArrayList<Vector> requestPath(Vector start, Vector goal) {
         ArrayList<Vector> path = new ArrayList<>();
-        Node startNode = fromPosition(start);
-        Node goalNode = fromPosition(goal);
-        PriorityQueue<Node> openNodes = new PriorityQueue<>((a, b) -> {
-            if (a.fCost == b.fCost) return a.hCost - b.hCost;
-            return a.fCost - b.fCost;
-        });
-        HashSet<Node> closedNodes = new HashSet<>();
-        openNodes.add(startNode);
         
-        goalNode.isObstacle = false;
+        Node startNode = getOrCreateNodeFromPosition(start);
+        startNode = getProperNodeIfObstacle(startNode, start, lastStartNodeNotObstacle);
+        
+        Node goalNode = getOrCreateNodeFromPosition(goal);
+        goalNode = getProperNodeIfObstacle(goalNode, goal, lastGoalNodeNotObstacle);
         
         // // render start node
         // World.debugRender.put(startNode.x + "." + startNode.y, ctx -> {
@@ -78,7 +80,7 @@ public class PathFinder {
         // for (int x = 0; x < gridLengthX; x++) {
         //     for (int y = 0; y < gridLengthY; y++) {
         //         Node node = getOrCreateNode(x, y);
-        //         World.debugRender.put(node.x + "." + node.y, ctx -> {
+        //         World.debugRender.put(node.x + ".," + node.y, ctx -> {
         //             ctx.beginPath();
         //             ctx.setFill(Paint.valueOf(node.isObstacle ? "rgba(255, 0, 0, 0.25)" : "rgba(0, 255, 0, 0.25)"));
         //             ctx.fillRect(node.x * nodeSize + 1, node.y * nodeSize + 1, nodeSize - 2, nodeSize - 2);
@@ -87,17 +89,26 @@ public class PathFinder {
         //     }
         // }
         
+        // Perform A* algorithm
+        PriorityQueue<Node> openNodes = new PriorityQueue<>((a, b) -> {
+            if (a.fCost == b.fCost) return a.hCost - b.hCost;
+            return a.fCost - b.fCost;
+        });
+        HashSet<Node> closedNodes = new HashSet<>();
+        openNodes.add(startNode);
+        
         while (!openNodes.isEmpty()) {
             Node currentNode = openNodes.remove();
             closedNodes.add(currentNode);
             
             if (currentNode == goalNode) {
-                return retracePath(startNode, goalNode);
+                path = retracePath(startNode, goalNode);
+                break;
             }
             
             ArrayList<Node> neighbors = getNodeNeighbors(currentNode);
             for (Node neighborNode : neighbors) {
-                if ((neighborNode.isObstacle) || closedNodes.contains(neighborNode)) continue;
+                if (neighborNode.isObstacle || closedNodes.contains(neighborNode)) continue;
                 
                 int movementCostToNeighbor = currentNode.gCost + computeNodeDistances(
                     currentNode,
@@ -119,8 +130,35 @@ public class PathFinder {
             }
         }
         
-        path.add(goal);
         return path;
+    }
+    
+    /**
+     * If `node` is an obstacle, it computes the last node that is not
+     * an obstacle by using the `currentPosition` and `lastPosition` and returns it.
+     * If `node` is not an obstacle, it just updates the `lastPosition`.
+     */
+    private Node getProperNodeIfObstacle(Node node, Vector currentPosition, Vector lastPosition) {
+        if (node.isObstacle) {
+            Node newTargetNode = getOrCreateNodeFromPosition(
+                lastPosition.clone().setX(currentPosition.getX())
+            );
+            if (newTargetNode.isObstacle) {
+                newTargetNode = getOrCreateNodeFromPosition(
+                    lastPosition.clone().setY(currentPosition.getY())
+                );
+            }
+            if (newTargetNode.isObstacle) {
+                for (Node neighbor : getNodeNeighbors(newTargetNode)) {
+                    if (!neighbor.isObstacle) return neighbor;
+                }
+            }
+            return newTargetNode;
+        } else {
+            lastPosition.set(currentPosition);
+        }
+        
+        return node;
     }
     
     HashSet<String> cachedObstacles = new HashSet<>();
@@ -152,7 +190,7 @@ public class PathFinder {
         return false;
     }
     
-    private Node fromPosition(Vector position) {
+    public int[] convertWorldPositionToGridPosition(Vector position) {
         float nodeSizeHalf = (float) nodeSize / 2;
         float percentMidX = position.getX() / ((float) totalWidth / 2f);
         float percentMidY = position.getY() / ((float) totalHeight / 2f);
@@ -168,6 +206,13 @@ public class PathFinder {
         );
         int gridX = Math.round((gridLengthX - 1) * percentX);
         int gridY = Math.round((gridLengthY - 1) * percentY);
+        return new int[]{gridX, gridY};
+    }
+    
+    private Node getOrCreateNodeFromPosition(Vector position) {
+        int[] gridPosition = convertWorldPositionToGridPosition(position);
+        int gridX = gridPosition[0];
+        int gridY = gridPosition[1];
         return getOrCreateNode(gridX, gridY);
     }
     
@@ -226,15 +271,19 @@ public class PathFinder {
      */
     private ArrayList<Vector> retracePath(Node startNode, Node goalNode) {
         ArrayList<Vector> path = new ArrayList<>();
-        
+        float halfNodeSize = (float) this.nodeSize / 2;
         Node currentNode = goalNode;
         while (currentNode != startNode) {
             path.add(new Vector(
-                currentNode.x * this.nodeSize,
-                currentNode.y * this.nodeSize
+                currentNode.x * this.nodeSize + halfNodeSize,
+                currentNode.y * this.nodeSize + halfNodeSize
             ));
             currentNode = currentNode.parent;
         }
+        path.add(new Vector(
+            startNode.x * this.nodeSize + halfNodeSize,
+            startNode.y * this.nodeSize + halfNodeSize
+        ));
         
         return path;
     }

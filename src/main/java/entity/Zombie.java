@@ -1,13 +1,11 @@
 package entity;
 
 import colliders.CircleCollider;
-import javafx.concurrent.Task;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import main.CollisionGroup;
 import main.GameApplication;
 import main.ZIndex;
-import scenes.game.World;
 import sprites.ZombieSprite;
 import utils.Async;
 import utils.Bounds;
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 
 public class Zombie extends Entity {
     // basic characteristics
-    private float speed = GameUtils.random(250, 550);
+    private float speed = GameUtils.random(300, 750);
     private int damage = 1;
     // sprite
     private final ZombieSprite sprite = new ZombieSprite();
@@ -47,7 +45,7 @@ public class Zombie extends Entity {
         this.collider.setRadius(5);
         this.collider.setMass(1);
         registerIntervalFor("zombie", 5000);
-        registerIntervalFor("pathToPlayerUpdate", (int) GameUtils.random(300, 500));
+        registerIntervalFor("pathToPlayerUpdate", (int) GameUtils.random(70, 200));
         this.setZIndex(ZIndex.ZOMBIE);
     }
     
@@ -59,6 +57,14 @@ public class Zombie extends Entity {
     @Override
     public void render(GraphicsContext ctx) {
         this.sprite.render(ctx);
+        
+        // // draw path to player
+        // for (Vector vector : pathToPlayer) {
+        //     ctx.beginPath();
+        //     ctx.setFill(Paint.valueOf("rgba(250, 120, 250, 0.85)"));
+        //     ctx.fillOval(vector.getX(), vector.getY(), 8, 8);
+        //     ctx.closePath();
+        // }
     }
     
     public void update(float deltaTime) {
@@ -118,17 +124,6 @@ public class Zombie extends Entity {
                     collider.getPosition(),
                     player.getCollider().getPosition()
                 );
-                if (!pathToPlayer.isEmpty()) {
-                    pathToPlayer.removeLast();
-                }
-                
-                if (!pathToPlayer.isEmpty()) {
-                    // add jitter
-                    pathToPlayer.getLast().add(
-                        GameUtils.random(-10, 10),
-                        GameUtils.random(-10, 10)
-                    );
-                }
             });
             resetIntervalFor("pathToPlayerUpdate");
         }
@@ -138,26 +133,14 @@ public class Zombie extends Entity {
         getPosition().set(collider.getPosition().clone().addY(-collider.getRadius()));
         
         // Move to player
-        if (!pathToPlayer.isEmpty()) {
-            // for (Vector v : pathToPlayer) {
-            //     World.debugRender.put((v.toString()), ctx -> {
-            //         ctx.beginPath();
-            //         ctx.setFill(Paint.valueOf("white"));
-            //         ctx.fillOval(v.getX() - 2, v.getY() - 2, 4, 4);
-            //         ctx.closePath();
-            //     });
-            // }
-            
-            Vector pathToPlayerStep = pathToPlayer.getLast();
-            float angle = getPosition().getAngle(pathToPlayerStep);
+        if (pathToPlayer.size() > 1) {
+            Vector stepNext = pathToPlayer.get(Math.max(0, pathToPlayer.size() - 2));
+            float angle = collider.getPosition().getAngle(stepNext);
             this.collider.applyForce(
                 (float) (Math.cos(angle) * speed * collider.getMass()),
                 (float) (Math.sin(angle) * speed * collider.getMass())
             );
             this.isFacingOnLeftSide = Math.abs(angle) > (Math.PI / 2);
-            if (pathToPlayerStep.getDistanceFrom(getPosition()) < 10) {
-                pathToPlayer.removeLast();
-            }
         } else {
             this.collider.applyForce(
                 (float) (Math.cos(angleToPlayer) * speed * collider.getMass()),
