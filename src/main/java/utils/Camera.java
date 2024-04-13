@@ -53,6 +53,10 @@ public class Camera {
         this.updateViewport();
     }
     
+    public Vector getPosition() {
+        return position;
+    }
+    
     public void moveTo(float x, float y) {
         this.position.lerp(x, y, 0.15f);
         this.updateViewport();

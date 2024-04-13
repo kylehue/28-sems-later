@@ -20,6 +20,7 @@ public class Material implements Thing {
     private boolean isVerticallyFlipped = false;
     private int rotation = 0;
     private int tileSize = 32;
+    private boolean isSeeThroughProperty = false;
     
     public enum PositionOrigin {
         TOP,
@@ -39,6 +40,15 @@ public class Material implements Thing {
     
     public Material(Image image) {
         this.image = image;
+    }
+    
+    public void setSeeThrough(boolean v) {
+        isSeeThroughProperty = v;
+    }
+    
+    @Override
+    public boolean isSeeThrough() {
+        return isSeeThroughProperty;
     }
     
     public Image getImage() {
@@ -250,6 +260,7 @@ public class Material implements Thing {
         clone.setZIndex(this.zIndex);
         clone.setHorizontallyFlipped(this.isHorizontallyFlipped);
         clone.setVerticallyFlipped(this.isVerticallyFlipped);
+        clone.setSeeThrough(isSeeThrough());
         // clone.setPositionOrigin(this.positionOrigin);
         clone.renderPositionOffset.set(this.renderPositionOffset);
         if (collider != null) clone.setCollider(collider.clone());

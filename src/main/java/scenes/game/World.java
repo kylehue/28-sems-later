@@ -65,10 +65,6 @@ public class World {
         map.addCollidersToWorld(colliderWorld);
     }
     
-    GroupedCollider test;
-    
-    CircleCollider a = new CircleCollider();
-    CircleCollider b = new CircleCollider();
     public void setup() {
         this.player = new Player(gameApplication);
         float halfMapWidth = (float) map.getTotalWidth() / 2;
@@ -92,26 +88,6 @@ public class World {
                 pathFinder.getObstacles().add(collider);
             }
         });
-        a.setRadius(12);
-        a.getPosition().set(12, 12);
-        b.setRadius(12);
-        b.getPosition().set(-12, -12);
-        test = new GroupedCollider(new Collider[]{
-            a,
-            b
-        });
-        test.setGroup(CollisionGroup.MAP);
-        test.addToGroup(CollisionGroup.MAP);
-        test.setMass(500);
-        
-        test.getPosition().set(
-            halfMapWidth,
-            halfMapHeight
-        );
-        
-        colliderWorld.addCollider(test);
-        colliderWorld.addCollider(a);
-        colliderWorld.addCollider(b);
     }
     
     public void render(GraphicsContext ctx) {
@@ -152,7 +128,25 @@ public class World {
         });
         
         for (Thing thing : things) {
+            if (thing.isSeeThrough()) {
+                ctx.save();
+                float distance = camera.getPosition().getDistanceFrom(thing.getPosition());
+                float seeThroughDistance = 100;
+                if (distance <= seeThroughDistance) {
+                    ctx.setGlobalAlpha(
+                        GameUtils.map(
+                            distance,
+                            0,
+                            seeThroughDistance,
+                            0.1f,
+                            1
+                        )
+                    );
+                }
+            }
+            
             thing.render(ctx);
+            if (thing.isSeeThrough()) ctx.restore();
         }
         
         for (Bullet bullet : bullets) {
@@ -203,15 +197,6 @@ public class World {
         this.handleBulletDisposal();
         map.putCollidersInQuadtree(this.quadtree);
         map.update(deltaTime);
-        this.quadtree.insert(test, new Bounds(
-            test.getPosition().getX() - test.getWidth() / 2, test.getPosition().getY() - test.getHeight() / 2, test.getWidth(), test.getHeight()
-        ));
-        this.quadtree.insert(a, new Bounds(
-            a.getPosition().getX() - 25, a.getPosition().getY() - 25, 50, 50
-        ));
-        this.quadtree.insert(b, new Bounds(
-            b.getPosition().getX() - 25, b.getPosition().getY() - 25, 50, 50
-        ));
         
         player.update(deltaTime);
         

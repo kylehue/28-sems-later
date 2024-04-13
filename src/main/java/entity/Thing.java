@@ -10,5 +10,6 @@ public interface Thing {
     Vector getPosition();
     Vector getRenderPosition();
     int getZIndex();
+    boolean isSeeThrough();
     void render(GraphicsContext graphicsContext);
 }

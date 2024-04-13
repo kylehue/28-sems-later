@@ -114,19 +114,6 @@ public class CityMap extends Map {
         fenceTurnRightCollider.setGroup(CollisionGroup.MAP);
         fenceTurnRightCollider.setStatic(true);
         
-        // TODO: make grouped collider because we don't allow concave shapes
-        // PolygonCollider topLeftCorner = new PolygonCollider(new Vector[]{
-        //     new Vector(-halfTile, -halfTile),
-        //     new Vector(halfTile, -halfTile),
-        //     new Vector(halfTile, -halfTile + wallThickness * 2),
-        //     new Vector(-halfTile + wallThickness * 2, -halfTile + wallThickness * 2),
-        //     new Vector(-halfTile + wallThickness * 2, halfTile),
-        //     new Vector(-halfTile, halfTile)
-        // });
-        // topLeftCorner.getPosition().set(inset, inset);
-        // topLeftCorner.setGroup(CollisionGroup.MAP);
-        // topLeftCorner.setStatic(true);
-        
         // MATERIALS (LOW)
         Material grass0 = new Material("/maps/city/tiles/grass-0.png");
         Material grass1 = new Material("/maps/city/tiles/grass-1.png");
@@ -389,23 +376,36 @@ public class CityMap extends Map {
         
         // MATERIALS (HIGH)
         Material plankBottomShort = new Material("/maps/city/decorations/plank-bottom-short.png");
-        // plankBottomShort.setPositionOrigin(Material.PositionOrigin.TOP);
+        plankBottomShort.setSeeThrough(true);
         Material plankBottom = new Material("/maps/city/decorations/plank-bottom.png");
+        plankBottom.setSeeThrough(true);
         Material plankCrossed = new Material("/maps/city/decorations/plank-crossed.png");
+        plankCrossed.setSeeThrough(true);
         Material plankHorizontalMiddle = new Material("/maps/city/decorations/plank-horizontal-middle.png");
+        plankHorizontalMiddle.setSeeThrough(true);
         Material plankVerticalMiddle = plankHorizontalMiddle.clone();
         plankVerticalMiddle.setRotation(-90);
+        plankVerticalMiddle.setSeeThrough(true);
         Material plankLeft = new Material("/maps/city/decorations/plank-left.png");
+        plankLeft.setSeeThrough(true);
         Material plankRight = new Material("/maps/city/decorations/plank-right.png");
+        plankRight.setSeeThrough(true);
         Material plankTop = new Material("/maps/city/decorations/plank-top.png");
+        plankTop.setSeeThrough(true);
         
         // MATERIALS (HIGHER)
         Material roofRustySlantedLeft = new Material("/maps/city/decorations/roof-rusty-slanted-left.png");
+        roofRustySlantedLeft.setSeeThrough(true);
         Material roofRustySlantedRight = new Material("/maps/city/decorations/roof-rusty-slanted-right.png");
+        roofRustySlantedRight.setSeeThrough(true);
         Material roofRusty = new Material("/maps/city/decorations/roof-rusty.png");
+        roofRusty.setSeeThrough(true);
         Material roofSlantedLeft = new Material("/maps/city/decorations/roof-slanted-left.png");
+        roofSlantedLeft.setSeeThrough(true);
         Material roofSlantedRight = new Material("/maps/city/decorations/roof-slanted-right.png");
+        roofSlantedRight.setSeeThrough(true);
         Material roof = new Material("/maps/city/decorations/roof.png");
+        roof.setSeeThrough(true);
         
         // MATERIALS (DECORS)
         Material stopSign = new Material("/maps/city/decorations/stop-sign.png");
@@ -594,28 +594,28 @@ public class CityMap extends Map {
         layerDecor.registerMaterial("trash-can.png", trashCan);
         layerDecor.distributeMaterials();
         
-        // Layer layerHigh = this.addLayer();
-        // layerHigh.setZIndex(ZIndex.MAP_HIGH);
-        // layerHigh.setMatrix("/maps/city/layers/high.txt", " ");
-        // layerHigh.registerMaterial("plank-bottom-short.png", plankBottomShort);
-        // layerHigh.registerMaterial("plank-bottom.png", plankBottom);
-        // layerHigh.registerMaterial("plank-crossed.png", plankCrossed);
-        // layerHigh.registerMaterial("plank-horizontal-middle.png", plankHorizontalMiddle);
-        // layerHigh.registerMaterial("plank-vertical-middle.png", plankVerticalMiddle);
-        // layerHigh.registerMaterial("plank-left.png", plankLeft);
-        // layerHigh.registerMaterial("plank-right.png", plankRight);
-        // layerHigh.registerMaterial("plank-top.png", plankTop);
-        // layerHigh.distributeMaterials();
-        //
-        // Layer layerHigher = this.addLayer();
-        // layerHigher.setZIndex(ZIndex.MAP_HIGH + 1);
-        // layerHigher.setMatrix("/maps/city/layers/higher.txt", " ");
-        // layerHigher.registerMaterial("roof-rusty-slanted-left.png", roofRustySlantedLeft);
-        // layerHigher.registerMaterial("roof-rusty-slanted-right.png", roofRustySlantedRight);
-        // layerHigher.registerMaterial("roof-rusty.png", roofRusty);
-        // layerHigher.registerMaterial("roof-slanted-left.png", roofSlantedLeft);
-        // layerHigher.registerMaterial("roof-slanted-right.png", roofSlantedRight);
-        // layerHigher.registerMaterial("roof.png", roof);
-        // layerHigher.distributeMaterials();
+        Layer layerHigh = this.addLayer();
+        layerHigh.setZIndex(ZIndex.MAP_HIGH);
+        layerHigh.setMatrix("/maps/city/layers/high.txt", " ");
+        layerHigh.registerMaterial("plank-bottom-short.png", plankBottomShort);
+        layerHigh.registerMaterial("plank-bottom.png", plankBottom);
+        layerHigh.registerMaterial("plank-crossed.png", plankCrossed);
+        layerHigh.registerMaterial("plank-horizontal-middle.png", plankHorizontalMiddle);
+        layerHigh.registerMaterial("plank-vertical-middle.png", plankVerticalMiddle);
+        layerHigh.registerMaterial("plank-left.png", plankLeft);
+        layerHigh.registerMaterial("plank-right.png", plankRight);
+        layerHigh.registerMaterial("plank-top.png", plankTop);
+        layerHigh.distributeMaterials();
+
+        Layer layerHigher = this.addLayer();
+        layerHigher.setZIndex(ZIndex.MAP_HIGH + 1);
+        layerHigher.setMatrix("/maps/city/layers/higher.txt", " ");
+        layerHigher.registerMaterial("roof-rusty-slanted-left.png", roofRustySlantedLeft);
+        layerHigher.registerMaterial("roof-rusty-slanted-right.png", roofRustySlantedRight);
+        layerHigher.registerMaterial("roof-rusty.png", roofRusty);
+        layerHigher.registerMaterial("roof-slanted-left.png", roofSlantedLeft);
+        layerHigher.registerMaterial("roof-slanted-right.png", roofSlantedRight);
+        layerHigher.registerMaterial("roof.png", roof);
+        layerHigher.distributeMaterials();
     }
 }

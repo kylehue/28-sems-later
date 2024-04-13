@@ -100,4 +100,9 @@ public abstract class Entity implements Thing {
     public void dispose(Entity entity) {
     
     }
+    
+    @Override
+    public boolean isSeeThrough() {
+        return false;
+    }
 }
