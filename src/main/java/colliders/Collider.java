@@ -1,12 +1,9 @@
 package colliders;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Paint;
-import scenes.game.World;
-import utils.Bounds;
-import utils.GameUtils;
-import utils.Vector;
+import utils.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Collider {
@@ -23,6 +20,24 @@ public abstract class Collider {
     private final HashSet<String> groups = new HashSet<>();
     private final HashSet<String> excludedResolutions = new HashSet<>();
     private String groupId = "";
+    private ArrayList<Collider> nearColliders = new ArrayList<>();
+    
+    public ArrayList<Collider> getAndUpdateNearColliders(Quadtree<Collider> quadtree) {
+        Async.queue2.submit(() -> {
+            float width = getWidth();
+            float height = getHeight();
+            nearColliders = new ArrayList<>(
+                quadtree.retrieve(
+                    getPosition().getX() - width / 2,
+                    getPosition().getY() - height / 2,
+                    width,
+                    height
+                ).stream().map(e -> e.object).toList()
+            );
+        });
+        
+        return nearColliders;
+    }
     
     /* Grouping */
     public void addToGroup(String groupId) {

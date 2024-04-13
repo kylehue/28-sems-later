@@ -70,7 +70,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 1000; i++) {
             Zombie enemy = new Zombie(gameApplication);
             enemy.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),

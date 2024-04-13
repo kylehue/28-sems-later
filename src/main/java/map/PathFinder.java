@@ -8,6 +8,7 @@ import utils.GameUtils;
 import utils.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
@@ -94,12 +95,12 @@ public class PathFinder {
             if (a.fCost == b.fCost) return a.hCost - b.hCost;
             return a.fCost - b.fCost;
         });
-        HashSet<Node> closedNodes = new HashSet<>();
+        HashSet<String> closedNodes = new HashSet<>();
         openNodes.add(startNode);
         
         while (!openNodes.isEmpty()) {
             Node currentNode = openNodes.remove();
-            closedNodes.add(currentNode);
+            closedNodes.add(currentNode.id);
             
             if (currentNode == goalNode) {
                 path = retracePath(startNode, goalNode);
@@ -108,22 +109,22 @@ public class PathFinder {
             
             ArrayList<Node> neighbors = getNodeNeighbors(currentNode);
             for (Node neighborNode : neighbors) {
-                if (neighborNode.isObstacle || closedNodes.contains(neighborNode)) continue;
+                if (neighborNode.isObstacle || closedNodes.contains(neighborNode.id)) {
+                    continue;
+                }
                 
                 int movementCostToNeighbor = currentNode.gCost + computeNodeDistances(
                     currentNode,
                     neighborNode
                 );
-                if (
-                    movementCostToNeighbor < neighborNode.gCost ||
-                        !openNodes.contains(neighborNode)
-                ) {
+                boolean isNeighborInOpen = openNodes.contains(neighborNode);
+                if (movementCostToNeighbor < neighborNode.gCost || !isNeighborInOpen) {
                     neighborNode.gCost = movementCostToNeighbor;
                     neighborNode.hCost = computeNodeDistances(neighborNode, goalNode);
                     neighborNode.fCost = neighborNode.gCost + neighborNode.hCost;
                     neighborNode.parent = currentNode;
                     
-                    if (!openNodes.contains(neighborNode)) {
+                    if (!isNeighborInOpen) {
                         openNodes.add(neighborNode);
                     }
                 }
@@ -233,7 +234,15 @@ public class PathFinder {
         return node;
     }
     
+    
+    HashMap<String, ArrayList<Node>> cachedNeighbors = new HashMap<>();
+    
     private ArrayList<Node> getNodeNeighbors(Node node) {
+        ArrayList<Node> cached = cachedNeighbors.get(node.id);
+        if (cached != null) {
+            return cached;
+        }
+        
         ArrayList<Node> neighbors = new ArrayList<>();
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
@@ -251,6 +260,8 @@ public class PathFinder {
                 }
             }
         }
+        
+        cachedNeighbors.put(node.id, neighbors);
         
         return neighbors;
     }
@@ -289,6 +300,7 @@ public class PathFinder {
     }
     
     private static class Node {
+        public final String id = GameUtils.generateId();
         public int x = 0;
         public int y = 0;
         public int fCost = 0;

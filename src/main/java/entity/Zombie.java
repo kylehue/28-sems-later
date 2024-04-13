@@ -2,7 +2,6 @@ package entity;
 
 import colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Paint;
 import main.CollisionGroup;
 import main.GameApplication;
 import main.ZIndex;
@@ -114,18 +113,20 @@ public class Zombie extends Entity {
     
     private void maybeUpdatePathToPlayer() {
         if (isIntervalOverFor("pathToPlayerUpdate")) {
-            Async.executorService.submit(() -> {
+            Player player = gameApplication.getGameScene().getWorld().getPlayer();
+            Async.queue1.submit(() -> {
                 PathFinder pathFinder = gameApplication
                     .getGameScene()
                     .getWorld()
                     .getPathFinder();
-                Player player = gameApplication.getGameScene().getWorld().getPlayer();
                 pathToPlayer = pathFinder.requestPath(
                     collider.getPosition(),
                     player.getCollider().getPosition()
                 );
             });
+            float distanceToPlayer = player.getPosition().getDistanceFrom(getPosition());
             resetIntervalFor("pathToPlayerUpdate");
+            changeIntervalFor("pathToPlayerUpdate", (int) distanceToPlayer);
         }
     }
     

@@ -6,16 +6,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
 import main.GameApplication;
-import map.Map;
 import scenes.GameApplicationScene;
 import event.KeyHandler;
 import event.MouseHandler;
 import utils.AnimationLoop;
 import utils.Async;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class GameScene extends GameApplicationScene {
     private final Canvas canvas = new Canvas();
@@ -97,7 +92,7 @@ public class GameScene extends GameApplicationScene {
             }
         };
         
-        Async.executorService.submit(task);
+        Async.queue2.submit(task);
         return task;
     }
     

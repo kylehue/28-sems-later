@@ -76,6 +76,10 @@ public abstract class Entity implements Thing {
         registeredIntervals.put(name, interval);
     }
     
+    public void changeIntervalFor(String name, int newIntervalInMillis) {
+        registeredIntervals.get(name).interval = newIntervalInMillis;
+    }
+    
     // to be overridden
     @Override
     public Vector getRenderPosition() {
