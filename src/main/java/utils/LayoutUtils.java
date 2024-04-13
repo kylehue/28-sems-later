@@ -9,6 +9,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.Region;
 
+import java.util.HashMap;
+
 public class LayoutUtils {
     /**
      * Nothing special, it just sets up the GridPane defaults.
@@ -44,9 +46,20 @@ public class LayoutUtils {
         }
     }
     
+    private static HashMap<String, Image> loadedImages = new HashMap<>();
+    
     public static Image loadImage(String url) {
+        Image loadedImage = loadedImages.get(url);
+        if (loadedImage != null) {
+            return loadedImage;
+        }
+        
         try {
-            return new Image(LayoutUtils.class.getResource(url).toURI().toString());
+            Image image = new Image(
+                LayoutUtils.class.getResource(url).toURI().toString()
+            );
+            loadedImages.put(url, image);
+            return image;
         } catch (Exception e) {
             System.out.println(url);
             throw new Error(e);

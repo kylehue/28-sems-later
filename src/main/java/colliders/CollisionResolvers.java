@@ -72,9 +72,9 @@ public abstract class CollisionResolvers {
         ).scale(overlap);
         
         if (!circleA.isStatic() && !circleB.isStatic()) {
-            float totalMass = circleA.getMass() + circleB.getMass();
-            float ratioA = circleB.getMass() / totalMass;
-            float ratioB = circleA.getMass() / totalMass;
+            float totalMass = (circleA.getMass() + circleB.getMass()) * (circleA.getContacts().size() + circleB.getContacts().size());
+            float ratioA = (circleB.getMass() * circleB.getContacts().size()) / totalMass;
+            float ratioB = (circleA.getMass() * circleA.getContacts().size()) / totalMass;
             
             circleA.getPosition().subtract(displacement.clone().scale(ratioA));
             circleB.getPosition().add(displacement.clone().scale(ratioB));
@@ -234,13 +234,13 @@ public abstract class CollisionResolvers {
                 circle.getPosition()
             );
             float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
-
+            
             mtv.scale(direction);
             if (!circle.isStatic() && !polygon.isStatic()) {
-                float totalMass = circle.getMass() + polygon.getMass();
-                float ratioA = polygon.getMass() / totalMass;
-                float ratioB = circle.getMass() / totalMass;
-
+                float totalMass = (circle.getMass() + polygon.getMass()) * (circle.getContacts().size() + polygon.getContacts().size());
+                float ratioA = (polygon.getMass() * polygon.getContacts().size()) / totalMass;
+                float ratioB = (circle.getMass() * circle.getContacts().size()) / totalMass;
+                
                 // Apply MTV based on mass ratios
                 circle.getPosition().add(mtv.clone().scale(ratioA));
                 polygon.getPosition().subtract(mtv.clone().scale(ratioB));
@@ -359,9 +359,9 @@ public abstract class CollisionResolvers {
             mtv.scale(direction);
             
             if (!polygonA.isStatic() && !polygonB.isStatic()) {
-                float totalMass = polygonA.getMass() + polygonB.getMass();
-                float ratioA = polygonB.getMass() / totalMass;
-                float ratioB = polygonA.getMass() / totalMass;
+                float totalMass = (polygonA.getMass() + polygonB.getMass()) * (polygonA.getContacts().size() + polygonB.getContacts().size());
+                float ratioA = (polygonB.getMass() * polygonB.getContacts().size()) / totalMass;
+                float ratioB = (polygonA.getMass() * polygonA.getContacts().size()) / totalMass;
                 
                 // Apply MTV based on mass ratios
                 polygonA.getPosition().add(mtv.clone().scale(ratioA));

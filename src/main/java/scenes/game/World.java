@@ -70,13 +70,13 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 1000; i++) {
-            Zombie enemy = new Zombie(gameApplication);
-            enemy.getCollider().getPosition().set(
+        for (int i = 0; i < 200; i++) {
+            Zombie zombie = new Zombie(gameApplication);
+            zombie.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
                 GameUtils.random(-halfMapHeight, halfMapHeight)
             );
-            zombies.add(enemy);
+            zombies.add(zombie);
         }
         map.getLayers().forEach(layer -> {
             for (Material material : layer.getMaterials()) {
