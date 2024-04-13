@@ -216,29 +216,29 @@ public class Material implements Thing {
         // ctx.strokeRect(origin.getX(), origin.getY(), image.getWidth(), image.getHeight());
         // ctx.closePath();
         
-        // Origin
-        ctx.beginPath();
-        ctx.setFill(Paint.valueOf("yellow"));
-        ctx.fillOval(
-            -2,
-            -2,
-            4,
-            4
-        );
-        ctx.closePath();
+        // // Origin
+        // ctx.beginPath();
+        // ctx.setFill(Paint.valueOf("yellow"));
+        // ctx.fillOval(
+        //     -2,
+        //     -2,
+        //     4,
+        //     4
+        // );
+        // ctx.closePath();
         
         ctx.restore();
         
-        // Render position
-        ctx.beginPath();
-        ctx.setFill(Paint.valueOf("white"));
-        ctx.fillOval(
-            getRenderPosition().getX() - 1,
-            getRenderPosition().getY() - 1,
-            2,
-            2
-        );
-        ctx.closePath();
+        // // Render position
+        // ctx.beginPath();
+        // ctx.setFill(Paint.valueOf("white"));
+        // ctx.fillOval(
+        //     getRenderPosition().getX() - 1,
+        //     getRenderPosition().getY() - 1,
+        //     2,
+        //     2
+        // );
+        // ctx.closePath();
     }
     
     public void update(float deltaTime) {

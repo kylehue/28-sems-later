@@ -227,23 +227,23 @@ public class CityMap extends Map {
         fenceRight.setCollider(fenceBottomCollider);
         
         Material fenceSideLeft = new Material("/maps/city/tiles/fence-side-left.png");
-        fenceSideLeft.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        fenceSideLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceSideLeft.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
         fenceSideLeft.setCollider(fenceLeftCollider);
         
         Material fenceSideRight = new Material("/maps/city/tiles/fence-side-right.png");
-        fenceSideRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        fenceSideRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceSideRight.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
         fenceSideRight.setCollider(fenceRightCollider);
         
         Material fenceTurnLeft = new Material("/maps/city/tiles/fence-left-collision.png");
-        fenceTurnLeft.setZIndex(ZIndex.MAP_DECORATIONS + 1);
+        fenceTurnLeft.setRenderPosition(Material.PositionOrigin.BOTTOM);
         fenceTurnLeft.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
         fenceTurnLeft.setCollider(fenceTurnLeftCollider);
         
         Material fenceTurnRight = new Material("/maps/city/tiles/fence-right-collision.png");
-        fenceTurnRight.setZIndex(ZIndex.MAP_DECORATIONS + 1);
-        fenceTurnRight.setPositionOrigin(Material.PositionOrigin.TOP_LEFT);
+        fenceTurnRight.setRenderPosition(Material.PositionOrigin.BOTTOM);
+        fenceTurnRight.setPositionOrigin(Material.PositionOrigin.TOP_RIGHT);
         fenceTurnRight.setCollider(fenceTurnRightCollider);
         
         Material roomWallCornerBottomLeft0 = new Material("/maps/city/tiles/room-wall-corner-bottom-left-0.png");
