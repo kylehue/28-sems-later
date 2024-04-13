@@ -1,12 +1,15 @@
 package scenes.game;
 
+import colliders.CircleCollider;
 import colliders.Collider;
 import colliders.ColliderWorld;
+import colliders.GroupedCollider;
 import entity.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import main.CollisionGroup;
 import main.GameApplication;
 import map.Layer;
 import map.Material;
@@ -62,6 +65,10 @@ public class World {
         map.addCollidersToWorld(colliderWorld);
     }
     
+    GroupedCollider test;
+    
+    CircleCollider a = new CircleCollider();
+    CircleCollider b = new CircleCollider();
     public void setup() {
         this.player = new Player(gameApplication);
         float halfMapWidth = (float) map.getTotalWidth() / 2;
@@ -70,7 +77,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 0; i++) {
             Zombie zombie = new Zombie(gameApplication);
             zombie.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
@@ -85,6 +92,26 @@ public class World {
                 pathFinder.getObstacles().add(collider);
             }
         });
+        a.setRadius(12);
+        a.getPosition().set(12, 12);
+        b.setRadius(12);
+        b.getPosition().set(-12, -12);
+        test = new GroupedCollider(new Collider[]{
+            a,
+            b
+        });
+        test.setGroup(CollisionGroup.MAP);
+        test.addToGroup(CollisionGroup.MAP);
+        test.setMass(500);
+        
+        test.getPosition().set(
+            halfMapWidth,
+            halfMapHeight
+        );
+        
+        colliderWorld.addCollider(test);
+        colliderWorld.addCollider(a);
+        colliderWorld.addCollider(b);
     }
     
     public void render(GraphicsContext ctx) {
@@ -176,6 +203,15 @@ public class World {
         this.handleBulletDisposal();
         map.putCollidersInQuadtree(this.quadtree);
         map.update(deltaTime);
+        this.quadtree.insert(test, new Bounds(
+            test.getPosition().getX() - test.getWidth() / 2, test.getPosition().getY() - test.getHeight() / 2, test.getWidth(), test.getHeight()
+        ));
+        this.quadtree.insert(a, new Bounds(
+            a.getPosition().getX() - 25, a.getPosition().getY() - 25, 50, 50
+        ));
+        this.quadtree.insert(b, new Bounds(
+            b.getPosition().getX() - 25, b.getPosition().getY() - 25, 50, 50
+        ));
         
         player.update(deltaTime);
         

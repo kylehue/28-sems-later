@@ -29,17 +29,23 @@ public class ColliderWorld {
     
     public void addCollider(Collider collider) {
         this.colliders.add(collider);
+        
+        if (collider instanceof GroupedCollider groupedCollider) {
+            this.colliders.addAll(groupedCollider.getColliders());
+        }
+        
         collider.setColliderWorld(this);
     }
     
     public void removeCollider(String id) {
         for (int i = colliders.size() - 1; i >= 0; i--) {
             Collider collider = colliders.get(i);
-            if (collider.getId().equals(id)) {
-                this.colliders.remove(i);
-                break;
-            }
+            if (!collider.getId().equals(id)) continue;
+            this.colliders.remove(i);
             collider.getContacts().remove(id);
+            if (collider instanceof GroupedCollider groupedCollider) {
+                this.colliders.removeAll(groupedCollider.getColliders());
+            }
         }
     }
     

@@ -48,6 +48,10 @@ public abstract class Collider {
         groups.remove(groupId);
     }
     
+    protected HashSet<String> getGroups() {
+        return groups;
+    }
+    
     public void setGroup(String groupId) {
         this.groupId = groupId;
     }
@@ -132,6 +136,16 @@ public abstract class Collider {
         return position;
     }
     
+    public void setPosition(float x, float y) {
+        position.set(x, y);
+        oldPosition.set(x, y);
+        velocity.set(0, 0);
+    }
+    
+    public void setPosition(Vector pos) {
+        setPosition(pos.getX(), pos.getY());
+    }
+    
     public Vector getVelocity() {
         return velocity;
     }
@@ -177,6 +191,8 @@ public abstract class Collider {
             (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX,
             (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY
         );
+        
+        this.subUpdate(deltaTime);
         
         this.limitPositionToWorldBounds();
         
@@ -263,5 +279,10 @@ public abstract class Collider {
     // to be overridden
     public Collider clone() {
         return this;
+    }
+    
+    // to be overridden
+    public void subUpdate(float deltaTime) {
+    
     }
 }
