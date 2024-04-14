@@ -136,6 +136,10 @@ public abstract class Collider {
         return position;
     }
     
+    public Vector getOldPosition() {
+        return oldPosition;
+    }
+    
     public void setPosition(float x, float y) {
         position.set(x, y);
         oldPosition.set(x, y);
@@ -187,10 +191,16 @@ public abstract class Collider {
         float accelerationX = acceleration.getX();
         float accelerationY = acceleration.getY();
         float deltaTimeSquared = deltaTime * deltaTime;
+        float targetX = (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX;
+        float targetY = (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY;
         position.add(
-            (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX,
-            (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY
+            targetX,
+            targetY
         );
+        // position.add(
+        //     velocityX * deltaTime,
+        //     velocityY * deltaTime
+        // );
         
         this.subUpdate(deltaTime);
         

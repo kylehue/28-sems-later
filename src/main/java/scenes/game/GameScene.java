@@ -27,13 +27,18 @@ public class GameScene extends GameApplicationScene {
         GameScene $this = this;
         this.animationLoop = new AnimationLoop() {
             @Override
-            public void render() {
-                $this.render();
+            public void render(float alpha) {
+                $this.render(alpha);
             }
             
             @Override
             public void fixedUpdate(float deltaTime) {
                 $this.fixedUpdate(deltaTime);
+            }
+            
+            @Override
+            public void update(float deltaTime) {
+                $this.update(deltaTime);
             }
         };
         
@@ -100,16 +105,20 @@ public class GameScene extends GameApplicationScene {
         this.animationLoop.pauseLoop();
     }
     
-    public void render() {
+    public void render(float alpha) {
         graphicsContext.beginPath();
         graphicsContext.setFill(Paint.valueOf("#000000"));
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.closePath();
-        world.render(graphicsContext);
+        world.render(graphicsContext, alpha);
         graphicsContext.setImageSmoothing(false);
     }
     
     public void fixedUpdate(float deltaTime) {
+        world.fixedUpdate(deltaTime);
+    }
+    
+    public void update(float deltaTime) {
         world.update(deltaTime);
     }
 }

@@ -82,9 +82,9 @@ public class Layer {
         return this.materials;
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         for (Material material : materials) {
-            material.update(deltaTime);
+            material.fixedUpdate(deltaTime);
         }
     }
     

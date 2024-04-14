@@ -196,7 +196,7 @@ public class Material implements Thing {
     }
     
     @Override
-    public void render(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx, float alpha) {
         ctx.save();
         Vector origin = getOrigin();
         ctx.translate(position.getX(), position.getY());
@@ -241,7 +241,7 @@ public class Material implements Thing {
         // ctx.closePath();
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         if (collider != null) {
             if (!collider.isStatic()) {
                 position.set(collider.getPosition());

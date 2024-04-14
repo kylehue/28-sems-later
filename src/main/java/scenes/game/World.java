@@ -73,7 +73,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 500; i++) {
             Zombie zombie = new Zombie(gameApplication);
             zombie.getCollider().getPosition().set(
                 GameUtils.random(-halfMapWidth, halfMapWidth),
@@ -90,7 +90,7 @@ public class World {
         });
     }
     
-    public void render(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx, float alpha) {
         float renderDistanceOffset = 100;
         
         this.camera.begin();
@@ -145,7 +145,7 @@ public class World {
                 }
             }
             
-            thing.render(ctx);
+            thing.render(ctx, alpha);
             if (thing.isSeeThrough()) ctx.restore();
         }
         
@@ -155,11 +155,11 @@ public class World {
                 renderDistanceOffset
             );
             if (isInViewport) {
-                bullet.render(ctx);
+                bullet.render(ctx, alpha);
             }
         }
         
-        this.renderMeta(ctx);
+        // this.renderMeta(ctx);
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {
@@ -192,12 +192,26 @@ public class World {
         }
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         this.quadtree.clear();
         this.handleBulletDisposal();
         map.putCollidersInQuadtree(this.quadtree);
-        map.update(deltaTime);
+        map.fixedUpdate(deltaTime);
         
+        player.fixedUpdate(deltaTime);
+        
+        for (Zombie zombie : zombies) {
+            zombie.fixedUpdate(deltaTime);
+        }
+        
+        for (Bullet bullet : bullets) {
+            bullet.fixedUpdate(deltaTime);
+        }
+        
+        colliderWorld.fixedUpdate(deltaTime);
+    }
+    
+    public void update(float deltaTime) {
         player.update(deltaTime);
         
         for (Zombie zombie : zombies) {
@@ -210,7 +224,6 @@ public class World {
         
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
-        colliderWorld.update(deltaTime);
     }
     
     public PathFinder getPathFinder() {

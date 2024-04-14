@@ -37,7 +37,7 @@ public class Parallax extends AnimationLoop {
     }
     
     @Override
-    public void render() {
+    public void render(float alpha) {
         ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         ctx.setImageSmoothing(false);
         for (int i = layers.size() - 1; i >= 0; i--) {

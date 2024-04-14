@@ -57,7 +57,7 @@ public class ColliderWorld {
         this.quadtree = quadtree;
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         for (Collider collider : colliders) {
             collider.getContacts().clear();
             collider.update(deltaTime);

@@ -88,7 +88,10 @@ public abstract class Entity implements Thing {
     
     // to be overridden
     @Override
-    public void render(GraphicsContext ctx) {
+    public abstract void render(GraphicsContext ctx, float alpha);
+    
+    // to be overridden
+    public void fixedUpdate(float deltaTime) {
     
     }
     

@@ -2,6 +2,7 @@ package map;
 
 import colliders.Collider;
 import colliders.ColliderWorld;
+import colliders.GroupedCollider;
 import utils.Bounds;
 import utils.Quadtree;
 
@@ -52,9 +53,9 @@ public abstract class Map {
         return this.totalHeight;
     }
     
-    public void update(float deltaTime) {
+    public void fixedUpdate(float deltaTime) {
         for (Layer layer : layers) {
-            layer.update(deltaTime);
+            layer.fixedUpdate(deltaTime);
         }
     }
     
@@ -73,12 +74,23 @@ public abstract class Map {
             for (Material material : layer.getMaterials()) {
                 Collider collider = material.getCollider();
                 if (collider == null) continue;
-                float width = collider.getWidth();
-                float height = collider.getHeight();
-                float x = collider.getPosition().getX() - width / 2;
-                float y = collider.getPosition().getY() - height / 2;
-                quadtree.insert(collider, new Bounds(x, y, width, height));
+                
+                if (collider instanceof GroupedCollider groupedCollider){
+                    for (Collider collider1 : groupedCollider.getColliders()) {
+                        putColliderInQuadtree(quadtree, collider1);
+                    }
+                } else {
+                    putColliderInQuadtree(quadtree, collider);
+                }
             }
         }
+    }
+    
+    private void putColliderInQuadtree(Quadtree<Collider> quadtree, Collider collider) {
+        float width = collider.getWidth();
+        float height = collider.getHeight();
+        float x = collider.getPosition().getX() - width / 2;
+        float y = collider.getPosition().getY() - height / 2;
+        quadtree.insert(collider, new Bounds(x, y, width, height));
     }
 }

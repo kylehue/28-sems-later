@@ -2,17 +2,19 @@ package entity;
 
 import colliders.CircleCollider;
 import colliders.Collider;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 import main.CollisionGroup;
 import main.ZIndex;
 import scenes.game.GameScene;
 import sprites.DashSprite;
-import sprites.GunSprite;
 import sprites.PlayerSprite;
 import javafx.scene.canvas.GraphicsContext;
 import main.GameApplication;
 import event.KeyHandler;
 import utils.Bounds;
+import utils.GameUtils;
+import utils.LayoutUtils;
 import utils.Vector;
 
 public class Player extends Entity {
@@ -40,10 +42,12 @@ public class Player extends Entity {
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
-    private final GunSprite gunSprite = new GunSprite();
+    private final Image gunImage = LayoutUtils.loadImage("/weapons/pistol.png");
     private final DashSprite dashSprite = new DashSprite();
+    // private final WeaponManager weaponManager = new WeaponManager();
     
     public Player(GameApplication gameApplication) {
+        // weaponManager.setWeapon(WeaponManager.Weapons.PISTOL);
         this.gameApplication = gameApplication;
         this.gameApplication.getGameScene().getWorld().getColliderWorld().addCollider(
             this.collider
@@ -53,17 +57,18 @@ public class Player extends Entity {
         this.collider.addToGroup(CollisionGroup.MAP);
         this.collider.addToGroup(CollisionGroup.MAP);
         this.collider.addToGroup(CollisionGroup.ZOMBIES);
-        this.collider.setMass(250);
+        this.collider.setMass(50);
         
         this.collider.setRadius(5);
         dashSprite.setFrameAccumulator(dashSprite.getFrameLength(DashSprite.Animation.Default.name()));
         registerIntervalFor("shoot", 250);
         registerIntervalFor("dash", 1000);
         this.setZIndex(ZIndex.PLAYER);
+        
     }
     
     @Override
-    public void render(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx, float alpha) {
         // render dash smoke
         if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength(DashSprite.Animation.Default.name())) {
             ctx.save();
@@ -87,6 +92,7 @@ public class Player extends Entity {
             getPosition().getX(),
             getPosition().getY()
         );
+        this.bodySprite.nextFrame();
         
         // render gun
         ctx.save();
@@ -95,28 +101,19 @@ public class Player extends Entity {
             getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
-        this.gunSprite.render(ctx);
+        if (isFacingOnLeftSide) {
+            ctx.scale(1, -1);
+        }
+        ctx.drawImage(gunImage, gunImage.getWidth() / 2, -gunImage.getHeight() / 2);
         ctx.restore();
     }
     
     @Override
     public Vector getRenderPosition() {
-        return collider.getPosition();
+        return getPosition().clone().addY(collider.getRadius());
     }
     
-    public void update(float deltaTime) {
-        this.handleControls();
-        this.handleMovements();
-        this.handleSpriteAnimations();
-        this.updateAngleToMouse();
-        
-        if (shootPressed) {
-            this.shoot();
-            this.gunSprite.setFPS(30);
-        } else {
-            this.gunSprite.setFPS(12);
-        }
-        
+    public void fixedUpdate(float deltaTime) {
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             collider,
@@ -129,13 +126,24 @@ public class Player extends Entity {
         );
     }
     
+    public void update(float deltaTime) {
+        this.handleMovements();
+        this.handleControls();
+        this.updateAngleToMouse();
+        this.handleSpriteAnimations();
+        
+        if (shootPressed) {
+            this.shoot();
+        }
+    }
+    
     public Collider getCollider() {
         return collider;
     }
     
     public void shoot() {
         if (isIntervalOverFor("shoot")) {
-            float offset = 30;
+            float offset = (float) (gunImage.getWidth() + gunImage.getWidth() / 2);
             this.gameApplication.getGameScene().getWorld().spawnBullet(
                 (float) (getPosition().getX() + Math.cos(this.angleToMouse) * offset),
                 (float) (getPosition().getY() + Math.sin(this.angleToMouse) * offset),
@@ -205,7 +213,7 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        getPosition().set(collider.getPosition().clone().addY(-collider.getRadius()));
+        getPosition().lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
         
         // x controls
         float computedSpeed = speed * collider.getMass();
@@ -242,12 +250,6 @@ public class Player extends Entity {
     }
     
     private void handleSpriteAnimations() {
-        if (shootPressed) {
-            this.gunSprite.set(GunSprite.Animation.Shoot);
-        } else {
-            this.gunSprite.set(GunSprite.Animation.Idle);
-        }
-        
         if (this.collider.getVelocity().getMagnitude() <= 0.25) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
@@ -259,10 +261,5 @@ public class Player extends Entity {
         }
         
         this.bodySprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
-        this.gunSprite.setVerticallyFlipped(this.isFacingOnLeftSide);
-        
-        this.gunSprite.nextFrame();
-        this.gunSprite.setPosition(15, 0);
-        this.bodySprite.nextFrame();
     }
 }

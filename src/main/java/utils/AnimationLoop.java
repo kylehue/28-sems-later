@@ -3,40 +3,48 @@ package utils;
 import javafx.animation.AnimationTimer;
 
 public class AnimationLoop {
-    private final float targetFps = 60.0f;
-    private final float deltaTime = 1 / targetFps;
-    private float accumulator = 0.0f;
+    private static final float timeStep = 0.0166f;
+    
+    private long previousTime = 0;
+    private float accumulatedTime = 0;
+    
+    private float secondsElapsedSinceLastFpsUpdate = 0f;
+    private int framesSinceLastFpsUpdate = 0;
+    
     private AnimationTimer timer;
     private int frameCount = 0;
-    private long lastUpdate = System.nanoTime();
     private float fps = 0;
     
     private void maybeCreateTimer() {
         if (this.timer != null) return;
         this.timer = new AnimationTimer() {
             @Override
-            public void handle(long now) {
-                long nanosElapsed = now - lastUpdate;
-                float frameTime = nanosElapsed / 1e9f;
-                if (frameTime > 0.25) {
-                    frameTime = 0.25f;
+            public void handle(long currentTime) {
+                if (previousTime == 0) {
+                    previousTime = currentTime;
+                    return;
                 }
                 
-                accumulator += frameTime;
-                while (accumulator >= deltaTime) {
-                    fixedUpdate(deltaTime);
-                    accumulator -= deltaTime;
-                }
+                float secondsElapsed = (currentTime - previousTime) / 1e9f;
+                float secondsElapsedCapped = Math.min(secondsElapsed, Float.MAX_VALUE);
+                accumulatedTime += secondsElapsedCapped;
+                previousTime = currentTime;
                 
-                // Update FPS
-                if (nanosElapsed > 0) {
-                    fps = 1e9f / nanosElapsed;
+                while (accumulatedTime >= timeStep) {
+                    fixedUpdate(timeStep);
+                    accumulatedTime -= timeStep;
                 }
-                
-                float alpha = accumulator / deltaTime;
+                update(secondsElapsed);
+                // float alpha = accumulatedTime / timeStep;
+                render(1);
                 frameCount++;
-                render();
-                lastUpdate = now;
+                secondsElapsedSinceLastFpsUpdate += secondsElapsed;
+                framesSinceLastFpsUpdate++;
+                if (secondsElapsedSinceLastFpsUpdate >= 0.5f) {
+                    fps = Math.round(framesSinceLastFpsUpdate / secondsElapsedSinceLastFpsUpdate);
+                    secondsElapsedSinceLastFpsUpdate = 0;
+                    framesSinceLastFpsUpdate = 0;
+                }
             }
         };
     }
@@ -58,21 +66,18 @@ public class AnimationLoop {
         return frameCount;
     }
     
-    public long getLastUpdate() {
-        return lastUpdate;
-    }
-    
-    public float getDeltaTime() {
-        return deltaTime;
-    }
-    
     // to be overridden
     public void fixedUpdate(float deltaTime) {
     
     }
     
     // to be overridden
-    public void render() {
+    public void update(float deltaTime) {
+    
+    }
+    
+    // to be overridden
+    public void render(float alpha) {
     
     }
 }

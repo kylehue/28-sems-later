@@ -11,5 +11,5 @@ public interface Thing {
     Vector getRenderPosition();
     int getZIndex();
     boolean isSeeThrough();
-    void render(GraphicsContext graphicsContext);
+    void render(GraphicsContext graphicsContext, float alpha);
 }

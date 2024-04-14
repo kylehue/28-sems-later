@@ -61,7 +61,7 @@ public class LayoutUtils {
             loadedImages.put(url, image);
             return image;
         } catch (Exception e) {
-            System.out.println(url);
+            e.printStackTrace();
             throw new Error(e);
         }
     }

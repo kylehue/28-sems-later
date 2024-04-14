@@ -55,7 +55,7 @@ public class Zombie extends Entity {
     }
     
     @Override
-    public void render(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx, float alpha) {
         this.sprite.render(ctx);
         
         // // draw path to player
@@ -67,13 +67,9 @@ public class Zombie extends Entity {
         // }
     }
     
-    public void update(float deltaTime) {
-        this.handleMovements();
-        this.handleSprite();
-        this.updateAngleToPlayer();
+    public void fixedUpdate(float deltaTime) {
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
-        
         // put in quadtree
         this.gameApplication.getGameScene().getWorld().getQuadtree().insert(
             collider,
@@ -84,6 +80,12 @@ public class Zombie extends Entity {
                 collider.getHeight()
             )
         );
+    }
+    
+    public void update(float deltaTime) {
+        this.handleMovements();
+        this.handleSprite();
+        this.updateAngleToPlayer();
     }
     
     private void checkPlayerCollision() {

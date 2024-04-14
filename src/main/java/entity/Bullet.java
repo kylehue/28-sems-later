@@ -2,9 +2,10 @@ package entity;
 
 import colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import main.CollisionGroup;
 import main.GameApplication;
-import sprites.BulletSprite;
+import utils.LayoutUtils;
 import utils.Vector;
 
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ public class Bullet extends Entity{
     private float maxDistance = 300;
     private Vector initialPosition = new Vector();
     private final Vector position = new Vector();
-    private final BulletSprite sprite = new BulletSprite();
     private final CircleCollider collider = new CircleCollider();
     private int damage = 25;
     private int penetration = 25;
+    private Image image = LayoutUtils.loadImage("/weapons/bullet-1.png");
     
     public Bullet(GameApplication gameApplication, float x, float y, float angle) {
         this.gameApplication = gameApplication;
@@ -39,7 +40,7 @@ public class Bullet extends Entity{
         registerIntervalFor("bullet", 25);
     }
     
-    public void render(GraphicsContext ctx) {
+    public void render(GraphicsContext ctx, float alpha) {
         /*ctx.beginPath();
         ctx.setFill(Color.web("red"));
         float radius = 10;
@@ -51,7 +52,7 @@ public class Bullet extends Entity{
             getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(this.angle));
-        sprite.render(ctx);
+        ctx.drawImage(image, 0, 0);
         ctx.restore();
     }
     
