@@ -1,15 +1,17 @@
 package utils;
 
 import event.MouseHandler;
+import game.utils.GameLoop;
+import game.utils.Common;
+import game.utils.Vector;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
 
-public class Parallax extends AnimationLoop {
+public class Parallax extends GameLoop {
     private final ArrayList<Layer> layers = new ArrayList<>();
     private final Canvas canvas = new Canvas();
     private final GraphicsContext ctx = canvas.getGraphicsContext2D();
@@ -21,19 +23,8 @@ public class Parallax extends AnimationLoop {
         this.mouseHandler = new MouseHandler(scene);
     }
     
-    public Canvas getCanvas() {
-        return canvas;
-    }
-    
     public void addLayer(int index, Image image) {
         layers.add(index, new Layer(image));
-    }
-    
-    private Vector getComputedDepthVector(int layerIndex) {
-        return new Vector(
-            (float) (Math.pow(layerIndex + 1, 2) * velocity.getX()),
-            (float) (Math.pow(layerIndex + 1, 2) * velocity.getY())
-        );
     }
     
     @Override
@@ -59,14 +50,14 @@ public class Parallax extends AnimationLoop {
     
     @Override
     public void fixedUpdate(float deltaTime) {
-        float mappedX = GameUtils.map(
+        float mappedX = Common.map(
             mouseHandler.getPosition().getX(),
             0.0f,
             (float) canvas.getWidth(),
             1,
             -1
         );
-        float mappedY = GameUtils.map(
+        float mappedY = Common.map(
             mouseHandler.getPosition().getY(),
             0.0f,
             (float) canvas.getHeight(),
@@ -87,6 +78,14 @@ public class Parallax extends AnimationLoop {
         }
     }
     
+    public void start() {
+        this.startLoop();
+    }
+    
+    public void pause() {
+        this.pauseLoop();
+    }
+    
     public Vector getVelocity() {
         return velocity;
     }
@@ -97,6 +96,17 @@ public class Parallax extends AnimationLoop {
     
     public float getAcceleration() {
         return acceleration;
+    }
+    
+    private Vector getComputedDepthVector(int layerIndex) {
+        return new Vector(
+            (float) (Math.pow(layerIndex + 1, 2) * velocity.getX()),
+            (float) (Math.pow(layerIndex + 1, 2) * velocity.getY())
+        );
+    }
+    
+    public Canvas getCanvas() {
+        return canvas;
     }
     
     private static class Layer {

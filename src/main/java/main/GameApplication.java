@@ -1,8 +1,8 @@
 package main;
 
 import javafx.stage.Stage;
-import scenes.game.GameScene;
-import scenes.title.TitleScene;
+import scenes.GameScene;
+import scenes.TitleScene;
 import utils.SceneManager;
 
 public class GameApplication {
