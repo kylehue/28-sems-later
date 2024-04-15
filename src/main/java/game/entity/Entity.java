@@ -1,6 +1,7 @@
 package game.entity;
 
 import game.World;
+import game.utils.IntervalMap;
 import javafx.scene.canvas.GraphicsContext;
 import game.utils.Common;
 import game.utils.Vector;
@@ -8,49 +9,15 @@ import game.utils.Vector;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Entity implements Drawable {
+public abstract class Entity extends IntervalMap implements Drawable {
     protected final World world;
-    private final HashMap<String, Interval> registeredIntervals = new HashMap<>();
     private final Vector position = new Vector();
-    private int currentHealth = 100;
-    private int maxHealth = 100;
+    private float currentHealth = 100;
+    private float maxHealth = 100;
     private int zIndex = 0;
     
     public Entity(World world) {
         this.world = world;
-    }
-    
-    private static class Interval {
-        public int interval = 0;
-        public long coolDown = 0;
-    }
-    
-    public boolean isIntervalOverFor(String name) {
-        long timeNow = System.nanoTime();
-        Interval intervalAndCooldown = registeredIntervals.get(name);
-        if (intervalAndCooldown == null) return false;
-        int interval = intervalAndCooldown.interval;
-        long cooldown = intervalAndCooldown.coolDown;
-        if (timeNow - cooldown > TimeUnit.MILLISECONDS.toNanos(interval)) {
-            return true;
-        }
-        return false;
-    }
-    
-    public void resetIntervalFor(String name) {
-        Interval intervalAndCooldown = registeredIntervals.get(name);
-        if (intervalAndCooldown == null) return;
-        intervalAndCooldown.coolDown = System.nanoTime();
-    }
-    
-    public void registerIntervalFor(String name, int intervalRateInMillis) {
-        Interval interval = new Interval();
-        interval.interval = intervalRateInMillis;
-        registeredIntervals.put(name, interval);
-    }
-    
-    public void changeIntervalFor(String name, int newIntervalInMillis) {
-        registeredIntervals.get(name).interval = newIntervalInMillis;
     }
     
     // to be overridden
@@ -76,20 +43,24 @@ public abstract class Entity implements Drawable {
         return false;
     }
     
-    public void setMaxHealth(int maxHealth) {
+    public void setMaxHealth(float maxHealth) {
         this.maxHealth = maxHealth;
     }
     
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = (int) Common.clamp(
+    public void setCurrentHealth(float currentHealth) {
+        this.currentHealth = Common.clamp(
             currentHealth,
             0,
             this.maxHealth
         );
     }
     
-    public int getCurrentHealth() {
+    public float getCurrentHealth() {
         return currentHealth;
+    }
+    
+    public float getMaxHealth() {
+        return maxHealth;
     }
     
     public int getZIndex() {
@@ -102,9 +73,5 @@ public abstract class Entity implements Drawable {
     
     public Vector getPosition() {
         return position;
-    }
-    
-    public int getMaxHealth() {
-        return maxHealth;
     }
 }

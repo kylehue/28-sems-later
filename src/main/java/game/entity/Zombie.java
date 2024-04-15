@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class Zombie extends Entity {
     // stats
     private float speed = Common.random(300, 750);
-    private int damage = 1;
+    private float damage = 1;
     
     // misc
     private final ZombieSprite sprite = new ZombieSprite();

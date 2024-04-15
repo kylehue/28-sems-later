@@ -14,7 +14,7 @@ public class Bullet extends Entity {
     /* Stats */
     private float speed = 10000;
     private float maxDistance = 300;
-    private int damage = 25;
+    private float damage = 25;
     private int penetration = 25;
     
     /* State */
@@ -65,7 +65,7 @@ public class Bullet extends Entity {
             getPosition().getY()
         );
         ctx.rotate(Math.toDegrees(this.angle));
-        ctx.drawImage(image, 0, 0);
+        ctx.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2);
         ctx.restore();
     }
     

@@ -4,13 +4,15 @@ import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
+import game.inventory.InventoryManager;
+import game.inventory.weapons.Gun;
+import game.inventory.weapons.Weapon;
 import javafx.scene.image.Image;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Bounds;
-import utils.Common;
 import game.utils.Vector;
 
 public class Player extends Entity {
@@ -34,10 +36,10 @@ public class Player extends Entity {
     private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
     private float angleToMouse = 0;
+    private final InventoryManager inventoryManager = new InventoryManager(this);
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
-    private final Image gunImage = Common.loadImage("/weapons/pistol.png");
     private final DashSprite dashSprite = new DashSprite();
     
     public Player(World world) {
@@ -50,6 +52,10 @@ public class Player extends Entity {
         );
         
         this.setZIndex(Game.ZIndex.PLAYER);
+        
+        // inventoryManager.useWeapon(Weapons.AK47);
+        // inventoryManager.usePowerUp(PowerUps.AdditionalSpeed);
+        // inventoryManager.useItem(Items.Grenade);
     }
     
     private void initIntervals() {
@@ -106,7 +112,8 @@ public class Player extends Entity {
         if (isFacingOnLeftSide) {
             ctx.scale(1, -1);
         }
-        ctx.drawImage(gunImage, gunImage.getWidth() / 2, -gunImage.getHeight() / 2);
+        Weapon currentWeapon = inventoryManager.getCurrentWeapon();
+        currentWeapon.render(ctx, alpha);
         ctx.restore();
     }
     
@@ -134,15 +141,20 @@ public class Player extends Entity {
     }
     
     public void shoot() {
-        if (isIntervalOverFor("shoot")) {
-            float offset = (float) (gunImage.getWidth() + gunImage.getWidth() / 2);
-            world.spawnBullet(
-                (float) (getPosition().getX() + Math.cos(this.angleToMouse) * offset),
-                (float) (getPosition().getY() + Math.sin(this.angleToMouse) * offset),
-                this.angleToMouse
-            );
-            resetIntervalFor("shoot");
-        }
+        Weapon currentWeapon = inventoryManager.getCurrentWeapon();
+        
+        if (!isIntervalOverFor("shoot")) return;
+        if (!(currentWeapon instanceof Gun currentGun)) return;
+        
+        float xOffset = currentGun.getMuzzlePosition().getX() - currentGun.getHandlePosition().getX() + 4;
+        world.spawnBullet(
+            (float) (getPosition().getX()  + Math.cos(this.angleToMouse) * xOffset),
+            (float) (getPosition().getY() + Math.sin(this.angleToMouse) * xOffset),
+            this.angleToMouse
+        );
+        
+        resetIntervalFor("shoot");
+        changeIntervalFor("shoot", currentGun.getFireRateInMillis());
     }
     
     private void updateAngleToMouse() {
