@@ -46,8 +46,8 @@ public class Zombie extends Entity {
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.ZOMBIES);
-        this.collider.addToGroup(Game.CollisionGroup.BULLETS);
-        this.collider.excludeResolutionToGroup(Game.CollisionGroup.BULLETS);
+        this.collider.addToGroup(Game.CollisionGroup.PROJECTILES);
+        // this.collider.excludeResolutionToGroup(Game.CollisionGroup.BULLETS);
         
         this.collider.setRadius(5);
         this.collider.setMass(1);
@@ -72,16 +72,6 @@ public class Zombie extends Entity {
     public void fixedUpdate(float deltaTime) {
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
-        // put in quadtree
-        world.getQuadtree().insert(
-            collider,
-            new Bounds(
-                collider.getPosition().getX() - collider.getWidth() / 2,
-                collider.getPosition().getY() - collider.getHeight() / 2,
-                collider.getWidth(),
-                collider.getHeight()
-            )
-        );
     }
     
     public void update(float deltaTime) {
@@ -103,14 +93,14 @@ public class Zombie extends Entity {
     
     private void updateAngleToPlayer() {
         Player player = world.getPlayer();
-        this.angleToPlayer = this.getPosition().getAngle(player.getPosition());
+        this.angleToPlayer = this.position.getAngle(player.getPosition());
         this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
     }
     
     private void handleSprite() {
         this.sprite.setPosition(
-            getPosition().getX(),
-            getPosition().getY()
+            position.getX(),
+            position.getY()
         );
         this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
         this.sprite.nextFrame();
@@ -118,7 +108,7 @@ public class Zombie extends Entity {
     
     private void maybeUpdatePathToPlayer() {
         Player player = world.getPlayer();
-        float distanceToPlayer = player.getPosition().getDistanceFrom(getPosition());
+        float distanceToPlayer = player.getPosition().getDistanceFrom(position);
         changeIntervalFor("pathToPlayerUpdate", (int) distanceToPlayer);
         if (isIntervalOverFor("pathToPlayerUpdate")) {
             Async.queue1.submit(() -> {
@@ -133,7 +123,7 @@ public class Zombie extends Entity {
     }
     
     private void handleMovements() {
-        getPosition().set(collider.getPosition().clone().addY(-collider.getRadius()));
+        position.set(collider.getPosition().clone().addY(-collider.getRadius()));
         
         // Move to player
         if (pathToPlayer.size() > 1) {

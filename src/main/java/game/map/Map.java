@@ -68,29 +68,4 @@ public abstract class Map {
             }
         }
     }
-    
-    public void putCollidersInQuadtree(Quadtree<Collider> quadtree) {
-        for (Layer layer : layers) {
-            for (Material material : layer.getMaterials()) {
-                Collider collider = material.getCollider();
-                if (collider == null) continue;
-                
-                if (collider instanceof GroupedCollider groupedCollider){
-                    for (Collider collider1 : groupedCollider.getColliders()) {
-                        putColliderInQuadtree(quadtree, collider1);
-                    }
-                } else {
-                    putColliderInQuadtree(quadtree, collider);
-                }
-            }
-        }
-    }
-    
-    private void putColliderInQuadtree(Quadtree<Collider> quadtree, Collider collider) {
-        float width = collider.getWidth();
-        float height = collider.getHeight();
-        float x = collider.getPosition().getX() - width / 2;
-        float y = collider.getPosition().getY() - height / 2;
-        quadtree.insert(collider, new Bounds(x, y, width, height));
-    }
 }

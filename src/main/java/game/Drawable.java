@@ -1,4 +1,4 @@
-package game.entity;
+package game;
 
 import javafx.scene.canvas.GraphicsContext;
 import game.utils.Vector;

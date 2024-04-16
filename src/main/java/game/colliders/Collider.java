@@ -221,10 +221,6 @@ public abstract class Collider {
             targetX,
             targetY
         );
-        // position.add(
-        //     velocityX * deltaTime,
-        //     velocityY * deltaTime
-        // );
         
         this.subUpdate(deltaTime);
         

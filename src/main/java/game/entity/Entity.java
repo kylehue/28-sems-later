@@ -1,20 +1,18 @@
 package game.entity;
 
+import game.Drawable;
 import game.World;
 import game.utils.IntervalMap;
 import javafx.scene.canvas.GraphicsContext;
 import game.utils.Common;
 import game.utils.Vector;
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
 public abstract class Entity extends IntervalMap implements Drawable {
     protected final World world;
-    private final Vector position = new Vector();
-    private float currentHealth = 100;
-    private float maxHealth = 100;
-    private int zIndex = 0;
+    protected final Vector position = new Vector();
+    protected float currentHealth = 100;
+    protected float maxHealth = 100;
+    protected int zIndex = 0;
     
     public Entity(World world) {
         this.world = world;

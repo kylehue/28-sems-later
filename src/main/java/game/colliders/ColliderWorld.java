@@ -8,11 +8,11 @@ import java.util.HashSet;
 
 public class ColliderWorld {
     private final ArrayList<Collider> colliders = new ArrayList<>();
-    private Quadtree<Collider> quadtree = null;
+    private final Quadtree<Collider> quadtree;
     private Bounds bounds = new Bounds();
     
-    public ColliderWorld() {
-    
+    public ColliderWorld(Quadtree<Collider> quadtree) {
+        this.quadtree = quadtree;
     }
     
     public void setBounds(Bounds bounds) {
@@ -53,25 +53,34 @@ public class ColliderWorld {
         removeCollider(collider.getId());
     }
     
-    public void setQuadtree(Quadtree<Collider> quadtree) {
-        this.quadtree = quadtree;
+    private void addColliderToQuadtree(Collider collider) {
+        quadtree.insert(
+            collider,
+            new Bounds(
+                collider.getPosition().getX() - collider.getWidth() / 2f,
+                collider.getPosition().getY() - collider.getHeight() / 2f,
+                collider.getWidth(),
+                collider.getHeight()
+            )
+        );
     }
     
     public void fixedUpdate(float deltaTime) {
         for (Collider collider : colliders) {
             collider.getContacts().clear();
             collider.update(deltaTime);
+            if (collider instanceof GroupedCollider groupedCollider) {
+                for (Collider collider1 : groupedCollider.getColliders()) {
+                    addColliderToQuadtree(collider1);
+                }
+            } else {
+                addColliderToQuadtree(collider);
+            }
         }
         
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
-            // If there's a quadtree, use it
-            ArrayList<Collider> otherColliders;
-            if (this.quadtree != null) {
-                otherColliders = colliderA.getAndUpdateNearColliders(quadtree);
-            } else {
-                otherColliders = this.colliders;
-            }
+            ArrayList<Collider> otherColliders = colliderA.getAndUpdateNearColliders(quadtree);
             
             // Resolve
             for (Collider colliderB : otherColliders) {

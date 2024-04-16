@@ -2,7 +2,7 @@ package game.map;
 
 import game.colliders.Collider;
 import game.colliders.PolygonCollider;
-import game.entity.Drawable;
+import game.Drawable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;

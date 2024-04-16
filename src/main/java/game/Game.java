@@ -16,7 +16,7 @@ public class Game extends GameLoop {
         MAP,
         PLAYER,
         ZOMBIES,
-        BULLETS
+        PROJECTILES,
     }
     
     public static class ZIndex {

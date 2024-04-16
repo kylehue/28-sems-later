@@ -97,16 +97,16 @@ public class Player extends Entity {
         // render body
         this.bodySprite.render(ctx);
         this.bodySprite.setPosition(
-            getPosition().getX(),
-            getPosition().getY()
+            position.getX(),
+            position.getY()
         );
         this.bodySprite.nextFrame();
         
         // render gun
         ctx.save();
         ctx.translate(
-            getPosition().getX(),
-            getPosition().getY()
+            position.getX(),
+            position.getY()
         );
         ctx.rotate(Math.toDegrees(angleToMouse));
         if (isFacingOnLeftSide) {
@@ -147,9 +147,12 @@ public class Player extends Entity {
         if (!(currentWeapon instanceof Gun currentGun)) return;
         
         float xOffset = currentGun.getMuzzlePosition().getX() - currentGun.getHandlePosition().getX() + 4;
-        world.spawnBullet(
-            (float) (getPosition().getX()  + Math.cos(this.angleToMouse) * xOffset),
-            (float) (getPosition().getY() + Math.sin(this.angleToMouse) * xOffset),
+        Vector initialPosition = new Vector(
+            (float) (position.getX() + Math.cos(this.angleToMouse) * xOffset),
+            (float) (position.getY() + Math.sin(this.angleToMouse) * xOffset)
+        );
+        world.spawnInstantBullet(
+            initialPosition,
             this.angleToMouse
         );
         
@@ -158,10 +161,8 @@ public class Player extends Entity {
     }
     
     private void updateAngleToMouse() {
-        Vector mouseInWorld = world.getCamera().screenToWorld(
-            world.getGame().getMouseHandler().getPosition()
-        );
-        this.angleToMouse = getPosition().getAngle(mouseInWorld);
+        Vector mouseInWorld = world.getMousePosition();
+        this.angleToMouse = position.getAngle(mouseInWorld);
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
@@ -215,7 +216,7 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        getPosition().lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
+        position.lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
         
         // x controls
         float computedSpeed = speed * collider.getMass();
@@ -267,7 +268,7 @@ public class Player extends Entity {
     
     @Override
     public Vector getRenderPosition() {
-        return getPosition().clone().addY(collider.getRadius());
+        return position.clone().addY(collider.getRadius());
     }
     
     public Collider getCollider() {

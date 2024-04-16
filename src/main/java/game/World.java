@@ -2,10 +2,12 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
-import game.entity.Bullet;
 import game.entity.Player;
-import game.entity.Drawable;
 import game.entity.Zombie;
+import game.projectiles.Bullet;
+import game.projectiles.Grenade;
+import game.projectiles.InstantBullet;
+import game.projectiles.Projectile;
 import game.utils.*;
 import javafx.scene.canvas.GraphicsContext;
 import game.map.Layer;
@@ -13,7 +15,6 @@ import game.map.Material;
 import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
-import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +22,11 @@ import java.util.HashMap;
 public class World {
     private final Game game;
     private final ArrayList<Zombie> zombies = new ArrayList<>();
-    private final ArrayList<Bullet> bullets = new ArrayList<>();
+    private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
     private final Map map = new CityMap();
     private final Quadtree<Collider> quadtree;
-    private final ColliderWorld colliderWorld = new ColliderWorld();
+    private final ColliderWorld colliderWorld;
     private Player player;
     private final PathFinder pathFinder;
     
@@ -54,8 +55,8 @@ public class World {
             map.getTotalWidth(),
             map.getTotalHeight()
         );
+        this.colliderWorld = new ColliderWorld(quadtree);
         this.colliderWorld.setBounds(mapBounds);
-        this.colliderWorld.setQuadtree(this.quadtree);
         this.camera = new Camera(game.getGraphicsContext());
         map.addCollidersToWorld(colliderWorld);
     }
@@ -101,8 +102,8 @@ public class World {
         ArrayList<Drawable> drawables = new ArrayList<>();
         drawables.add(player);
         drawables.addAll(zombies);
-        ArrayList<Layer> layers = map.getLayers();
-        for (Layer layer : layers) {
+        drawables.addAll(projectiles);
+        for (Layer layer : map.getLayers()) {
             drawables.addAll(layer.getMaterials());
         }
         
@@ -130,7 +131,8 @@ public class World {
         });
         
         for (Drawable drawable : drawables) {
-            if (drawable.isSeeThrough()) {
+            boolean isSeeThrough = drawable.isSeeThrough();
+            if (isSeeThrough) {
                 ctx.save();
                 float distance = camera.getPosition().getDistanceFrom(drawable.getPosition());
                 float seeThroughDistance = 100;
@@ -148,17 +150,7 @@ public class World {
             }
             
             drawable.render(ctx, alpha);
-            if (drawable.isSeeThrough()) ctx.restore();
-        }
-        
-        for (Bullet bullet : bullets) {
-            boolean isInViewport = this.camera.isInViewport(
-                bullet.getPosition(),
-                renderDistanceOffset
-            );
-            if (isInViewport) {
-                bullet.render(ctx, alpha);
-            }
+            if (isSeeThrough) ctx.restore();
         }
         
         // this.renderMeta(ctx);
@@ -175,8 +167,6 @@ public class World {
     
     public void fixedUpdate(float deltaTime) {
         this.quadtree.clear();
-        this.handleBulletDisposal();
-        map.putCollidersInQuadtree(this.quadtree);
         map.fixedUpdate(deltaTime);
         
         player.fixedUpdate(deltaTime);
@@ -185,8 +175,13 @@ public class World {
             zombie.fixedUpdate(deltaTime);
         }
         
-        for (Bullet bullet : bullets) {
-            bullet.fixedUpdate(deltaTime);
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile projectile = projectiles.get(i);
+            if (projectile.isDisposed()) {
+                projectiles.remove(i);
+            } else {
+                projectile.fixedUpdate(deltaTime);
+            }
         }
         
         colliderWorld.fixedUpdate(deltaTime);
@@ -199,30 +194,32 @@ public class World {
             zombie.update(deltaTime);
         }
         
-        for (Bullet bullet : bullets) {
-            bullet.update(deltaTime);
+        for (Projectile projectile : projectiles) {
+            projectile.update(deltaTime);
         }
         
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
     }
     
-    public Bullet spawnBullet(float x, float y, float angle) {
-        Bullet bullet = new Bullet(this, x, y, angle);
-        this.bullets.add(bullet);
+    public Bullet spawnBullet(Vector initialPosition, float angle) {
+        Bullet bullet = new Bullet(initialPosition, angle);
+        colliderWorld.addCollider(bullet.getCollider());
+        projectiles.add(bullet);
         return bullet;
     }
     
-    private void handleBulletDisposal() {
-        for (int i = bullets.size() - 1; i >= 0; i--) {
-            Bullet bullet = bullets.get(i);
-            // dispose bullets when reached max distance
-            float distance = bullet.getPosition().getDistanceFrom(bullet.getInitialPosition());
-            if (distance > bullet.getMaxDistance()) {
-                bullets.remove(i);
-                colliderWorld.removeCollider(bullet.getCollider());
-            }
-        }
+    public Grenade spawnGrenade(Vector initialPosition, float angle) {
+        Grenade grenade = new Grenade(initialPosition, angle);
+        colliderWorld.addCollider(grenade.getCollider());
+        projectiles.add(grenade);
+        return grenade;
+    }
+    
+    public InstantBullet spawnInstantBullet(Vector initialPosition, float angle) {
+        InstantBullet instantBullet = new InstantBullet(initialPosition, angle);
+        projectiles.add(instantBullet);
+        return instantBullet;
     }
     
     public Game getGame() {
@@ -245,8 +242,8 @@ public class World {
         return player;
     }
     
-    public ArrayList<Bullet> getBullets() {
-        return bullets;
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
     }
     
     public ArrayList<Zombie> getZombies() {
@@ -255,5 +252,9 @@ public class World {
     
     public Camera getCamera() {
         return camera;
+    }
+    
+    public Vector getMousePosition() {
+        return camera.screenToWorld(game.getMouseHandler().getPosition());
     }
 }
