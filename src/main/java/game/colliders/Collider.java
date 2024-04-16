@@ -88,12 +88,18 @@ public abstract class Collider {
         return contacts;
     }
     
+    /**
+     * Check if the given collider is colliding with this collider.
+     */
     public boolean isCollidingWith(Collider collider) {
         return contacts.contains(collider.getId());
     }
     
+    /**
+     * Check if the given bounds is colliding with this collider.
+     */
     public boolean isCollidingWith(Bounds bounds) {
-        return CollisionResolvers.AABBTest(
+        return CollisionResolvers.testAABB(
             position.getX() - getWidth() / 2,
             position.getY() - getHeight() / 2,
             getWidth(),
@@ -103,6 +109,13 @@ public abstract class Collider {
             bounds.getWidth(),
             bounds.getHeight()
         );
+    }
+    
+    /**
+     * Check if the given line is colliding with this collider.
+     */
+    public boolean isCollidingWith(Vector pointA, Vector pointB) {
+        return CollisionResolvers.testLineToCollider(pointA, pointB, this);
     }
     
     public boolean isColliding() {

@@ -6,16 +6,14 @@ import game.entity.Bullet;
 import game.entity.Player;
 import game.entity.Drawable;
 import game.entity.Zombie;
-import game.utils.Bounds;
-import game.utils.Camera;
-import game.utils.Common;
-import game.utils.Quadtree;
+import game.utils.*;
 import javafx.scene.canvas.GraphicsContext;
 import game.map.Layer;
 import game.map.Material;
 import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
+import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,29 +97,29 @@ public class World {
         
         this.camera.begin();
         
-        // render things
-        ArrayList<Drawable> things = new ArrayList<>();
-        things.add(player);
-        things.addAll(zombies);
+        // render drawables
+        ArrayList<Drawable> drawables = new ArrayList<>();
+        drawables.add(player);
+        drawables.addAll(zombies);
         ArrayList<Layer> layers = map.getLayers();
         for (Layer layer : layers) {
-            things.addAll(layer.getMaterials());
+            drawables.addAll(layer.getMaterials());
         }
         
-        // exclude things that are not in viewport
-        for (int i = things.size() - 1; i >= 0; i--) {
-            Drawable thing = things.get(i);
+        // exclude drawables that are not in viewport
+        for (int i = drawables.size() - 1; i >= 0; i--) {
+            Drawable drawable = drawables.get(i);
             boolean isInViewport = this.camera.isInViewport(
-                thing.getRenderPosition(),
+                drawable.getRenderPosition(),
                 renderDistanceOffset
             );
             if (!isInViewport) {
-                things.remove(i);
+                drawables.remove(i);
             }
         }
         
         // TODO: project requirements application: apply insertion sort
-        things.sort((a, b) -> {
+        drawables.sort((a, b) -> {
             float ay = a.getRenderPosition().getY();
             float by = b.getRenderPosition().getY();
             if (a.getZIndex() < b.getZIndex()) return -1;
@@ -131,10 +129,10 @@ public class World {
             return 0;
         });
         
-        for (Drawable thing : things) {
-            if (thing.isSeeThrough()) {
+        for (Drawable drawable : drawables) {
+            if (drawable.isSeeThrough()) {
                 ctx.save();
-                float distance = camera.getPosition().getDistanceFrom(thing.getPosition());
+                float distance = camera.getPosition().getDistanceFrom(drawable.getPosition());
                 float seeThroughDistance = 100;
                 if (distance <= seeThroughDistance) {
                     ctx.setGlobalAlpha(
@@ -149,8 +147,8 @@ public class World {
                 }
             }
             
-            thing.render(ctx, alpha);
-            if (thing.isSeeThrough()) ctx.restore();
+            drawable.render(ctx, alpha);
+            if (drawable.isSeeThrough()) ctx.restore();
         }
         
         for (Bullet bullet : bullets) {

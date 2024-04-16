@@ -2,8 +2,10 @@ package game.colliders;
 
 import game.utils.Vector;
 
+import java.util.List;
+
 public abstract class CollisionResolvers {
-    public static boolean AABBTest(
+    public static boolean testAABB(
         float x1,
         float y1,
         float width1,
@@ -18,6 +20,105 @@ public abstract class CollisionResolvers {
         return true;
     }
     
+    public static boolean testLineCircle(
+        Vector linePointA,
+        Vector linePointB,
+        Vector circlePosition,
+        float circleRadius
+    ) {
+        // Check if either points are inside the circle
+        if (
+            linePointA.getDistanceFrom(circlePosition) <= circleRadius ||
+                linePointB.getDistanceFrom(circlePosition) <= circleRadius
+        ) {
+            return true;
+        }
+        
+        float lineLength = linePointA.getDistanceFrom(linePointB);
+        
+        Vector lineDist = linePointB.clone().subtract(linePointA);
+        float dot = (float) (
+            circlePosition
+                .clone()
+                .subtract(linePointA)
+                .dot(lineDist) / Math.pow(lineLength, 2)
+        );
+        
+        Vector closestPoint = linePointA.clone().add(lineDist.clone().scale(dot));
+        
+        // Check if the closest point is in line
+        float lineBuffer = 0.1f;
+        float closestPointLineDist = closestPoint.getDistanceFrom(linePointA) + closestPoint.getDistanceFrom(linePointB);
+        boolean isInLine = closestPointLineDist >= lineLength - lineBuffer && closestPointLineDist <= lineLength + lineBuffer;
+        if (!isInLine) {
+            return false;
+        }
+        
+        return closestPoint.getDistanceFrom(circlePosition) <= circleRadius;
+    }
+    
+    public static boolean testLineToPolygon(
+        Vector linePointA,
+        Vector linePointB,
+        Vector polygonPosition,
+        Vector[] polygonVertices
+    ) {
+        int vertexCount = polygonVertices.length;
+        for (int i = 0; i < vertexCount; i++) {
+            // Pair 2 points that will act as the line
+            Vector linePointC = polygonVertices[i]
+                .clone()
+                .add(polygonPosition);
+            Vector linePointD = polygonVertices[(i + 1) % vertexCount]
+                .clone()
+                .add(polygonPosition);
+            
+            // calculate the distance to intersection point
+            // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+            Vector distDC = linePointD.clone().subtract(linePointC);
+            Vector distAC = linePointA.clone().subtract(linePointC);
+            Vector distBA = linePointB.clone().subtract(linePointA);
+            var uA = (distDC.getX() * distAC.getY() - distDC.getY() * distAC.getX()) / (distDC.getY() * distBA.getX() - distDC.getX() * distBA.getY());
+            var uB = (distBA.getX() * distAC.getY() - distBA.getY() * distAC.getX()) / (distDC.getY() * distBA.getX() - distDC.getX() * distBA.getY());
+            
+            // if uA and uB are between 0-1, lines are colliding
+            if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public static boolean testLineToCollider(
+        Vector linePointA,
+        Vector linePointB,
+        Collider collider
+    ) {
+        if (collider instanceof CircleCollider circleCollider) {
+            return testLineCircle(
+                linePointA,
+                linePointB,
+                circleCollider.getPosition(),
+                circleCollider.getRadius()
+            );
+        } else if (collider instanceof PolygonCollider polygonCollider) {
+            return testLineToPolygon(
+                linePointA,
+                linePointB,
+                polygonCollider.getPosition(),
+                polygonCollider.getVertices()
+            );
+        } else if (collider instanceof GroupedCollider groupedCollider) {
+            for (Collider collider1 : groupedCollider.getColliders()) {
+                boolean isColliding = testLineToCollider(linePointA, linePointB, collider1);
+                if (isColliding) return true;
+            }
+        }
+        
+        return false;
+    }
+    
     public static void circleToCircle(
         CircleCollider circleA,
         CircleCollider circleB
@@ -25,7 +126,7 @@ public abstract class CollisionResolvers {
         if (!circleA.isGroupedWith(circleB) && !circleB.isGroupedWith(circleA)) return;
         
         // Detect (AABB)
-        boolean isCollidingAABB = AABBTest(
+        boolean isCollidingAABB = testAABB(
             circleA.getPosition().getX() - circleA.getWidth() / 2,
             circleA.getPosition().getY() - circleA.getHeight() / 2,
             circleA.getWidth(),
@@ -87,7 +188,7 @@ public abstract class CollisionResolvers {
         if (!circle.isGroupedWith(polygon) && !polygon.isGroupedWith(circle)) return;
         
         // Detect (AABB)
-        boolean isCollidingAABB = AABBTest(
+        boolean isCollidingAABB = testAABB(
             circle.getPosition().getX() - circle.getWidth() / 2,
             circle.getPosition().getY() - circle.getHeight() / 2,
             circle.getWidth(),
@@ -254,7 +355,7 @@ public abstract class CollisionResolvers {
         if (!polygonA.isGroupedWith(polygonB) && !polygonB.isGroupedWith(polygonA)) return;
         
         // Detect (AABB)
-        boolean isCollidingAABB = AABBTest(
+        boolean isCollidingAABB = testAABB(
             polygonA.getPosition().getX() - polygonA.getWidth() / 2,
             polygonA.getPosition().getY() - polygonA.getHeight() / 2,
             polygonA.getWidth(),
