@@ -151,7 +151,7 @@ public class Player extends Entity {
             (float) (position.getX() + Math.cos(this.angleToMouse) * xOffset),
             (float) (position.getY() + Math.sin(this.angleToMouse) * xOffset)
         );
-        world.spawnInstantBullet(
+        world.spawnBullet(
             initialPosition,
             this.angleToMouse
         );

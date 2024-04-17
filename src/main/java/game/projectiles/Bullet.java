@@ -2,10 +2,14 @@ package game.projectiles;
 
 import game.Game;
 import game.colliders.CircleCollider;
+import game.colliders.Collider;
+import game.entity.Entity;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;
+
+import java.util.List;
 
 public class Bullet extends Projectile {
     private float speed = 10000;
@@ -56,6 +60,25 @@ public class Bullet extends Projectile {
             (float) Math.cos(angle) * speed,
             (float) Math.sin(angle) * speed
         );
+    }
+    
+    @Override
+    public void handleEntityCollision(Entity entity) {
+        boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
+        if (!isEntityHit) return;
+        entity.addHealth(-this.damage);
+        if (penetration <= 0) {
+            dispose();
+        } else {
+            penetration--;
+        }
+    }
+    
+    @Override
+    public void handleObstacleCollision(Collider obstacle) {
+        boolean isObstacleHit = collider.isCollidingWith(obstacle);
+        if (!isObstacleHit) return;
+        dispose();
     }
     
     public void setSpeed(float speed) {

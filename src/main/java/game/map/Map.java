@@ -9,7 +9,7 @@ import game.utils.Quadtree;
 import java.util.ArrayList;
 
 public abstract class Map {
-    public final ArrayList<Layer> layers = new ArrayList<>();
+    protected final ArrayList<Layer> layers = new ArrayList<>();
     protected final int tileSize;
     private int totalWidth = 0;
     private int totalHeight = 0;

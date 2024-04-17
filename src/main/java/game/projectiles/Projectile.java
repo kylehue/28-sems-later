@@ -2,8 +2,14 @@ package game.projectiles;
 
 import game.Game;
 import game.Drawable;
+import game.colliders.Collider;
+import game.entity.Entity;
+import game.entity.Zombie;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
+
+import java.util.HashSet;
+import java.util.List;
 
 public abstract class Projectile implements Drawable {
     protected float damage = 1;
@@ -11,11 +17,20 @@ public abstract class Projectile implements Drawable {
     protected final Vector initialPosition = new Vector();
     protected final Vector position = new Vector();
     protected boolean isDisposed = false;
+    protected HashSet<String> zombiesHit = new HashSet<>();
     
     public Projectile(Vector initialPosition, float angle) {
         this.initialPosition.set(initialPosition);
         this.position.set(initialPosition);
         this.angle = angle;
+    }
+    
+    public void markZombieAsHit(Zombie zombie) {
+        zombiesHit.add(zombie.getId());
+    }
+    
+    public boolean isZombieHit(Zombie zombie) {
+        return zombiesHit.contains(zombie.getId());
     }
     
     public void setAngle(float angle) {
@@ -59,6 +74,9 @@ public abstract class Projectile implements Drawable {
     public void update(float deltaTime) {
     
     }
+    
+    public abstract void handleEntityCollision(Entity entity);
+    public abstract void handleObstacleCollision(Collider obstacle);
     
     @Override
     public boolean isSeeThrough() {

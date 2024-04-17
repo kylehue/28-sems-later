@@ -2,10 +2,14 @@ package game.projectiles;
 
 import game.Game;
 import game.colliders.CircleCollider;
+import game.colliders.Collider;
+import game.entity.Entity;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;
+
+import java.util.List;
 
 public class Grenade extends Projectile {
     private float aoeDistance = 100;
@@ -57,6 +61,16 @@ public class Grenade extends Projectile {
         );
         
         speed *= 0.95f;
+    }
+    
+    @Override
+    public void handleEntityCollision(Entity entity) {
+    
+    }
+    
+    @Override
+    public void handleObstacleCollision(Collider obstacle) {
+    
     }
     
     public void setAoeDistance(float aoeDistance) {

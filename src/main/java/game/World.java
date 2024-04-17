@@ -2,6 +2,7 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
+import game.entity.Entity;
 import game.entity.Player;
 import game.entity.Zombie;
 import game.projectiles.Bullet;
@@ -171,8 +172,30 @@ public class World {
         
         player.fixedUpdate(deltaTime);
         
+        // for each zombie in zombies
+        //     for each projectile in projectiles
+        //         if (zombie collides with projectile)
+        //             if zombie is hit then skip
+        //             zombie.health -= projectile.damage
+        //             mark zombie as hit
+        
         for (Zombie zombie : zombies) {
             zombie.fixedUpdate(deltaTime);
+            //
+            for( int i = projectiles.size() - 1; i >= 0; i--){
+                Projectile projectile = projectiles.get(i);
+                if (projectile instanceof Bullet bullet) {
+                    boolean isZombieHit = bullet
+                        .getCollider()
+                        .isCollidingWith(zombie.getCollider());
+                    if (isZombieHit) {
+                        // damage
+                        // penetraion
+                        // disposal
+                    }
+                }
+            }
+            
         }
         
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -181,6 +204,17 @@ public class World {
                 projectiles.remove(i);
             } else {
                 projectile.fixedUpdate(deltaTime);
+                for (Entity entity : zombies) {
+                    projectile.handleEntityCollision(entity);
+                }
+                
+                for (Layer layer : map.getLayers()) {
+                    for (Material material : layer.getMaterials()) {
+                        Collider collider = material.getCollider();
+                        if (collider == null) continue;
+                        projectile.handleObstacleCollision(collider);
+                    }
+                }
             }
         }
         

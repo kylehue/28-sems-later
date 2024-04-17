@@ -2,9 +2,13 @@ package game.projectiles;
 
 import game.Game;
 import game.colliders.CircleCollider;
+import game.colliders.Collider;
+import game.entity.Entity;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
+
+import java.util.List;
 
 public class InstantBullet extends Projectile {
     private float penetration = 0;
@@ -39,6 +43,16 @@ public class InstantBullet extends Projectile {
             opacity = 0;
             dispose();
         }
+    }
+    
+    @Override
+    public void handleEntityCollision(Entity entity) {
+    
+    }
+    
+    @Override
+    public void handleObstacleCollision(Collider obstacle) {
+    
     }
     
     public void setPenetration(float penetration) {
