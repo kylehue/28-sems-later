@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Grenade extends Projectile {
-    private float knockBackForce = 250;
-    private float aoeDistance = 100;
+    private float knockBackForce = 100;
+    private float aoeDistance = 60;
     private int detonationTimeInMillis = 2000;
     private final long startTimeInMillis = System.currentTimeMillis();
     private float speed = 5000;
@@ -99,7 +99,8 @@ public class Grenade extends Projectile {
         
         ExplosionSprite explosionSprite = new ExplosionSprite();
         explosionSprite.setPosition(position.getX(), position.getY());
-        explosionSprite.setSize(aoeDistance, aoeDistance);
+        float spriteSize = Math.max(64, aoeDistance);
+        explosionSprite.setSize(spriteSize, spriteSize);
         world.addOneTimeSpriteAnimation(explosionSprite);
         
         // Handle affected entities
@@ -108,7 +109,14 @@ public class Grenade extends Projectile {
             boolean isEntityAffected = affectedColliders.contains(entity.getCollider().getId());
             if (!isEntityAffected) continue;
             
-            entity.addHealth(-damage);
+            // Damage should depend on how close they are on epicenter
+            float distance = entity
+                .getCollider()
+                .getPosition()
+                .getDistanceFrom(position);
+            float distancePercentage = (aoeDistance - distance) / aoeDistance;
+            float computedDamage = damage * distancePercentage;
+            entity.addHealth(-computedDamage);
             markEntity(entity);
         }
         

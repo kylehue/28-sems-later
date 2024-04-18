@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 public abstract class Projectile implements Drawable {
     protected final World world;
-    protected float damage = 1;
+    protected float damage = 100;
     protected float angle = 0;
     protected final Vector initialPosition = new Vector();
     protected final Vector position = new Vector();
