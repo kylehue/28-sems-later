@@ -70,7 +70,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 440; i++) {
             Zombie zombie = new Zombie(this);
             zombie.getCollider().getPosition().set(
                 Common.random(-halfMapWidth, halfMapWidth),
@@ -176,7 +176,8 @@ public class World {
         
         player.fixedUpdate(deltaTime);
         
-        for (Zombie zombie : zombies) {
+        for (int i = zombies.size() - 1; i >= 0; i--) {
+            Zombie zombie = zombies.get(i);
             zombie.fixedUpdate(deltaTime);
         }
         
@@ -199,7 +200,8 @@ public class World {
     public void update(float deltaTime) {
         player.update(deltaTime);
         
-        for (Zombie zombie : zombies) {
+        for (int i = zombies.size() - 1; i >= 0; i--) {
+            Zombie zombie = zombies.get(i);
             zombie.update(deltaTime);
         }
         

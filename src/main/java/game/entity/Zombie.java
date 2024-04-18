@@ -3,6 +3,8 @@ package game.entity;
 import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
+import game.sprites.AcidSprite;
+import game.utils.HitEffect;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
 import utils.Async;
@@ -23,6 +25,7 @@ public class Zombie extends Entity {
     private float angleToPlayer = 0;
     private boolean isFacingOnLeftSide = false;
     private ArrayList<Vector> pathToPlayer = new ArrayList<>();
+    private HitEffect hitEffect = new HitEffect();
     
     public Zombie(World world) {
         super(world);
@@ -57,7 +60,9 @@ public class Zombie extends Entity {
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
+        hitEffect.begin(ctx);
         this.sprite.render(ctx);
+        hitEffect.end(ctx);
         
         // // draw path to player
         // for (Vector vector : pathToPlayer) {
@@ -73,11 +78,25 @@ public class Zombie extends Entity {
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
         this.sprite.nextFrame();
+        hitEffect.updateCurrentHealth(currentHealth);
     }
     
     public void update(float deltaTime) {
         this.handleSprite();
         this.updateAngleToPlayer();
+        
+        if (currentHealth <= 0) {
+            dispose();
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        world.getZombies().remove(this);
+        world.getColliderWorld().removeCollider(collider);
+        AcidSprite acidSprite = new AcidSprite();
+        acidSprite.setPosition(position.getX(), position.getY());
+        world.addOneTimeSpriteAnimation(acidSprite);
     }
     
     private void checkPlayerCollision() {

@@ -139,6 +139,11 @@ public class Player extends Entity {
         }
     }
     
+    @Override
+    public void dispose() {
+        // ...
+    }
+    
     public void shoot() {
         Weapon currentWeapon = inventoryManager.getCurrentWeapon();
         

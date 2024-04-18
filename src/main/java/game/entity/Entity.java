@@ -43,6 +43,8 @@ public abstract class Entity extends IntervalMap implements Drawable {
         return false;
     }
     
+    public abstract void dispose();
+    
     public void setMaxHealth(float maxHealth) {
         this.maxHealth = maxHealth;
     }
@@ -55,8 +57,8 @@ public abstract class Entity extends IntervalMap implements Drawable {
         );
     }
     
-    public void addHealth(float health){
-       this.currentHealth += health;
+    public void addHealth(float health) {
+        this.currentHealth += health;
     }
     
     public float getCurrentHealth() {
