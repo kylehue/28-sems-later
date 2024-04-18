@@ -6,7 +6,6 @@ import game.colliders.CircleCollider;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
 import utils.Async;
-import game.utils.Bounds;
 import game.utils.Common;
 import game.map.PathFinder;
 import game.utils.Vector;
@@ -42,10 +41,10 @@ public class Zombie extends Entity {
     }
     
     private void initCollider() {
-        this.collider.setGroup(Game.CollisionGroup.ZOMBIES);
+        this.collider.setGroup(Game.CollisionGroup.MOBS);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.ZOMBIES);
+        this.collider.addToGroup(Game.CollisionGroup.MOBS);
         this.collider.addToGroup(Game.CollisionGroup.PROJECTILES);
         // this.collider.excludeResolutionToGroup(Game.CollisionGroup.BULLETS);
         
@@ -70,12 +69,13 @@ public class Zombie extends Entity {
     }
     
     public void fixedUpdate(float deltaTime) {
+        this.handleMovements();
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
+        this.sprite.nextFrame();
     }
     
     public void update(float deltaTime) {
-        this.handleMovements();
         this.handleSprite();
         this.updateAngleToPlayer();
     }
@@ -103,7 +103,6 @@ public class Zombie extends Entity {
             position.getY()
         );
         this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
-        this.sprite.nextFrame();
     }
     
     private void maybeUpdatePathToPlayer() {

@@ -2,7 +2,7 @@ package game.projectiles;
 
 import game.Game;
 import game.Drawable;
-import game.colliders.Collider;
+import game.World;
 import game.entity.Entity;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.HashSet;
 
 public abstract class Projectile implements Drawable {
+    protected final World world;
     protected float damage = 1;
     protected float angle = 0;
     protected final Vector initialPosition = new Vector();
@@ -17,7 +18,8 @@ public abstract class Projectile implements Drawable {
     protected boolean isDisposed = false;
     protected HashSet<String> markedEntities = new HashSet<>();
     
-    public Projectile(Vector initialPosition, float angle) {
+    public Projectile(World world, Vector initialPosition, float angle) {
+        this.world = world;
         this.initialPosition.set(initialPosition);
         this.position.set(initialPosition);
         this.angle = angle;
@@ -55,9 +57,7 @@ public abstract class Projectile implements Drawable {
         return initialPosition;
     }
     
-    public void dispose() {
-        isDisposed = true;
-    }
+    public abstract void dispose();
     
     public boolean isDisposed() {
         return isDisposed;
@@ -72,9 +72,6 @@ public abstract class Projectile implements Drawable {
     public void update(float deltaTime) {
     
     }
-    
-    public abstract void handleEntityCollision(Entity entity);
-    public abstract void handleObstacleCollision(Collider obstacle);
     
     @Override
     public boolean isSeeThrough() {

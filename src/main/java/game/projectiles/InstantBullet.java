@@ -1,6 +1,7 @@
 package game.projectiles;
 
 import game.Game;
+import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.entity.Entity;
@@ -14,8 +15,8 @@ public class InstantBullet extends Projectile {
     private float penetration = 0;
     private float opacity = 1;
     
-    public InstantBullet(Vector initialPosition, float angle) {
-        super(initialPosition, angle);
+    public InstantBullet(World world, Vector initialPosition, float angle) {
+        super(world, initialPosition, angle);
     }
     
     @Override
@@ -46,13 +47,8 @@ public class InstantBullet extends Projectile {
     }
     
     @Override
-    public void handleEntityCollision(Entity entity) {
-    
-    }
-    
-    @Override
-    public void handleObstacleCollision(Collider obstacle) {
-    
+    public void dispose() {
+        world.getProjectiles().remove(this);
     }
     
     public void setPenetration(float penetration) {

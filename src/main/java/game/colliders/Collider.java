@@ -51,6 +51,10 @@ public abstract class Collider {
         return nearColliders;
     }
     
+    public ArrayList<Collider> getNearColliders() {
+        return nearColliders;
+    }
+    
     /* Grouping */
     public void addToGroup(Object groupKey) {
         groups.add(groupKey);

@@ -7,7 +7,6 @@ import game.colliders.Collider;
 import game.inventory.InventoryManager;
 import game.inventory.weapons.Gun;
 import game.inventory.weapons.Weapon;
-import javafx.scene.image.Image;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
 import javafx.scene.canvas.GraphicsContext;
@@ -48,7 +47,7 @@ public class Player extends Entity {
         this.initIntervals();
         
         dashSprite.setFrameAccumulator(
-            dashSprite.getFrameLength(DashSprite.Animation.Default.name())
+            dashSprite.getFrameLength()
         );
         
         this.setZIndex(Game.ZIndex.PLAYER);
@@ -67,7 +66,7 @@ public class Player extends Entity {
         this.collider.setGroup(Game.CollisionGroup.PLAYER);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.ZOMBIES);
+        this.collider.addToGroup(Game.CollisionGroup.MOBS);
         this.collider.setMass(50);
         this.collider.setRadius(5);
         world.getColliderWorld().addCollider(
@@ -78,7 +77,7 @@ public class Player extends Entity {
     @Override
     public void render(GraphicsContext ctx, float alpha) {
         // render dash smoke
-        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength(DashSprite.Animation.Default.name())) {
+        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength()) {
             ctx.save();
             ctx.translate(
                 dashPosition.getX(),
@@ -100,7 +99,6 @@ public class Player extends Entity {
             position.getX(),
             position.getY()
         );
-        this.bodySprite.nextFrame();
         
         // render gun
         ctx.save();
@@ -118,6 +116,9 @@ public class Player extends Entity {
     }
     
     public void fixedUpdate(float deltaTime) {
+        this.handleMovements();
+        this.handleSpriteAnimations();
+        this.bodySprite.nextFrame();
         world.getQuadtree().insert(
             collider,
             new Bounds(
@@ -130,10 +131,8 @@ public class Player extends Entity {
     }
     
     public void update(float deltaTime) {
-        this.handleMovements();
         this.updateControlFlags();
         this.updateAngleToMouse();
-        this.handleSpriteAnimations();
         
         if (shootPressed) {
             this.shoot();
@@ -151,7 +150,7 @@ public class Player extends Entity {
             (float) (position.getX() + Math.cos(this.angleToMouse) * xOffset),
             (float) (position.getY() + Math.sin(this.angleToMouse) * xOffset)
         );
-        world.spawnBullet(
+        world.spawnGrenade(
             initialPosition,
             this.angleToMouse
         );

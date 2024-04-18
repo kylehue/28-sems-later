@@ -15,7 +15,7 @@ public class Game extends GameLoop {
     public enum CollisionGroup {
         MAP,
         PLAYER,
-        ZOMBIES,
+        MOBS,
         PROJECTILES,
     }
     

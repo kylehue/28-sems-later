@@ -2,8 +2,6 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
-import game.colliders.GroupedCollider;
-import game.entity.Entity;
 import game.entity.Player;
 import game.entity.Zombie;
 import game.projectiles.Bullet;
@@ -31,6 +29,7 @@ public class World {
     private final ColliderWorld colliderWorld;
     private Player player;
     private final PathFinder pathFinder;
+    private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
     
     /* For debugging */
     public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
@@ -163,6 +162,11 @@ public class World {
             debugRender.clear();
         }
         
+        for (int i = oneTimeSpriteAnimations.size() - 1; i >= 0; i--) {
+            SpriteAnimation anim = oneTimeSpriteAnimations.get(i);
+            anim.render(ctx);
+        }
+        
         this.camera.end();
     }
     
@@ -178,27 +182,14 @@ public class World {
         
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile projectile = projectiles.get(i);
-            if (projectile.isDisposed()) {
-                projectiles.remove(i);
-            } else {
-                projectile.fixedUpdate(deltaTime);
-                for (Entity entity : zombies) {
-                    projectile.handleEntityCollision(entity);
-                }
-                
-                for (Layer layer : map.getLayers()) {
-                    for (Material material : layer.getMaterials()) {
-                        Collider collider = material.getCollider();
-                        if (collider == null) continue;
-                        if (collider instanceof GroupedCollider groupedCollider) {
-                            for (Collider _collider : groupedCollider.getColliders()) {
-                                projectile.handleObstacleCollision(_collider);
-                            }
-                        } else {
-                            projectile.handleObstacleCollision(collider);
-                        }
-                    }
-                }
+            projectile.fixedUpdate(deltaTime);
+        }
+        
+        for (int i = oneTimeSpriteAnimations.size() - 1; i >= 0; i--) {
+            SpriteAnimation anim = oneTimeSpriteAnimations.get(i);
+            anim.nextFrame();
+            if (anim.getCurrentFrameNumber() >= anim.getFrameLength() - 1) {
+                oneTimeSpriteAnimations.remove(i);
             }
         }
         
@@ -212,7 +203,8 @@ public class World {
             zombie.update(deltaTime);
         }
         
-        for (Projectile projectile : projectiles) {
+        for (int i = projectiles.size() - 1; i >= 0; i--) {
+            Projectile projectile = projectiles.get(i);
             projectile.update(deltaTime);
         }
         
@@ -221,23 +213,28 @@ public class World {
     }
     
     public Bullet spawnBullet(Vector initialPosition, float angle) {
-        Bullet bullet = new Bullet(initialPosition, angle);
+        Bullet bullet = new Bullet(this, initialPosition, angle);
         colliderWorld.addCollider(bullet.getCollider());
         projectiles.add(bullet);
         return bullet;
     }
     
     public Grenade spawnGrenade(Vector initialPosition, float angle) {
-        Grenade grenade = new Grenade(initialPosition, angle);
+        Grenade grenade = new Grenade(this, initialPosition, angle);
         colliderWorld.addCollider(grenade.getCollider());
+        colliderWorld.addCollider(grenade.getAoeCollider());
         projectiles.add(grenade);
         return grenade;
     }
     
     public InstantBullet spawnInstantBullet(Vector initialPosition, float angle) {
-        InstantBullet instantBullet = new InstantBullet(initialPosition, angle);
+        InstantBullet instantBullet = new InstantBullet(this, initialPosition, angle);
         projectiles.add(instantBullet);
         return instantBullet;
+    }
+    
+    public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
+        oneTimeSpriteAnimations.add(spriteAnimation);
     }
     
     public Game getGame() {
@@ -274,5 +271,9 @@ public class World {
     
     public Vector getMousePosition() {
         return camera.screenToWorld(game.getMouseHandler().getPosition());
+    }
+    
+    public Map getMap() {
+        return map;
     }
 }

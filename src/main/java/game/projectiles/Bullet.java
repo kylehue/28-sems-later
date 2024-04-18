@@ -1,9 +1,12 @@
 package game.projectiles;
 
 import game.Game;
+import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.entity.Entity;
+import game.map.Layer;
+import game.map.Material;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -16,8 +19,8 @@ public class Bullet extends Projectile {
     private final CircleCollider collider = new CircleCollider();
     private final Image image = Common.loadImage("/weapons/bullet-2.png");
     
-    public Bullet(Vector initialPosition, float angle) {
-        super(initialPosition, angle);
+    public Bullet(World world, Vector initialPosition, float angle) {
+        super(world, initialPosition, angle);
         initCollider();
     }
     
@@ -25,10 +28,10 @@ public class Bullet extends Projectile {
         collider.setPosition(initialPosition);
         collider.setGroup(Game.CollisionGroup.PROJECTILES);
         collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.ZOMBIES);
+        collider.addToGroup(Game.CollisionGroup.MOBS);
         collider.addToGroup(Game.CollisionGroup.PROJECTILES);
         collider.excludeResolutionToGroup(Game.CollisionGroup.MAP);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.ZOMBIES);
+        collider.excludeResolutionToGroup(Game.CollisionGroup.MOBS);
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
         collider.setRadius(2);
         collider.setFriction(0.9f);
@@ -51,6 +54,18 @@ public class Bullet extends Projectile {
     public void fixedUpdate(float deltaTime) {
         handleMovement();
         handleDisposal();
+        
+        for (Entity entity : world.getZombies()) {
+            handleEntityCollision(entity);
+        }
+        
+        for (Layer layer : world.getMap().getLayers()) {
+            for (Material material : layer.getMaterials()) {
+                Collider obstacle = material.getCollider();
+                if (obstacle == null) continue;
+                handleObstacleCollision(obstacle);
+            }
+        }
     }
     
     private void handleMovement() {
@@ -63,17 +78,16 @@ public class Bullet extends Projectile {
     
     private void handleDisposal() {
         float currentDistance = initialPosition.getDistanceFrom(position);
-        if (currentDistance > maxDistance) {
-            dispose();
-        }
-        
-        if (penetration <= 0) {
+        if (
+            penetration <= 0 ||
+                currentDistance > maxDistance ||
+                collider.isCollidingInBounds()
+        ) {
             dispose();
         }
     }
     
-    @Override
-    public void handleEntityCollision(Entity entity) {
+    private void handleEntityCollision(Entity entity) {
         if (isEntityMarked(entity)) return;
         boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
         if (!isEntityHit) return;
@@ -86,12 +100,17 @@ public class Bullet extends Projectile {
         markEntity(entity);
     }
     
-    @Override
-    public void handleObstacleCollision(Collider obstacle) {
+    private void handleObstacleCollision(Collider obstacle) {
         boolean isObstacleHit = collider.isCollidingWith(obstacle);
-        if (isObstacleHit || collider.isCollidingInBounds()) {
+        if (isObstacleHit) {
             dispose();
         }
+    }
+    
+    @Override
+    public void dispose() {
+        world.getProjectiles().remove(this);
+        world.getColliderWorld().removeCollider(collider);
     }
     
     public void setSpeed(float speed) {

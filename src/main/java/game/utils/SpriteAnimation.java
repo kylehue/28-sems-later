@@ -11,7 +11,7 @@ public class SpriteAnimation {
     private float tileHeight = -1;
     private int frameAccumulator = 0;
     private int framesElapsed = 0;
-    private String currentAnimation;
+    private String currentAnimation = null;
     private int fps = 12;
     
     private boolean horizontallyFlipped = false;
@@ -32,6 +32,9 @@ public class SpriteAnimation {
     
     public void registerAnimation(String animationName, TileLocation[] tileLocations) {
         registeredAnimations.put(animationName, tileLocations);
+        if (currentAnimation == null) {
+            currentAnimation = animationName;
+        }
     }
     
     public void render(GraphicsContext ctx) {
@@ -68,7 +71,7 @@ public class SpriteAnimation {
     }
     
     public void randomizeFirstFrame() {
-        this.frameAccumulator = (int) Common.random(0, 10);
+        this.frameAccumulator = (int) Common.random(0, getFrameLength() - 1);
     }
     
     public void setPosition(float x, float y) {
@@ -100,12 +103,12 @@ public class SpriteAnimation {
         currentAnimation = animationName;
     }
     
-    public int getFrameLength(String animationName) {
+    public int getFrameLength() {
         TileLocation[] tileLocations = registeredAnimations.get(currentAnimation);
         return tileLocations.length;
     }
     
-    public int getCurrentFrameNumber(String animationName) {
+    public int getCurrentFrameNumber() {
         TileLocation[] tileLocations = registeredAnimations.get(currentAnimation);
         return frameAccumulator % tileLocations.length;
     }
