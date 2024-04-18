@@ -2,6 +2,7 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
+import game.colliders.GroupedCollider;
 import game.entity.Entity;
 import game.entity.Player;
 import game.entity.Zombie;
@@ -120,7 +121,6 @@ public class World {
             }
         }
         
-        // TODO: project requirements application: apply insertion sort
         drawables.sort((a, b) -> {
             float ay = a.getRenderPosition().getY();
             float by = b.getRenderPosition().getY();
@@ -172,30 +172,8 @@ public class World {
         
         player.fixedUpdate(deltaTime);
         
-        // for each zombie in zombies
-        //     for each projectile in projectiles
-        //         if (zombie collides with projectile)
-        //             if zombie is hit then skip
-        //             zombie.health -= projectile.damage
-        //             mark zombie as hit
-        
         for (Zombie zombie : zombies) {
             zombie.fixedUpdate(deltaTime);
-            //
-            for( int i = projectiles.size() - 1; i >= 0; i--){
-                Projectile projectile = projectiles.get(i);
-                if (projectile instanceof Bullet bullet) {
-                    boolean isZombieHit = bullet
-                        .getCollider()
-                        .isCollidingWith(zombie.getCollider());
-                    if (isZombieHit) {
-                        // damage
-                        // penetraion
-                        // disposal
-                    }
-                }
-            }
-            
         }
         
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -212,7 +190,13 @@ public class World {
                     for (Material material : layer.getMaterials()) {
                         Collider collider = material.getCollider();
                         if (collider == null) continue;
-                        projectile.handleObstacleCollision(collider);
+                        if (collider instanceof GroupedCollider groupedCollider) {
+                            for (Collider _collider : groupedCollider.getColliders()) {
+                                projectile.handleObstacleCollision(_collider);
+                            }
+                        } else {
+                            projectile.handleObstacleCollision(collider);
+                        }
                     }
                 }
             }

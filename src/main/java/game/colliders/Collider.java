@@ -25,6 +25,7 @@ public abstract class Collider {
     private boolean isStatic = false;
     
     /* Collision */
+    private boolean isCollidingInBounds = false;
     private final HashSet<String> contacts = new HashSet<>();
     private ArrayList<Collider> nearColliders = new ArrayList<>();
     
@@ -84,6 +85,10 @@ public abstract class Collider {
     }
     
     /* Contacts / collisions */
+    public boolean isCollidingInBounds() {
+        return isCollidingInBounds;
+    }
+    
     protected HashSet<String> getContacts() {
         return contacts;
     }
@@ -246,20 +251,26 @@ public abstract class Collider {
         float overlapTop = Math.max(0, boundsTop - position.getY() + getHeight() / 2);
         float overlapBottom = Math.max(0, position.getY() + getHeight() / 2 - boundsBottom);
         
+        isCollidingInBounds = false;
+        
         if (overlapLeft > 0) {
             position.addX(overlapLeft);
+            isCollidingInBounds = true;
         }
         
         if (overlapRight > 0) {
             position.subtractX(overlapRight);
+            isCollidingInBounds = true;
         }
         
         if (overlapTop > 0) {
             position.addY(overlapTop);
+            isCollidingInBounds = true;
         }
         
         if (overlapBottom > 0) {
             position.subtractY(overlapBottom);
+            isCollidingInBounds = true;
         }
     }
     

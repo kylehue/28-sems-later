@@ -4,12 +4,10 @@ import game.Game;
 import game.Drawable;
 import game.colliders.Collider;
 import game.entity.Entity;
-import game.entity.Zombie;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.HashSet;
-import java.util.List;
 
 public abstract class Projectile implements Drawable {
     protected float damage = 1;
@@ -17,7 +15,7 @@ public abstract class Projectile implements Drawable {
     protected final Vector initialPosition = new Vector();
     protected final Vector position = new Vector();
     protected boolean isDisposed = false;
-    protected HashSet<String> zombiesHit = new HashSet<>();
+    protected HashSet<String> markedEntities = new HashSet<>();
     
     public Projectile(Vector initialPosition, float angle) {
         this.initialPosition.set(initialPosition);
@@ -25,12 +23,12 @@ public abstract class Projectile implements Drawable {
         this.angle = angle;
     }
     
-    public void markZombieAsHit(Zombie zombie) {
-        zombiesHit.add(zombie.getId());
+    public void markEntity(Entity entity) {
+        markedEntities.add(entity.getId());
     }
     
-    public boolean isZombieHit(Zombie zombie) {
-        return zombiesHit.contains(zombie.getId());
+    public boolean isEntityMarked(Entity entity) {
+        return markedEntities.contains(entity.getId());
     }
     
     public void setAngle(float angle) {

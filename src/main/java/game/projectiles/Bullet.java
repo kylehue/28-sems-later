@@ -9,12 +9,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;
 
-import java.util.List;
-
 public class Bullet extends Projectile {
-    private float speed = 10000;
+    private float speed = 20000;
     private float maxDistance = 200;
-    private float penetration = 0;
+    private float penetration = 1;
     private final CircleCollider collider = new CircleCollider();
     private final Image image = Common.loadImage("/weapons/bullet-2.png");
     
@@ -33,16 +31,16 @@ public class Bullet extends Projectile {
         collider.excludeResolutionToGroup(Game.CollisionGroup.ZOMBIES);
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
         collider.setRadius(2);
-        collider.setFriction(0.5f);
-        collider.setMass(1);
+        collider.setFriction(0.9f);
+        collider.setMass(5);
     }
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
         ctx.save();
         ctx.translate(
-            getPosition().getX(),
-            getPosition().getY()
+            position.getX(),
+            position.getY()
         );
         ctx.rotate(Math.toDegrees(angle));
         ctx.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2);
@@ -52,33 +50,48 @@ public class Bullet extends Projectile {
     @Override
     public void fixedUpdate(float deltaTime) {
         handleMovement();
+        handleDisposal();
     }
     
     private void handleMovement() {
         position.set(collider.getPosition());
         collider.applyForce(
-            (float) Math.cos(angle) * speed,
-            (float) Math.sin(angle) * speed
+            (float) Math.cos(angle) * speed * collider.getMass(),
+            (float) Math.sin(angle) * speed * collider.getMass()
         );
+    }
+    
+    private void handleDisposal() {
+        float currentDistance = initialPosition.getDistanceFrom(position);
+        if (currentDistance > maxDistance) {
+            dispose();
+        }
+        
+        if (penetration <= 0) {
+            dispose();
+        }
     }
     
     @Override
     public void handleEntityCollision(Entity entity) {
+        if (isEntityMarked(entity)) return;
         boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
         if (!isEntityHit) return;
-        entity.addHealth(-this.damage);
-        if (penetration <= 0) {
-            dispose();
-        } else {
-            penetration--;
-        }
+        
+        float penetrationPercentage = penetration >= 1 ? 1 : penetration;
+        float computedDamage = damage * penetrationPercentage;
+        
+        entity.addHealth(-computedDamage);
+        penetration -= penetrationPercentage;
+        markEntity(entity);
     }
     
     @Override
     public void handleObstacleCollision(Collider obstacle) {
         boolean isObstacleHit = collider.isCollidingWith(obstacle);
-        if (!isObstacleHit) return;
-        dispose();
+        if (isObstacleHit || collider.isCollidingInBounds()) {
+            dispose();
+        }
     }
     
     public void setSpeed(float speed) {
@@ -90,7 +103,7 @@ public class Bullet extends Projectile {
     }
     
     public void setPenetration(float penetration) {
-        this.penetration = penetration;
+        this.penetration = Math.max(0, penetration);
     }
     
     public float getSpeed() {
