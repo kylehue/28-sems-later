@@ -8,7 +8,7 @@ public class HitEffect {
     private float oldHealth = currentHealth;
     private boolean isDamaged = false;
     private long lastTimeDamagedInMillis = System.currentTimeMillis();
-    private float brightnessAccumulator = 1;
+    private float brightnessAccumulator = 0;
     private int effectMinTimeInMillis = 200;
     
     public void updateCurrentHealth(float currentHealth) {

@@ -8,7 +8,7 @@ import java.util.HashSet;
 public class InventoryManager {
     private final Player player;
     private final HashSet<WeaponMap.Kind> unlockedWeapons = new HashSet<>();
-    private Weapon currentWeapon = new Sniper();
+    private Weapon currentWeapon = new GrenadeLauncher();
     
     public InventoryManager(Player player) {
         this.player = player;
