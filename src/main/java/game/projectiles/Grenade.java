@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Grenade extends Projectile {
-    private float knockBackForce = 100;
+    private float knockBackForce = 15000;
     private float aoeDistance = 60;
     private int detonationTimeInMillis = 2000;
     private final long startTimeInMillis = System.currentTimeMillis();
@@ -92,8 +92,8 @@ public class Grenade extends Projectile {
             // Add some knock back
             float angleToBomb = position.getAngle(_collider.getPosition());
             _collider.applyForce(
-                (float) (Math.cos(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass(),
-                (float) (Math.sin(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass()
+                (float) (Math.cos(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass() / aoeDistance,
+                (float) (Math.sin(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass() / aoeDistance
             );
         }
         

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InstantBullet extends Projectile {
-    private float knockBackForce = 15000;
+    private float knockBackForce = 10000;
     private float penetration = 10.5f;
     private float opacity = 1;
     private boolean shouldStopTravelling = false;
@@ -106,6 +106,7 @@ public class InstantBullet extends Projectile {
             markEntity(entity);
             lastEntityHit = entity;
             
+            // Add knock back
             float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
             entity.getCollider().applyForce(
                 (float) (Math.cos(angleToBullet) * knockBackForce * entity.getCollider().getMass()),

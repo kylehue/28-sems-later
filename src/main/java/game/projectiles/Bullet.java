@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public class Bullet extends Projectile {
+    private float knockBackForce = 3000;
     private float speed = 20000;
     private float maxDistance = 200;
     private float penetration = 1;
@@ -80,9 +81,9 @@ public class Bullet extends Projectile {
     
     private void handleEntityCollision() {
         for (Entity entity : world.getZombies()) {
-            if (isEntityMarked(entity)) return;
+            if (isEntityMarked(entity)) continue;
             boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
-            if (!isEntityHit) return;
+            if (!isEntityHit) continue;
             
             float penetrationPercentage = penetration >= 1 ? 1 : penetration;
             float computedDamage = damage * penetrationPercentage;
@@ -90,6 +91,13 @@ public class Bullet extends Projectile {
             entity.addHealth(-computedDamage);
             penetration -= penetrationPercentage;
             markEntity(entity);
+            
+            // Add knock back
+            float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
+            entity.getCollider().applyForce(
+                (float) (Math.cos(angleToBullet) * knockBackForce * entity.getCollider().getMass()),
+                (float) (Math.sin(angleToBullet) * knockBackForce * entity.getCollider().getMass())
+            );
         }
     }
     
