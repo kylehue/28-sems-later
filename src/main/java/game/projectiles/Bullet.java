@@ -55,17 +55,8 @@ public class Bullet extends Projectile {
         handleMovement();
         handleDisposal();
         
-        for (Entity entity : world.getZombies()) {
-            handleEntityCollision(entity);
-        }
-        
-        for (Layer layer : world.getMap().getLayers()) {
-            for (Material material : layer.getMaterials()) {
-                Collider obstacle = material.getCollider();
-                if (obstacle == null) continue;
-                handleObstacleCollision(obstacle);
-            }
-        }
+        handleEntityCollision();
+        handleObstacleCollision();
     }
     
     private void handleMovement() {
@@ -87,23 +78,32 @@ public class Bullet extends Projectile {
         }
     }
     
-    private void handleEntityCollision(Entity entity) {
-        if (isEntityMarked(entity)) return;
-        boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
-        if (!isEntityHit) return;
-        
-        float penetrationPercentage = penetration >= 1 ? 1 : penetration;
-        float computedDamage = damage * penetrationPercentage;
-        
-        entity.addHealth(-computedDamage);
-        penetration -= penetrationPercentage;
-        markEntity(entity);
+    private void handleEntityCollision() {
+        for (Entity entity : world.getZombies()) {
+            if (isEntityMarked(entity)) return;
+            boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
+            if (!isEntityHit) return;
+            
+            float penetrationPercentage = penetration >= 1 ? 1 : penetration;
+            float computedDamage = damage * penetrationPercentage;
+            
+            entity.addHealth(-computedDamage);
+            penetration -= penetrationPercentage;
+            markEntity(entity);
+        }
     }
     
-    private void handleObstacleCollision(Collider obstacle) {
-        boolean isObstacleHit = collider.isCollidingWith(obstacle);
-        if (isObstacleHit) {
-            dispose();
+    private void handleObstacleCollision() {
+        for (Layer layer : world.getMap().getLayers()) {
+            for (Material material : layer.getMaterials()) {
+                Collider obstacle = material.getCollider();
+                if (obstacle == null) continue;
+                boolean isObstacleHit = collider.isCollidingWith(obstacle);
+                if (isObstacleHit) {
+                    dispose();
+                    return;
+                }
+            }
         }
     }
     

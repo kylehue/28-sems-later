@@ -1,22 +1,28 @@
 package game.projectiles;
 
-import game.Game;
 import game.World;
-import game.colliders.CircleCollider;
 import game.colliders.Collider;
+import game.colliders.CollisionResolvers;
 import game.entity.Entity;
+import game.map.Layer;
+import game.map.Material;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InstantBullet extends Projectile {
-    private float penetration = 0;
+    private float knockBackForce = 15000;
+    private float penetration = 10.5f;
     private float opacity = 1;
+    private boolean shouldStopTravelling = false;
+    private final Vector travelledPosition = new Vector();
     
     public InstantBullet(World world, Vector initialPosition, float angle) {
         super(world, initialPosition, angle);
+        travelledPosition.set(initialPosition);
     }
     
     @Override
@@ -26,10 +32,10 @@ public class InstantBullet extends Projectile {
         ctx.setStroke(Paint.valueOf("white"));
         ctx.setLineWidth(Math.pow(opacity + 1, 2));
         ctx.beginPath();
-        ctx.moveTo(position.getX(), position.getY());
+        ctx.moveTo(initialPosition.getX(), initialPosition.getY());
         ctx.lineTo(
-            position.getX() + Math.cos(angle) * 5000,
-            position.getY() + Math.sin(angle) * 5000
+            travelledPosition.getX(),
+            travelledPosition.getY()
         );
         ctx.closePath();
         ctx.stroke();
@@ -43,6 +49,102 @@ public class InstantBullet extends Projectile {
         } else {
             opacity = 0;
             dispose();
+        }
+        
+        if (!shouldStopTravelling) {
+            shouldStopTravelling = penetration <= 0;
+            
+            travelledPosition.set(
+                (float) (position.getX() + Math.cos(angle) * 5000),
+                (float) (position.getY() + Math.sin(angle) * 5000)
+            );
+            
+            handleObstacleCollision();
+            handleEntityCollision();
+        }
+    }
+    
+    private void handleEntityCollision() {
+        // Get entities that intersects with the trajectory of the bullet
+        HashMap<String, Vector> entitiesIntersectionMap = new HashMap<>();
+        ArrayList<Entity> entities = new ArrayList<>();
+        for (Entity entity : world.getZombies()) {
+            Vector intersection = CollisionResolvers.getLineToColliderIntersectionPoint(
+                initialPosition,
+                travelledPosition,
+                entity.getCollider()
+            );
+            boolean isEntityHit = intersection != null;
+            if (!isEntityHit) continue;
+            entities.add(entity);
+            entitiesIntersectionMap.put(entity.getId(), intersection);
+        }
+        
+        // Sort entities by distance (nearest to furthest)
+        entities.sort((a, b) -> {
+            int distanceA = (int) a
+                .getCollider()
+                .getPosition()
+                .getDistanceFrom(initialPosition);
+            int distanceB = (int) b
+                .getCollider()
+                .getPosition()
+                .getDistanceFrom(initialPosition);
+            return distanceA - distanceB;
+        });
+        
+        // Hit entities
+        Entity lastEntityHit = null;
+        for (Entity entity : entities) {
+            if (isEntityMarked(entity)) continue;
+            if (penetration <= 0) continue;
+            float penetrationPercentage = penetration >= 1 ? 1 : penetration;
+            float computedDamage = damage * penetrationPercentage;
+            
+            entity.addHealth(-computedDamage);
+            penetration -= penetrationPercentage;
+            markEntity(entity);
+            lastEntityHit = entity;
+            
+            float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
+            entity.getCollider().applyForce(
+                (float) (Math.cos(angleToBullet) * knockBackForce * entity.getCollider().getMass()),
+                (float) (Math.sin(angleToBullet) * knockBackForce * entity.getCollider().getMass())
+            );
+        }
+        
+        if (penetration <= 0 && lastEntityHit != null) {
+            travelledPosition.set(
+                entitiesIntersectionMap.get(lastEntityHit.getId())
+            );
+        }
+    }
+    
+    private void handleObstacleCollision() {
+        for (Layer layer : world.getMap().getLayers()) {
+            for (Material material : layer.getMaterials()) {
+                Collider obstacle = material.getCollider();
+                if (obstacle == null) continue;
+                
+                Vector intersectionPoint = CollisionResolvers.getLineToColliderIntersectionPoint(
+                    position,
+                    travelledPosition,
+                    obstacle
+                );
+                
+                if (intersectionPoint != null) {
+                    travelledPosition.set(intersectionPoint);
+                    shouldStopTravelling = true;
+                }
+                
+                boolean isInsideMapBounds = travelledPosition.getX() >= 0 &&
+                    travelledPosition.getX() <= world.getMap().getTotalWidth() &&
+                    travelledPosition.getY() >= 0 &&
+                    travelledPosition.getY() <= world.getMap().getTotalHeight();
+                if (!isInsideMapBounds) {
+                    shouldStopTravelling = true;
+                }
+            }
         }
     }
     

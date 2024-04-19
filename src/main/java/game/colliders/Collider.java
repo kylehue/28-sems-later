@@ -124,7 +124,7 @@ public abstract class Collider {
      * Check if the given line is colliding with this collider.
      */
     public boolean isCollidingWith(Vector pointA, Vector pointB) {
-        return CollisionResolvers.testLineToCollider(pointA, pointB, this);
+        return CollisionResolvers.getLineToColliderIntersectionPoint(pointA, pointB, this) != null;
     }
     
     public boolean isColliding() {

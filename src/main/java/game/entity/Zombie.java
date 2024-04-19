@@ -60,9 +60,9 @@ public class Zombie extends Entity {
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
-        hitEffect.begin(ctx);
+        // hitEffect.begin(ctx);
         this.sprite.render(ctx);
-        hitEffect.end(ctx);
+        // hitEffect.end(ctx);
         
         // // draw path to player
         // for (Vector vector : pathToPlayer) {

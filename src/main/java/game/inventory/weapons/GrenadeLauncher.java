@@ -7,7 +7,7 @@ public class GrenadeLauncher extends Gun {
         super("/weapons/grenade-launcher.png");
         setFireRateInMillis(500);
         muzzlePosition.set(41, 4);
-        handlePosition.set(24, 8);
+        handlePosition.set(24, 7);
     }
     
     public void setAoeDistance(float aoeDistance) {

@@ -2,8 +2,6 @@ package game.colliders;
 
 import game.utils.Vector;
 
-import java.util.List;
-
 public abstract class CollisionResolvers {
     public static boolean testAABB(
         float x1,
@@ -20,7 +18,7 @@ public abstract class CollisionResolvers {
         return true;
     }
     
-    public static boolean testLineCircle(
+    public static Vector getLineToCircleIntersectionPoint(
         Vector linePointA,
         Vector linePointB,
         Vector circlePosition,
@@ -31,7 +29,7 @@ public abstract class CollisionResolvers {
             linePointA.getDistanceFrom(circlePosition) <= circleRadius ||
                 linePointB.getDistanceFrom(circlePosition) <= circleRadius
         ) {
-            return true;
+            return null;
         }
         
         float lineLength = linePointA.getDistanceFrom(linePointB);
@@ -51,19 +49,36 @@ public abstract class CollisionResolvers {
         float closestPointLineDist = closestPoint.getDistanceFrom(linePointA) + closestPoint.getDistanceFrom(linePointB);
         boolean isInLine = closestPointLineDist >= lineLength - lineBuffer && closestPointLineDist <= lineLength + lineBuffer;
         if (!isInLine) {
-            return false;
+            return null;
         }
         
-        return closestPoint.getDistanceFrom(circlePosition) <= circleRadius;
+        if (closestPoint.getDistanceFrom(circlePosition) > circleRadius) {
+            return null;
+        }
+        
+        float closestPointDistance = closestPoint
+            .clone()
+            .subtract(circlePosition)
+            .getMagnitude();
+        
+        float intersectionDistance = (float) Math.sqrt(
+            circleRadius * circleRadius - closestPointDistance * closestPointDistance
+        );
+        
+        return closestPoint.subtract(
+            lineDist.normalize().scale(intersectionDistance)
+        );
     }
     
-    public static boolean testLineToPolygon(
+    public static Vector getLineToPolygonIntersectionPoint(
         Vector linePointA,
         Vector linePointB,
         Vector polygonPosition,
         Vector[] polygonVertices
     ) {
         int vertexCount = polygonVertices.length;
+        float min = Float.MAX_VALUE;
+        Vector intersectionPoint = null;
         for (int i = 0; i < vertexCount; i++) {
             // Pair 2 points that will act as the line
             Vector linePointC = polygonVertices[i]
@@ -83,27 +98,35 @@ public abstract class CollisionResolvers {
             
             // if uA and uB are between 0-1, lines are colliding
             if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
-                return true;
+                Vector intersection = new Vector(
+                    linePointA.getX() + (uA * distBA.getX()),
+                    linePointA.getY() + (uA * distBA.getY())
+                );
+                float dist = linePointA.getDistanceFrom(intersection);
+                if (dist < min) {
+                    intersectionPoint = intersection;
+                    min = dist;
+                }
             }
         }
         
-        return false;
+        return intersectionPoint;
     }
     
-    public static boolean testLineToCollider(
+    public static Vector getLineToColliderIntersectionPoint(
         Vector linePointA,
         Vector linePointB,
         Collider collider
     ) {
         if (collider instanceof CircleCollider circleCollider) {
-            return testLineCircle(
+            return getLineToCircleIntersectionPoint(
                 linePointA,
                 linePointB,
                 circleCollider.getPosition(),
                 circleCollider.getRadius()
             );
         } else if (collider instanceof PolygonCollider polygonCollider) {
-            return testLineToPolygon(
+            return getLineToPolygonIntersectionPoint(
                 linePointA,
                 linePointB,
                 polygonCollider.getPosition(),
@@ -111,12 +134,14 @@ public abstract class CollisionResolvers {
             );
         } else if (collider instanceof GroupedCollider groupedCollider) {
             for (Collider collider1 : groupedCollider.getColliders()) {
-                boolean isColliding = testLineToCollider(linePointA, linePointB, collider1);
-                if (isColliding) return true;
+                Vector intersectionPoint = getLineToColliderIntersectionPoint(linePointA, linePointB, collider1);
+                if (intersectionPoint != null) {
+                    return intersectionPoint;
+                }
             }
         }
         
-        return false;
+        return null;
     }
     
     public static void circleToCircle(
