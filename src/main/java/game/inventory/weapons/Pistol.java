@@ -1,5 +1,8 @@
 package game.inventory.weapons;
 
+import game.World;
+import game.projectiles.Bullet;
+import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -28,5 +31,13 @@ public class Pistol extends Gun {
     
     public float getMaxDistance() {
         return maxDistance;
+    }
+    
+    @Override
+    public void handleShoot(World world, Vector initialPosition, float angle) {
+        Bullet bullet = world.spawnBullet(initialPosition, angle);
+        bullet.setSpeed(bulletSpeed);
+        bullet.setMaxDistance(maxDistance);
+        bullet.setDamage(damage);
     }
 }

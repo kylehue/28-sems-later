@@ -77,7 +77,7 @@ public class Grenade extends Projectile {
             (float) Math.sin(angle) * speed * collider.getMass()
         );
         
-        speed *= 0.8f;
+        speed *= 0.7f;
     }
     
     public void detonate() {

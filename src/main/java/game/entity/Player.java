@@ -58,7 +58,6 @@ public class Player extends Entity {
     }
     
     private void initIntervals() {
-        registerIntervalFor("shoot", 250);
         registerIntervalFor("dash", 1000);
     }
     
@@ -147,21 +146,8 @@ public class Player extends Entity {
     public void shoot() {
         Weapon currentWeapon = inventoryManager.getCurrentWeapon();
         
-        if (!isIntervalOverFor("shoot")) return;
         if (!(currentWeapon instanceof Gun currentGun)) return;
-        
-        float xOffset = currentGun.getMuzzlePosition().getX() - currentGun.getHandlePosition().getX() + 4;
-        Vector initialPosition = new Vector(
-            (float) (position.getX() + Math.cos(this.angleToMouse) * xOffset),
-            (float) (position.getY() + Math.sin(this.angleToMouse) * xOffset)
-        );
-        world.spawnInstantBullet(
-            initialPosition,
-            this.angleToMouse
-        );
-        
-        resetIntervalFor("shoot");
-        changeIntervalFor("shoot", currentGun.getFireRateInMillis());
+        currentGun.shoot(world, position, angleToMouse);
     }
     
     private void updateAngleToMouse() {

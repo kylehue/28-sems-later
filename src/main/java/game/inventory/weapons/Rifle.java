@@ -1,11 +1,14 @@
 package game.inventory.weapons;
 
+import game.World;
+import game.projectiles.Bullet;
+import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Rifle extends Gun {
     private float bulletSpeed = 15000;
-    private float accuracy = 1; // 0-1 value
+    private float accuracy = 0f; // 0-1 value
     private float maxDistance = 200;
     
     public Rifle() {
@@ -37,5 +40,17 @@ public class Rifle extends Gun {
     
     public float getMaxDistance() {
         return maxDistance;
+    }
+    
+    @Override
+    public void handleShoot(World world, Vector initialPosition, float angle) {
+        // Add inaccuracy
+        float maxInaccuracy = (float) (Math.PI / 8);
+        angle += (float) (maxInaccuracy * (1 - accuracy) * Math.random() - maxInaccuracy / 2) * (1 - accuracy);
+        
+        Bullet bullet = world.spawnBullet(initialPosition, angle);
+        bullet.setSpeed(bulletSpeed);
+        bullet.setMaxDistance(maxDistance);
+        bullet.setDamage(damage);
     }
 }

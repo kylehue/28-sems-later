@@ -7,6 +7,8 @@ public abstract class WeaponMap {
         PISTOL,
         RIFLE,
         SNIPER,
+        SHOTGUN,
+        GRENADE_LAUNCHER,
     }
     
     private static final HashMap<Kind, Weapon> map = new HashMap<>() {
@@ -14,6 +16,8 @@ public abstract class WeaponMap {
             put(Kind.RIFLE, new Rifle());
             put(Kind.PISTOL, new Pistol());
             put(Kind.SNIPER, new Sniper());
+            put(Kind.SHOTGUN, new Shotgun());
+            put(Kind.GRENADE_LAUNCHER, new GrenadeLauncher());
         }
     };
     

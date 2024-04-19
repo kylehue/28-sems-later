@@ -1,5 +1,10 @@
 package game.inventory.weapons;
 
+import game.World;
+import game.projectiles.Bullet;
+import game.projectiles.Grenade;
+import game.utils.Vector;
+
 public class GrenadeLauncher extends Gun {
     private float aoeDistance = 60;
     
@@ -16,5 +21,12 @@ public class GrenadeLauncher extends Gun {
     
     public float getAoeDistance() {
         return aoeDistance;
+    }
+    
+    @Override
+    public void handleShoot(World world, Vector initialPosition, float angle) {
+        Grenade grenade = world.spawnGrenade(initialPosition, angle);
+        grenade.setDamage(damage);
+        grenade.setAoeDistance(aoeDistance);
     }
 }
