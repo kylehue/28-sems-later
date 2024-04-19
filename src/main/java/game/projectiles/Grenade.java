@@ -18,7 +18,7 @@ import java.util.List;
 public class Grenade extends Projectile {
     private float knockBackForce = 15000;
     private float aoeDistance = 60;
-    private int detonationTimeInMillis = 2000;
+    private int detonationTimeInMillis = 1000;
     private final long startTimeInMillis = System.currentTimeMillis();
     private float speed = 5000;
     private final CircleCollider collider = new CircleCollider();
