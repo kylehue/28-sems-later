@@ -51,10 +51,6 @@ public class Player extends Entity {
         );
         
         this.setZIndex(Game.ZIndex.PLAYER);
-        
-        // inventoryManager.useWeapon(Weapons.AK47);
-        // inventoryManager.usePowerUp(PowerUps.AdditionalSpeed);
-        // inventoryManager.useItem(Items.Grenade);
     }
     
     private void initIntervals() {
@@ -196,13 +192,13 @@ public class Player extends Entity {
     }
     
     private void updateControlFlags() {
-        KeyHandler keyHandler = world.getGame().getKeyHandler();
+        KeyHandler keyHandler = Game.keyHandler;
         this.upPressed = keyHandler.isKeyPressed("up");
         this.downPressed = keyHandler.isKeyPressed("down");
         this.leftPressed = keyHandler.isKeyPressed("left");
         this.rightPressed = keyHandler.isKeyPressed("right");
         this.dashPressed = keyHandler.isKeyPressed("dash");
-        this.shootPressed = world.getGame().getMouseHandler().isMouseLeftPressed();
+        this.shootPressed = Game.mouseHandler.isMouseLeftPressed();
     }
     
     private void handleMovements() {
@@ -263,5 +259,9 @@ public class Player extends Entity {
     
     public Collider getCollider() {
         return collider;
+    }
+    
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
     }
 }

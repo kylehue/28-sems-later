@@ -58,12 +58,17 @@ public class TitleScene extends GameApplicationScene {
             startButton.setDisable(true);
             startButton.setText("Loading...");
             Game game = gameApplication.getGameScene().getGame();
-            game.startGameAsync().setOnSucceeded((t) -> {
-                parallax.pause();
-                gameApplication.getSceneManager().setScene(
-                    gameApplication.getGameScene().getSceneId()
-                );
-            });
+            game.startGameSync();
+            parallax.pause();
+            gameApplication.getSceneManager().setScene(
+                gameApplication.getGameScene().getSceneId()
+            );
+            // game.startGameAsync().setOnSucceeded((t) -> {
+            //     parallax.pause();
+            //     gameApplication.getSceneManager().setScene(
+            //         gameApplication.getGameScene().getSceneId()
+            //     );
+            // });
         });
     }
 }

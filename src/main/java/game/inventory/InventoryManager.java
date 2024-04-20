@@ -1,22 +1,22 @@
 package game.inventory;
 
+import game.Progress;
 import game.entity.Player;
 import game.inventory.weapons.*;
-
-import java.util.HashSet;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public class InventoryManager {
     private final Player player;
-    private final HashSet<WeaponMap.Kind> unlockedWeapons = new HashSet<>();
-    private Weapon currentWeapon = WeaponMap.get(WeaponMap.Kind.SHOTGUN);
+    private final ObjectProperty<WeaponKind> currentWeapon = new SimpleObjectProperty<>(WeaponKind.PISTOL);
     
     public InventoryManager(Player player) {
         this.player = player;
     }
     
-    public void useWeapon(WeaponMap.Kind weaponKind) {
-        if (!isWeaponUnlocked(weaponKind)) return;
-        currentWeapon = WeaponMap.get(WeaponMap.Kind.RIFLE);
+    public void useWeapon(WeaponKind weaponKind) {
+        if (!Progress.unlockedWeapons.contains(weaponKind)) return;
+        currentWeapon.set(weaponKind);
     }
     
     public void useItem() {
@@ -27,15 +27,11 @@ public class InventoryManager {
     
     }
     
-    public void unlockWeapon(WeaponMap.Kind weaponKind) {
-        unlockedWeapons.add(weaponKind);
-    }
-    
-    public boolean isWeaponUnlocked(WeaponMap.Kind weaponKind) {
-        return unlockedWeapons.contains(weaponKind);
-    }
-    
     public Weapon getCurrentWeapon() {
+        return currentWeapon.get().get();
+    }
+    
+    public ObjectProperty<WeaponKind> currentWeaponProperty() {
         return currentWeapon;
     }
 }

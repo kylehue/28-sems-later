@@ -2,7 +2,7 @@ package game.utils;
 
 import javafx.animation.AnimationTimer;
 
-public abstract class GameLoop {
+public class GameLoop {
     private static final float timeStep = 0.0166f;
     
     private long previousTime = 0;

@@ -78,14 +78,14 @@ public class Zombie extends Entity {
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
         this.sprite.nextFrame();
-        hitEffect.updateCurrentHealth(currentHealth);
+        hitEffect.updateCurrentHealth(getCurrentHealth());
     }
     
     public void update(float deltaTime) {
         this.handleSprite();
         this.updateAngleToPlayer();
         
-        if (currentHealth <= 0) {
+        if (getCurrentHealth() <= 0) {
             dispose();
         }
     }
@@ -105,7 +105,7 @@ public class Zombie extends Entity {
             player.getCollider()
         );
         if (isIntervalOverFor("zombie") && isCollidingWithPlayer) {
-            player.setCurrentHealth(player.getCurrentHealth() - damage);
+            player.addHealth(-damage);
             resetIntervalFor("zombie");
         }
     }

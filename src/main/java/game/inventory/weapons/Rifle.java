@@ -3,8 +3,6 @@ package game.inventory.weapons;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 public class Rifle extends Gun {
     private float bulletSpeed = 15000;
@@ -12,7 +10,7 @@ public class Rifle extends Gun {
     private float maxDistance = 200;
     
     public Rifle() {
-        super("/weapons/ak47.png");
+        super("/weapons/rifle.png");
         setFireRateInMillis(50);
         muzzlePosition.set(32, 4);
         handlePosition.set(13, 7);

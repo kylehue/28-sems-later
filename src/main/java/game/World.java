@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class World {
-    private final Game game;
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
@@ -38,8 +37,7 @@ public class World {
         void call(GraphicsContext ctx);
     }
     
-    public World(Game game) {
-        this.game = game;
+    public World() {
         Bounds mapBounds = new Bounds(
             (float) 0,
             (float) 0,
@@ -58,7 +56,7 @@ public class World {
         );
         this.colliderWorld = new ColliderWorld(quadtree);
         this.colliderWorld.setBounds(mapBounds);
-        this.camera = new Camera(game.getGraphicsContext());
+        this.camera = new Camera(Game.graphicsContext);
         map.addCollidersToWorld(colliderWorld);
     }
     
@@ -70,7 +68,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 440; i++) {
+        for (int i = 0; i < 10; i++) {
             Zombie zombie = new Zombie(this);
             zombie.getCollider().getPosition().set(
                 Common.random(-halfMapWidth, halfMapWidth),
@@ -239,10 +237,6 @@ public class World {
         oneTimeSpriteAnimations.add(spriteAnimation);
     }
     
-    public Game getGame() {
-        return game;
-    }
-    
     public PathFinder getPathFinder() {
         return pathFinder;
     }
@@ -272,7 +266,7 @@ public class World {
     }
     
     public Vector getMousePosition() {
-        return camera.screenToWorld(game.getMouseHandler().getPosition());
+        return camera.screenToWorld(Game.mouseHandler.getPosition());
     }
     
     public Map getMap() {

@@ -2,6 +2,7 @@ package game;
 
 import event.KeyHandler;
 import event.MouseHandler;
+import game.ui.UI;
 import game.utils.GameLoop;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
@@ -27,12 +28,13 @@ public class Game extends GameLoop {
         public static final int MAP_HIGH = 30;
     }
     
-    private final Canvas canvas = new Canvas();
-    private final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    private KeyHandler keyHandler;
-    private MouseHandler mouseHandler;
-    private World world;
-    private UI ui;
+    public static final Canvas canvas = new Canvas();
+    public static final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+    public static KeyHandler keyHandler;
+    public static MouseHandler mouseHandler;
+    public static World world;
+    public static UI ui;
+    public static int FPS = 0;
     
     public Game() {
     
@@ -41,6 +43,7 @@ public class Game extends GameLoop {
     public void initEventHandlers(Scene scene) {
         // Set up key handler & controls
         keyHandler = new KeyHandler(scene);
+        keyHandler.registerKey("weapon-switch", KeyCode.F);
         keyHandler.registerKey("up", KeyCode.UP);
         keyHandler.registerKey("up", KeyCode.W);
         keyHandler.registerKey("down", KeyCode.DOWN);
@@ -56,13 +59,13 @@ public class Game extends GameLoop {
     }
     
     public void startGameSync() {
-        if (ui == null) {
-            ui = new UI(this);
+        if (world == null) {
+            world = new World();
+            world.setup();
         }
         
-        if (world == null) {
-            world = new World(this);
-            world.setup();
+        if (ui == null) {
+            ui = new UI();
         }
         
         startLoop();
@@ -76,6 +79,10 @@ public class Game extends GameLoop {
                 return null;
             }
         };
+        
+        task.setOnFailed(e -> {
+            System.out.println(e);
+        });
         
         Async.queue2.submit(task);
         return task;
@@ -109,25 +116,6 @@ public class Game extends GameLoop {
     @Override
     public void update(float deltaTime) {
         world.update(deltaTime);
-    }
-    
-    public World getWorld() {
-        return world;
-    }
-    
-    public KeyHandler getKeyHandler() {
-        return keyHandler;
-    }
-    
-    public MouseHandler getMouseHandler() {
-        return mouseHandler;
-    }
-    
-    public GraphicsContext getGraphicsContext() {
-        return graphicsContext;
-    }
-    
-    public Canvas getCanvas() {
-        return canvas;
+        FPS = (int) getFPS();
     }
 }

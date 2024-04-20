@@ -14,10 +14,9 @@ public class GameScene extends GameApplicationScene {
         game.initEventHandlers(scene);
         
         // Add canvas to game scene
-        Canvas canvas = game.getCanvas();
-        defaultRoot.getChildren().add(canvas);
-        canvas.widthProperty().bind(scene.widthProperty());
-        canvas.heightProperty().bind(scene.heightProperty());
+        defaultRoot.getChildren().add(Game.canvas);
+        Game.canvas.widthProperty().bind(scene.widthProperty());
+        Game.canvas.heightProperty().bind(scene.heightProperty());
     }
     
     public Game getGame() {
