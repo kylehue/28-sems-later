@@ -13,13 +13,14 @@ public class SpriteAnimation {
     private int framesElapsed = 0;
     private String currentAnimation = null;
     private int fps = 12;
+    private float angleInRadians = 0;
     
-    private boolean horizontallyFlipped = false;
-    private boolean verticallyFlipped = false;
+    private boolean isHorizontallyFlipped = false;
+    private boolean isVerticallyFlipped = false;
     
     // x, y, w, h in canvas
-    private float x = 0;
-    private float y = 0;
+    private final Vector position = new Vector();
+    private final Vector origin = new Vector();
     private float width = -1;
     private float height = -1;
     
@@ -47,17 +48,28 @@ public class SpriteAnimation {
         
         int accumulatorFixed = frameAccumulator % tileLocations.length;
         TileLocation tileLocation = tileLocations[accumulatorFixed];
+        
+        ctx.save();
+        ctx.translate(
+            position.getX() - (isHorizontallyFlipped ? -width / 2 : width / 2),
+            position.getY() - (isVerticallyFlipped ? -height / 2 : height / 2)
+        );
+        ctx.rotate(Math.toDegrees(angleInRadians));
+        float computedWidth = isHorizontallyFlipped ? -width : width;
+        float computedHeight = isVerticallyFlipped ? -height : height;
         ctx.drawImage(
             this.spriteSheet,
             tileLocation.column() * this.tileWidth,
             tileLocation.row() * this.tileHeight,
             this.tileWidth,
             this.tileHeight,
-            x - (horizontallyFlipped ? -width / 2 : width / 2),
-            y - (verticallyFlipped ? -height / 2 : height / 2),
-            horizontallyFlipped ? -width : width,
-            verticallyFlipped ? -height : height
+            origin.getX(),
+            origin.getY(),
+            computedWidth,
+            computedHeight
         );
+        
+        ctx.restore();
     }
     
     public void nextFrame() {
@@ -74,9 +86,8 @@ public class SpriteAnimation {
         this.frameAccumulator = (int) Common.random(0, getFrameLength() - 1);
     }
     
-    public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public void setAngleInRadians(float angleInRadians) {
+        this.angleInRadians = angleInRadians;
     }
     
     public void setSize(float width, float height) {
@@ -85,11 +96,11 @@ public class SpriteAnimation {
     }
     
     public void setHorizontallyFlipped(boolean horizontallyFlipped) {
-        this.horizontallyFlipped = horizontallyFlipped;
+        this.isHorizontallyFlipped = horizontallyFlipped;
     }
     
     public void setVerticallyFlipped(boolean verticallyFlipped) {
-        this.verticallyFlipped = verticallyFlipped;
+        this.isVerticallyFlipped = verticallyFlipped;
     }
     
     public void setTileSize(float tileWidth, float tileHeight) {
@@ -121,12 +132,16 @@ public class SpriteAnimation {
         this.frameAccumulator = frameAccumulator;
     }
     
-    public float getX() {
-        return x;
+    public Vector getPosition() {
+        return position;
     }
     
-    public float getY() {
-        return y;
+    public Vector getOrigin() {
+        return origin;
+    }
+    
+    public float getAngleInRadians() {
+        return angleInRadians;
     }
     
     public float getWidth() {
@@ -146,11 +161,11 @@ public class SpriteAnimation {
     }
     
     public boolean isHorizontallyFlipped() {
-        return horizontallyFlipped;
+        return isHorizontallyFlipped;
     }
     
     public boolean isVerticallyFlipped() {
-        return verticallyFlipped;
+        return isVerticallyFlipped;
     }
     
     public void resetFrames() {

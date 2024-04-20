@@ -98,7 +98,7 @@ public class Grenade extends Projectile {
         }
         
         ExplosionSprite explosionSprite = new ExplosionSprite();
-        explosionSprite.setPosition(position.getX(), position.getY());
+        explosionSprite.getPosition().set(position);
         float spriteSize = Math.max(64, aoeDistance);
         explosionSprite.setSize(spriteSize, spriteSize);
         world.addOneTimeSpriteAnimation(explosionSprite);

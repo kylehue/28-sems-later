@@ -95,7 +95,7 @@ public class Zombie extends Entity {
         world.getZombies().remove(this);
         world.getColliderWorld().removeCollider(collider);
         AcidSprite acidSprite = new AcidSprite();
-        acidSprite.setPosition(position.getX(), position.getY());
+        acidSprite.getPosition().set(position);
         world.addOneTimeSpriteAnimation(acidSprite);
     }
     
@@ -117,10 +117,7 @@ public class Zombie extends Entity {
     }
     
     private void handleSprite() {
-        this.sprite.setPosition(
-            position.getX(),
-            position.getY()
-        );
+        this.sprite.getPosition().set(position);
         this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
     }
     

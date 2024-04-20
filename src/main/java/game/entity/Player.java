@@ -20,8 +20,6 @@ public class Player extends Entity {
     
     // dash
     private float dashSpeed = 15000;
-    private float dashAngle = 0;
-    private final Vector dashPosition = new Vector();
     
     // control flags
     private boolean upPressed = false;
@@ -39,16 +37,11 @@ public class Player extends Entity {
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
-    private final DashSprite dashSprite = new DashSprite();
     
     public Player(World world) {
         super(world);
         this.initCollider();
         this.initIntervals();
-        
-        dashSprite.setFrameAccumulator(
-            dashSprite.getFrameLength()
-        );
         
         this.setZIndex(Game.ZIndex.PLAYER);
     }
@@ -71,29 +64,9 @@ public class Player extends Entity {
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
-        // render dash smoke
-        if (this.dashSprite.getFrameAccumulator() < this.dashSprite.getFrameLength()) {
-            ctx.save();
-            ctx.translate(
-                dashPosition.getX(),
-                dashPosition.getY()
-            );
-            ctx.rotate(Math.toDegrees(dashAngle) - 90);
-            this.dashSprite.render(ctx);
-            ctx.restore();
-            this.dashSprite.nextFrame();
-            this.dashSprite.setPosition(
-                0,
-                -this.dashSprite.getHeight() / 2
-            );
-        }
-        
         // render body
         this.bodySprite.render(ctx);
-        this.bodySprite.setPosition(
-            position.getX(),
-            position.getY()
-        );
+        this.bodySprite.getPosition().set(position);
         
         // render gun
         ctx.save();
@@ -161,20 +134,20 @@ public class Player extends Entity {
         } else if (downPressed) {
             collider.applyForceY(computedSpeed);
         }
-        
+
         if (leftPressed) {
             collider.applyForceX(-computedSpeed);
         } else if (rightPressed) {
             collider.applyForceX(computedSpeed);
         }
-        
+
         // fix dash speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
             collider.getAcceleration().limit(
                 computedSpeed / collider.getMass()
             );
         }
-        
+
         // if not moving, just dash away from mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
             float angle = (float) (Math.PI + angleToMouse);
@@ -184,10 +157,15 @@ public class Player extends Entity {
             );
         }
         
-        dashAngle = collider.getAcceleration().getAngle();
-        
-        this.dashSprite.resetFrames();
-        this.dashPosition.set(getRenderPosition());
+        DashSprite dashSprite = new DashSprite();
+        float dashAngle = collider.getAcceleration().getAngle();
+        dashSprite.setAngleInRadians((float) (dashAngle - Math.PI / 2));
+        dashSprite.getPosition().set(getRenderPosition().clone().add(
+            dashSprite.getWidth() / 2,
+            dashSprite.getHeight() / 2
+        ));
+        dashSprite.getOrigin().set(-dashSprite.getWidth() / 2, -dashSprite.getHeight());
+        world.addOneTimeSpriteAnimation(dashSprite);
         resetIntervalFor("dash");
     }
     
