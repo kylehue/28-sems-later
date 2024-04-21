@@ -6,7 +6,8 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public abstract class Weapon {
-    protected Vector handlePosition = new Vector();
+    private final Vector origHandlePosition = new Vector();
+    private final Vector handlePosition = new Vector();
     protected final Image image;
     protected float damage = 1;
     
@@ -14,8 +15,21 @@ public abstract class Weapon {
         this.image = Common.loadImage(imageUrl);
     }
     
-    public Vector getHandlePosition() {
-        return handlePosition;
+    protected void setHandlePosition(Vector vector) {
+        handlePosition.set(vector);
+    }
+    
+    public void setOrigHandlePosition(Vector vector) {
+        handlePosition.set(vector);
+        origHandlePosition.set(vector);
+    }
+    
+    protected Vector getHandlePosition() {
+        return handlePosition.clone();
+    }
+    
+    protected Vector getOrigHandlePosition() {
+        return origHandlePosition.clone();
     }
     
     public void setDamage(float damage) {
@@ -34,8 +48,14 @@ public abstract class Weapon {
         Image gunImage = getImage();
         ctx.drawImage(
             gunImage,
-            -getHandlePosition().getX() + 4,
-            -getHandlePosition().getY() + 4
+            -handlePosition.getX() + 4,
+            -handlePosition.getY() + 4
         );
+        handlePosition.lerp(origHandlePosition, 0.2f);
+        subRender(ctx, alpha);
+    }
+    
+    protected void subRender(GraphicsContext ctx, float alpha) {
+    
     }
 }

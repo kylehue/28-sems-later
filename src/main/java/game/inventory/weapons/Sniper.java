@@ -16,8 +16,8 @@ public class Sniper extends Gun {
         setFireRateInMillis(Config.DEFAULT_SNIPER_FIRE_RATE_MILLIS);
         setPenetration(Config.DEFAULT_SNIPER_BULLET_PENETRATION);
         setDamage(Config.DEFAULT_SNIPER_BULLET_DAMAGE);
-        muzzlePosition.set(52, 7);
-        handlePosition.set(24, 10);
+        setMuzzlePosition(new Vector(52, 7));
+        setOrigHandlePosition(new Vector(24, 10));
     }
     
     public void setPenetration(float penetration) {

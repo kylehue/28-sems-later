@@ -17,8 +17,8 @@ public class Pistol extends Gun {
         setBulletSpeed(Config.DEFAULT_PISTOL_BULLET_SPEED);
         setMaxDistance(Config.DEFAULT_PISTOL_BULLET_MAX_DISTANCE);
         setDamage(Config.DEFAULT_PISTOL_BULLET_DAMAGE);
-        muzzlePosition.set(14, 3);
-        handlePosition.set(3, 6);
+        setMuzzlePosition(new Vector(14, 3));
+        setOrigHandlePosition(new Vector(3, 6));
     }
     
     public void setBulletSpeed(float bulletSpeed) {

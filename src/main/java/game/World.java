@@ -241,6 +241,9 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
+        for (int i = 0; i < 100; i++) {
+            spawnZombie();
+        }
     }
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {

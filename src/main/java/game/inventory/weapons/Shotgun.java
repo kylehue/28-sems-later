@@ -17,8 +17,8 @@ public class Shotgun extends Gun {
         setMaxDistance(Config.DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE);
         setSpreadInRadians(Config.DEFAULT_SHOTGUN_SPREAD_RADIANS);
         setDamage(Config.DEFAULT_SHOTGUN_BULLET_DAMAGE);
-        muzzlePosition.set(32, 4);
-        handlePosition.set(14, 6);
+        setMuzzlePosition(new Vector(32, 4));
+        setOrigHandlePosition(new Vector(14, 6));
     }
     
     public void setBulletSpeed(float bulletSpeed) {
