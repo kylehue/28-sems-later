@@ -1,5 +1,6 @@
 package game.entity;
 
+import game.Config;
 import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
@@ -16,11 +17,10 @@ import game.utils.Bounds;
 import game.utils.Vector;
 
 public class Player extends Entity {
-    // basic characteristics
-    private final float speed = 1000;
-    
-    // dash
-    private float dashSpeed = 15000;
+    // stats
+    private float speed = Config.DEFAULT_PLAYER_SPEED;
+    private float dashSpeed = Config.DEFAULT_PLAYER_DASH_SPEED;
+    private int dashIntervalInMillis = Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS;
     
     // control flags
     private boolean upPressed = false;
@@ -36,21 +36,15 @@ public class Player extends Entity {
     private float angleToMouse = 0;
     private final InventoryManager inventoryManager = new InventoryManager(this);
     private final IntervalMap intervals = new IntervalMap();
+    private enum Interval {
+        DASH
+    }
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
     
     public Player() {
-        this.initCollider();
-        this.initIntervals();
-        this.setZIndex(Game.ZIndex.PLAYER);
-    }
-    
-    private void initIntervals() {
-        intervals.registerIntervalFor("dash", 1000);
-    }
-    
-    private void initCollider() {
+        // Initialize collider
         this.collider.setGroup(Game.CollisionGroup.PLAYER);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
@@ -60,6 +54,12 @@ public class Player extends Entity {
         Game.world.getColliderWorld().addCollider(
             this.collider
         );
+        
+        // Initialize intervals
+        intervals.registerIntervalFor(Interval.DASH, dashIntervalInMillis);
+        
+        // Misc
+        this.setZIndex(Game.ZIndex.PLAYER);
     }
     
     @Override
@@ -117,7 +117,7 @@ public class Player extends Entity {
     }
     
     public void dash() {
-        if (!intervals.isIntervalOverFor("dash")) return;
+        if (!intervals.isIntervalOverFor(Interval.DASH)) return;
         
         float computedSpeed = dashSpeed * collider.getMass();
         if (upPressed) {
@@ -157,7 +157,7 @@ public class Player extends Entity {
         ));
         dashSprite.getOrigin().set(-dashSprite.getWidth() / 2, -dashSprite.getHeight());
         Game.world.addOneTimeSpriteAnimation(dashSprite);
-        intervals.resetIntervalFor("dash");
+        intervals.resetIntervalFor(Interval.DASH);
     }
     
     private void updateControlFlags() {
@@ -221,6 +221,19 @@ public class Player extends Entity {
         this.bodySprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
     }
     
+    public void setDashIntervalInMillis(int dashIntervalInMillis) {
+        this.dashIntervalInMillis = dashIntervalInMillis;
+        intervals.changeIntervalFor(Interval.DASH, dashIntervalInMillis);
+    }
+    
+    public void setDashSpeed(float dashSpeed) {
+        this.dashSpeed = dashSpeed;
+    }
+    
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+    
     @Override
     public Vector getRenderPosition() {
         return position.clone().addY(collider.getRadius());
@@ -232,5 +245,17 @@ public class Player extends Entity {
     
     public InventoryManager getInventoryManager() {
         return inventoryManager;
+    }
+    
+    public int getDashIntervalInMillis() {
+        return dashIntervalInMillis;
+    }
+    
+    public float getDashSpeed() {
+        return dashSpeed;
+    }
+    
+    public float getSpeed() {
+        return speed;
     }
 }

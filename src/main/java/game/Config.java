@@ -47,4 +47,12 @@ public abstract class Config {
     public final static int DEFAULT_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 400;
     public final static float DEFAULT_GRENADE_LAUNCHER_BULLET_DAMAGE = 30;
     public final static float DEFAULT_GRENADE_LAUNCHER_AOE_DISTANCE = 60;
+    
+    // Player
+    public final static int DEFAULT_PLAYER_DASH_INTERVAL_MILLIS = 2000;
+    public final static float DEFAULT_PLAYER_SPEED = 1000;
+    public final static float DEFAULT_PLAYER_DASH_SPEED = 15000;
+    
+    // Zombie
+    public final static float DEFAULT_ZOMBIE_DAMAGE = 1;
 }

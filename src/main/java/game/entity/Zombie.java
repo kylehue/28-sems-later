@@ -1,5 +1,6 @@
 package game.entity;
 
+import game.Config;
 import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class Zombie extends Entity {
     // stats
     private float speed = Common.random(300, 750);
-    private float damage = 1;
+    private float damage = Config.DEFAULT_ZOMBIE_DAMAGE;
     
     // misc
     private final ZombieSprite sprite = new ZombieSprite();
@@ -30,33 +31,28 @@ public class Zombie extends Entity {
     private final IntervalMap intervals = new IntervalMap();
     
     public Zombie() {
-        this.initCollider();
-        this.initIntervals();
-        this.sprite.randomizeFirstFrame();
-        this.setZIndex(Game.ZIndex.ZOMBIE);
-    }
-    
-    private void initIntervals() {
-        intervals.registerIntervalFor("zombie", 5000);
-        intervals.registerIntervalFor(
-            "pathToPlayerUpdate",
-            (int) Common.random(70, 200)
-        );
-    }
-    
-    private void initCollider() {
+        // Initialize colliders
         this.collider.setGroup(Game.CollisionGroup.MOBS);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MOBS);
         this.collider.addToGroup(Game.CollisionGroup.PROJECTILES);
-        // this.collider.excludeResolutionToGroup(Game.CollisionGroup.BULLETS);
-        
         this.collider.setRadius(5);
         this.collider.setMass(1);
         Game.world.getColliderWorld().addCollider(
             this.collider
         );
+        
+        // Initialize intervals
+        intervals.registerIntervalFor("zombie", 5000);
+        intervals.registerIntervalFor(
+            "pathToPlayerUpdate",
+            (int) Common.random(70, 200)
+        );
+        
+        // Misc
+        this.sprite.randomizeFirstFrame();
+        this.setZIndex(Game.ZIndex.ZOMBIE);
     }
     
     @Override
@@ -95,6 +91,8 @@ public class Zombie extends Entity {
     public void dispose() {
         Game.world.getZombies().remove(this);
         Game.world.getColliderWorld().removeCollider(collider);
+        
+        // Death animation
         AcidSprite acidSprite = new AcidSprite();
         acidSprite.getPosition().set(position);
         Game.world.addOneTimeSpriteAnimation(acidSprite);
@@ -159,6 +157,10 @@ public class Zombie extends Entity {
         }
     }
     
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
+    
     public CircleCollider getCollider() {
         return collider;
     }
@@ -166,5 +168,9 @@ public class Zombie extends Entity {
     @Override
     public Vector getRenderPosition() {
         return collider.getPosition();
+    }
+    
+    public float getDamage() {
+        return damage;
     }
 }

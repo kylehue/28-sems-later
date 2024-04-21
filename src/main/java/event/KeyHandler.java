@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class KeyHandler extends EventHandler {
-    private final HashMap<String, HashSet<KeyCode>> registeredKeys = new HashMap<>();
-    private final HashMap<String, BooleanProperty> registeredKeyProperties = new HashMap<>();
+    private final HashMap<Object, HashSet<KeyCode>> registeredKeys = new HashMap<>();
+    private final HashMap<Object, BooleanProperty> registeredKeyProperties = new HashMap<>();
     
     @Override
     protected void handleListeners(Scene scene) {
@@ -33,17 +33,17 @@ public class KeyHandler extends EventHandler {
         });
     }
     
-    public void registerKey(String groupId, KeyCode keyCode) {
+    public void registerKey(Object groupId, KeyCode keyCode) {
         HashSet<KeyCode> arr = registeredKeys.computeIfAbsent(groupId, k -> new HashSet<>());
         arr.add(keyCode);
         registeredKeyProperties.put(groupId, new SimpleBooleanProperty());
     }
     
-    public boolean isKeyPressed(String groupId) {
+    public boolean isKeyPressed(Object groupId) {
         return registeredKeyProperties.get(groupId).get();
     }
     
-    public BooleanProperty getKeyPressedProperty(String groupId) {
+    public BooleanProperty getKeyPressedProperty(Object groupId) {
         return registeredKeyProperties.get(groupId);
     }
 }
