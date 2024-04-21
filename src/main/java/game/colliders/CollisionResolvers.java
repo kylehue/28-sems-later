@@ -1,5 +1,6 @@
 package game.colliders;
 
+import game.utils.Bounds;
 import game.utils.Vector;
 
 public abstract class CollisionResolvers {
@@ -111,6 +112,31 @@ public abstract class CollisionResolvers {
         }
         
         return intersectionPoint;
+    }
+    
+    public static Vector getLineToBoundsIntersectionPoint(
+        Vector linePointA,
+        Vector linePointB,
+        Bounds bounds
+    ) {
+        float x = bounds.getX();
+        float y = bounds.getY();
+        float width = bounds.getWidth();
+        float height = bounds.getHeight();
+        
+        Vector[] boundsVertices = {
+            new Vector(),
+            new Vector(width, 0),
+            new Vector(width, height),
+            new Vector(0, height)
+        };
+        
+        return getLineToPolygonIntersectionPoint(
+            linePointA,
+            linePointB,
+            new Vector(x, y),
+            boundsVertices
+        );
     }
     
     public static Vector getLineToColliderIntersectionPoint(

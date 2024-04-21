@@ -5,9 +5,8 @@ import game.utils.SpriteAnimation;
 
 public class PlayerSprite extends SpriteAnimation {
     public PlayerSprite() {
-        this.setSpriteSheet(Common.loadImage("/sprites/Character-and-Zombie.png"));
-        this.setTileSize(48, 30);
-        // this.setSize(80, 80);
+        this.setSpriteSheet(Common.loadImage("/sprites/player.png"));
+        this.setTileSize(22, 23);
         this.registerAnimations();
         this.set(Animation.Idle);
     }

@@ -83,7 +83,7 @@ public class Bullet extends Projectile {
     private void handleEntityCollision() {
         for (Entity entity : world.getZombies()) {
             if (isEntityMarked(entity)) continue;
-            boolean isEntityHit = collider.isCollidingWith(entity.getCollider());
+            boolean isEntityHit = collider.isCollidingWith(entity.getHitBox());
             if (!isEntityHit) continue;
             
             float penetrationPercentage = penetration >= 1 ? 1 : penetration;

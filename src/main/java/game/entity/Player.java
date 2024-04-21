@@ -239,6 +239,7 @@ public class Player extends Entity {
         return position.clone().addY(collider.getRadius());
     }
     
+    @Override
     public Collider getCollider() {
         return collider;
     }

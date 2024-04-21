@@ -84,7 +84,7 @@ public class Grenade extends Projectile {
     public void detonate() {
         // Detect which colliders are affected by the explosion
         HashSet<String> affectedColliders = new HashSet<>();
-        for (Collider _collider : aoeCollider.getAndUpdateNearColliders(world.getQuadtree())) {
+        for (Collider _collider : aoeCollider.getAndUpdateNearCollidersImmediate(world.getQuadtree())) {
             if (_collider.isStatic()) continue;
             float distanceToBomb = _collider.getPosition().getDistanceFrom(position);
             if (distanceToBomb > aoeDistance) continue;

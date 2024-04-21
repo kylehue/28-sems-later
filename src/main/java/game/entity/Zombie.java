@@ -2,17 +2,16 @@ package game.entity;
 
 import game.Config;
 import game.Game;
-import game.World;
 import game.colliders.CircleCollider;
+import game.colliders.Collider;
+import game.colliders.PolygonCollider;
 import game.sprites.AcidSprite;
-import game.utils.HitEffect;
-import game.utils.IntervalMap;
+import game.utils.*;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
+import javafx.scene.paint.Paint;
 import utils.Async;
-import game.utils.Common;
 import game.map.PathFinder;
-import game.utils.Vector;
 
 import java.util.ArrayList;
 
@@ -23,25 +22,22 @@ public class Zombie extends Entity {
     
     // misc
     private final ZombieSprite sprite = new ZombieSprite();
-    private CircleCollider collider = new CircleCollider();
+    private final CircleCollider collider = new CircleCollider();
     private float angleToPlayer = 0;
     private boolean isFacingOnLeftSide = false;
     private ArrayList<Vector> pathToPlayer = new ArrayList<>();
-    private HitEffect hitEffect = new HitEffect();
+    private final HitEffect hitEffect = new HitEffect();
     private final IntervalMap intervals = new IntervalMap();
     
     public Zombie() {
         // Initialize colliders
-        this.collider.setGroup(Game.CollisionGroup.MOBS);
-        this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.MOBS);
-        this.collider.addToGroup(Game.CollisionGroup.PROJECTILES);
-        this.collider.setRadius(5);
-        this.collider.setMass(1);
-        Game.world.getColliderWorld().addCollider(
-            this.collider
-        );
+        collider.setGroup(Game.CollisionGroup.MOBS);
+        collider.addToGroup(Game.CollisionGroup.MAP);
+        collider.addToGroup(Game.CollisionGroup.MOBS);
+        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.setRadius(5);
+        collider.setMass(1);
+        Game.world.getColliderWorld().addCollider(collider);
         
         // Initialize intervals
         intervals.registerIntervalFor("zombie", 5000);
@@ -68,6 +64,17 @@ public class Zombie extends Entity {
         //     ctx.fillOval(vector.getX(), vector.getY(), 8, 8);
         //     ctx.closePath();
         // }
+        
+        // // render hit box
+        // ctx.beginPath();
+        // ctx.setFill(Paint.valueOf("rgba(250, 120, 250, 0.85)"));
+        // ctx.fillRect(
+        //     getHitBox().getX(),
+        //     getHitBox().getY(),
+        //     getHitBox().getWidth(),
+        //     getHitBox().getHeight()
+        // );
+        // ctx.closePath();
     }
     
     public void fixedUpdate(float deltaTime) {
@@ -161,8 +168,21 @@ public class Zombie extends Entity {
         this.damage = damage;
     }
     
+    @Override
     public CircleCollider getCollider() {
         return collider;
+    }
+    
+    @Override
+    public Bounds getHitBox() {
+        float width = sprite.getWidth() * 0.55f;
+        float height = sprite.getHeight() * 0.7f;
+        return new Bounds(
+            position.getX() - width / 2,
+            position.getY() - height / 2,
+            width,
+            height
+        );
     }
     
     @Override

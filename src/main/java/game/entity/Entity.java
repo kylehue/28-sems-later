@@ -3,6 +3,7 @@ package game.entity;
 import game.Drawable;
 import game.World;
 import game.colliders.Collider;
+import game.utils.Bounds;
 import game.utils.IntervalMap;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -93,4 +94,13 @@ public abstract class Entity implements Drawable {
     }
     
     public abstract Collider getCollider();
+    
+    public Bounds getHitBox() {
+        return new Bounds(
+            position.getX() - 25,
+            position.getY() - 25,
+            50,
+            50
+        );
+    }
 }

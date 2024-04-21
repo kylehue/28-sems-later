@@ -34,20 +34,36 @@ public abstract class Collider {
     private final HashSet<Object> excludedResolutions = new HashSet<>();
     private Object groupId = null;
     
-    public ArrayList<Collider> getAndUpdateNearColliders(Quadtree<Collider> quadtree) {
+    public void updateNearColliders(Quadtree<Collider> quadtree) {
         Async.queue2.submit(() -> {
-            float width = getWidth();
-            float height = getHeight();
-            nearColliders = new ArrayList<>(
-                quadtree.retrieve(
-                    getPosition().getX() - width / 2,
-                    getPosition().getY() - height / 2,
-                    width,
-                    height
-                ).stream().map(e -> e.object).toList()
-            );
+            updateNearCollidersImmediate(quadtree);
         });
-        
+    }
+    
+    public void updateNearCollidersImmediate(Quadtree<Collider> quadtree) {
+        float width = getWidth();
+        float height = getHeight();
+        nearColliders = new ArrayList<>(
+            quadtree.retrieve(
+                getPosition().getX() - width / 2,
+                getPosition().getY() - height / 2,
+                width,
+                height
+            ).stream().map(e -> e.object).toList()
+        );
+    }
+    
+    public ArrayList<Collider> getAndUpdateNearColliders(
+        Quadtree<Collider> quadtree
+    ) {
+        updateNearColliders(quadtree);
+        return nearColliders;
+    }
+    
+    public ArrayList<Collider> getAndUpdateNearCollidersImmediate(
+        Quadtree<Collider> quadtree
+    ) {
+        updateNearCollidersImmediate(quadtree);
         return nearColliders;
     }
     
