@@ -41,6 +41,11 @@ public class Bullet extends Projectile {
     }
     
     @Override
+    public int getZIndex() {
+        return Game.ZIndex.PLAYER - 1;
+    }
+    
+    @Override
     public void render(GraphicsContext ctx, float alpha) {
         ctx.save();
         ctx.translate(
