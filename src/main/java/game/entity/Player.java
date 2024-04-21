@@ -9,6 +9,7 @@ import game.inventory.weapons.Gun;
 import game.inventory.weapons.Weapon;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
+import game.utils.IntervalMap;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Bounds;
@@ -34,20 +35,19 @@ public class Player extends Entity {
     private boolean isFacingOnLeftSide = false;
     private float angleToMouse = 0;
     private final InventoryManager inventoryManager = new InventoryManager(this);
+    private final IntervalMap intervals = new IntervalMap();
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
     
-    public Player(World world) {
-        super(world);
+    public Player() {
         this.initCollider();
         this.initIntervals();
-        
         this.setZIndex(Game.ZIndex.PLAYER);
     }
     
     private void initIntervals() {
-        registerIntervalFor("dash", 1000);
+        intervals.registerIntervalFor("dash", 1000);
     }
     
     private void initCollider() {
@@ -57,7 +57,7 @@ public class Player extends Entity {
         this.collider.addToGroup(Game.CollisionGroup.MOBS);
         this.collider.setMass(50);
         this.collider.setRadius(5);
-        world.getColliderWorld().addCollider(
+        Game.world.getColliderWorld().addCollider(
             this.collider
         );
     }
@@ -87,15 +87,6 @@ public class Player extends Entity {
         this.handleMovements();
         this.handleSpriteAnimations();
         this.bodySprite.nextFrame();
-        world.getQuadtree().insert(
-            collider,
-            new Bounds(
-                collider.getPosition().getX() - collider.getWidth() / 2f,
-                collider.getPosition().getY() - collider.getHeight() / 2f,
-                collider.getWidth(),
-                collider.getHeight()
-            )
-        );
     }
     
     public void update(float deltaTime) {
@@ -116,17 +107,17 @@ public class Player extends Entity {
         Weapon currentWeapon = inventoryManager.getCurrentWeapon();
         
         if (!(currentWeapon instanceof Gun currentGun)) return;
-        currentGun.shoot(world, position, angleToMouse);
+        currentGun.shoot(Game.world, position, angleToMouse);
     }
     
     private void updateAngleToMouse() {
-        Vector mouseInWorld = world.getMousePosition();
+        Vector mouseInWorld = Game.world.getMousePosition();
         this.angleToMouse = position.getAngle(mouseInWorld);
         this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
     }
     
     public void dash() {
-        if (!isIntervalOverFor("dash")) return;
+        if (!intervals.isIntervalOverFor("dash")) return;
         
         float computedSpeed = dashSpeed * collider.getMass();
         if (upPressed) {
@@ -165,8 +156,8 @@ public class Player extends Entity {
             dashSprite.getHeight() / 2
         ));
         dashSprite.getOrigin().set(-dashSprite.getWidth() / 2, -dashSprite.getHeight());
-        world.addOneTimeSpriteAnimation(dashSprite);
-        resetIntervalFor("dash");
+        Game.world.addOneTimeSpriteAnimation(dashSprite);
+        intervals.resetIntervalFor("dash");
     }
     
     private void updateControlFlags() {

@@ -27,7 +27,6 @@ public class UI {
         Game.canvas.heightProperty().addListener(e -> {
             fixBounds();
         });
-        
         Game.keyHandler.getKeyPressedProperty("weapon-switch").addListener(e -> {
             if (!Game.keyHandler.isKeyPressed("weapon-switch")) return;
             weaponSwitch.setVisible(!weaponSwitch.isVisible());

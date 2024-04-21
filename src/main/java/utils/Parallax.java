@@ -15,12 +15,12 @@ public class Parallax extends GameLoop {
     private final ArrayList<Layer> layers = new ArrayList<>();
     private final Canvas canvas = new Canvas();
     private final GraphicsContext ctx = canvas.getGraphicsContext2D();
-    private final MouseHandler mouseHandler;
+    private final MouseHandler mouseHandler = new MouseHandler();
     private Vector velocity = new Vector(5f, 5f);
     private float acceleration = 0.1f;
     
     public Parallax(Scene scene) {
-        this.mouseHandler = new MouseHandler(scene);
+        this.mouseHandler.listen(scene);
     }
     
     public void addLayer(int index, Image image) {

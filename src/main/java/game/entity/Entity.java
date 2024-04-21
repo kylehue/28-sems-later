@@ -10,17 +10,12 @@ import javafx.scene.canvas.GraphicsContext;
 import game.utils.Common;
 import game.utils.Vector;
 
-public abstract class Entity extends IntervalMap implements Drawable {
+public abstract class Entity implements Drawable {
     protected final String id = Common.generateId();
-    protected final World world;
     protected final Vector position = new Vector();
     private final FloatProperty currentHealth = new SimpleFloatProperty(100);
     private final FloatProperty maxHealth = new SimpleFloatProperty(100);
     protected int zIndex = 0;
-    
-    public Entity(World world) {
-        this.world = world;
-    }
     
     // to be overridden
     @Override

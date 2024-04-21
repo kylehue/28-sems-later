@@ -5,12 +5,13 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import game.utils.Vector;
 
-public class MouseHandler {
+public class MouseHandler extends EventHandler {
     private final BooleanProperty mouseLeftPressed = new SimpleBooleanProperty(false);
     private final BooleanProperty mouseRightPressed = new SimpleBooleanProperty(false);
     private final Vector position = new Vector();
     
-    public MouseHandler(Scene scene) {
+    @Override
+    protected void handleListeners(Scene scene) {
         scene.setOnMouseMoved(event -> {
             this.position.set(
                 (float) event.getSceneX(),

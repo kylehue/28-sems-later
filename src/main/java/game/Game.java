@@ -30,19 +30,18 @@ public class Game extends GameLoop {
     
     public static final Canvas canvas = new Canvas();
     public static final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-    public static KeyHandler keyHandler;
-    public static MouseHandler mouseHandler;
+    public static final KeyHandler keyHandler = new KeyHandler();
+    public static final MouseHandler mouseHandler = new MouseHandler();
     public static World world;
     public static UI ui;
     public static int FPS = 0;
     
     public Game() {
-    
     }
     
     public void initEventHandlers(Scene scene) {
         // Set up key handler & controls
-        keyHandler = new KeyHandler(scene);
+        keyHandler.listen(scene);
         keyHandler.registerKey("weapon-switch", KeyCode.F);
         keyHandler.registerKey("up", KeyCode.UP);
         keyHandler.registerKey("up", KeyCode.W);
@@ -55,13 +54,13 @@ public class Game extends GameLoop {
         keyHandler.registerKey("dash", KeyCode.SPACE);
         
         // Set up mouse handler
-        mouseHandler = new MouseHandler(scene);
+        mouseHandler.listen(scene);
     }
     
     public void startGameSync() {
         if (world == null) {
             world = new World();
-            world.setup();
+            world.start();
         }
         
         if (ui == null) {

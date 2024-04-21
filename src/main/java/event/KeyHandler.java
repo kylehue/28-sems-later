@@ -8,11 +8,12 @@ import javafx.scene.input.KeyCode;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class KeyHandler {
+public class KeyHandler extends EventHandler {
     private final HashMap<String, HashSet<KeyCode>> registeredKeys = new HashMap<>();
     private final HashMap<String, BooleanProperty> registeredKeyProperties = new HashMap<>();
     
-    public KeyHandler(Scene scene) {
+    @Override
+    protected void handleListeners(Scene scene) {
         scene.setOnKeyPressed((event) -> {
             KeyCode code = event.getCode();
             registeredKeys.forEach((key, value) -> {

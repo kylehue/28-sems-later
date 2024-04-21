@@ -5,6 +5,7 @@ import game.World;
 import game.colliders.CircleCollider;
 import game.sprites.AcidSprite;
 import game.utils.HitEffect;
+import game.utils.IntervalMap;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
 import utils.Async;
@@ -26,9 +27,9 @@ public class Zombie extends Entity {
     private boolean isFacingOnLeftSide = false;
     private ArrayList<Vector> pathToPlayer = new ArrayList<>();
     private HitEffect hitEffect = new HitEffect();
+    private final IntervalMap intervals = new IntervalMap();
     
-    public Zombie(World world) {
-        super(world);
+    public Zombie() {
         this.initCollider();
         this.initIntervals();
         this.sprite.randomizeFirstFrame();
@@ -36,8 +37,8 @@ public class Zombie extends Entity {
     }
     
     private void initIntervals() {
-        registerIntervalFor("zombie", 5000);
-        registerIntervalFor(
+        intervals.registerIntervalFor("zombie", 5000);
+        intervals.registerIntervalFor(
             "pathToPlayerUpdate",
             (int) Common.random(70, 200)
         );
@@ -53,7 +54,7 @@ public class Zombie extends Entity {
         
         this.collider.setRadius(5);
         this.collider.setMass(1);
-        world.getColliderWorld().addCollider(
+        Game.world.getColliderWorld().addCollider(
             this.collider
         );
     }
@@ -92,26 +93,26 @@ public class Zombie extends Entity {
     
     @Override
     public void dispose() {
-        world.getZombies().remove(this);
-        world.getColliderWorld().removeCollider(collider);
+        Game.world.getZombies().remove(this);
+        Game.world.getColliderWorld().removeCollider(collider);
         AcidSprite acidSprite = new AcidSprite();
         acidSprite.getPosition().set(position);
-        world.addOneTimeSpriteAnimation(acidSprite);
+        Game.world.addOneTimeSpriteAnimation(acidSprite);
     }
     
     private void checkPlayerCollision() {
-        Player player = world.getPlayer();
+        Player player = Game.world.getPlayer();
         boolean isCollidingWithPlayer = collider.isCollidingWith(
             player.getCollider()
         );
-        if (isIntervalOverFor("zombie") && isCollidingWithPlayer) {
+        if (intervals.isIntervalOverFor("zombie") && isCollidingWithPlayer) {
             player.addHealth(-damage);
-            resetIntervalFor("zombie");
+            intervals.resetIntervalFor("zombie");
         }
     }
     
     private void updateAngleToPlayer() {
-        Player player = world.getPlayer();
+        Player player = Game.world.getPlayer();
         this.angleToPlayer = this.position.getAngle(player.getPosition());
         this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
     }
@@ -122,18 +123,18 @@ public class Zombie extends Entity {
     }
     
     private void maybeUpdatePathToPlayer() {
-        Player player = world.getPlayer();
+        Player player = Game.world.getPlayer();
         float distanceToPlayer = player.getPosition().getDistanceFrom(position);
-        changeIntervalFor("pathToPlayerUpdate", (int) distanceToPlayer);
-        if (isIntervalOverFor("pathToPlayerUpdate")) {
+        intervals.changeIntervalFor("pathToPlayerUpdate", (int) distanceToPlayer);
+        if (intervals.isIntervalOverFor("pathToPlayerUpdate")) {
             Async.queue1.submit(() -> {
-                PathFinder pathFinder = world.getPathFinder();
+                PathFinder pathFinder = Game.world.getPathFinder();
                 pathToPlayer = pathFinder.requestPath(
                     collider.getPosition(),
                     player.getCollider().getPosition()
                 );
             });
-            resetIntervalFor("pathToPlayerUpdate");
+            intervals.resetIntervalFor("pathToPlayerUpdate");
         }
     }
     

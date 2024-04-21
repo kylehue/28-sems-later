@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class World {
+    private Player player;
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
     private final Map map = new CityMap();
     private final Quadtree<Collider> quadtree;
     private final ColliderWorld colliderWorld;
-    private Player player;
     private final PathFinder pathFinder;
     private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
     
@@ -58,24 +58,6 @@ public class World {
         this.colliderWorld.setBounds(mapBounds);
         this.camera = new Camera(Game.graphicsContext);
         map.addCollidersToWorld(colliderWorld);
-    }
-    
-    public void setup() {
-        this.player = new Player(this);
-        float halfMapWidth = (float) map.getTotalWidth() / 2;
-        float halfMapHeight = (float) map.getTotalHeight() / 2;
-        player.getCollider().getPosition().set(
-            halfMapWidth,
-            halfMapHeight
-        );
-        for (int i = 0; i < 100; i++) {
-            Zombie zombie = new Zombie(this);
-            zombie.getCollider().getPosition().set(
-                Common.random(-halfMapWidth, halfMapWidth),
-                Common.random(-halfMapHeight, halfMapHeight)
-            );
-            zombies.add(zombie);
-        }
         map.getLayers().forEach(layer -> {
             for (Material material : layer.getMaterials()) {
                 Collider collider = material.getCollider();
@@ -231,6 +213,34 @@ public class World {
         InstantBullet instantBullet = new InstantBullet(this, initialPosition, angle);
         projectiles.add(instantBullet);
         return instantBullet;
+    }
+    
+    public Zombie spawnZombie(Vector initialPosition) {
+        Zombie zombie = new Zombie();
+        zombie.getCollider().setPosition(initialPosition);
+        zombies.add(zombie);
+        return zombie;
+    }
+    
+    public Zombie spawnZombie() {
+        float halfMapWidth = (float) map.getTotalWidth() / 2;
+        float halfMapHeight = (float) map.getTotalHeight() / 2;
+        return spawnZombie(
+            new Vector(
+                Common.random(-halfMapWidth, halfMapWidth),
+                Common.random(-halfMapHeight, halfMapHeight)
+            )
+        );
+    }
+    
+    public void start() {
+        this.player = new Player();
+        float halfMapWidth = (float) map.getTotalWidth() / 2;
+        float halfMapHeight = (float) map.getTotalHeight() / 2;
+        player.getCollider().setPosition(
+            halfMapWidth,
+            halfMapHeight
+        );
     }
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
