@@ -49,7 +49,11 @@ public abstract class Gun extends Weapon {
                 (float) (Math.sin(angle) * xOffset)
             );
             
-            setHandlePosition(getOrigHandlePosition().addX(5));
+            setHandlePosition(
+                getOrigHandlePosition().addX(
+                    (float) Math.pow(fireRateInMillis, 0.33f)
+                )
+            );
             muzzleFlashOpacity = 1;
             
             handleShoot(world, computedInitialPosition, angle);

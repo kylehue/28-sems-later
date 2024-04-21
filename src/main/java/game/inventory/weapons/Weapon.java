@@ -51,7 +51,7 @@ public abstract class Weapon {
             -handlePosition.getX() + 4,
             -handlePosition.getY() + 4
         );
-        handlePosition.lerp(origHandlePosition, 0.2f);
+        handlePosition.lerp(origHandlePosition, 0.15f);
         subRender(ctx, alpha);
     }
     
