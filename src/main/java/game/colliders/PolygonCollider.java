@@ -21,6 +21,8 @@ public class PolygonCollider extends Collider {
         for (Vector vertex : vertices) {
             vertex.subtract(bounds.getX(), bounds.getY());
         }
+        
+        this.updateSize();
     }
     
     public Vector[] getVertices() {
