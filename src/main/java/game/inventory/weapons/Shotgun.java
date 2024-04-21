@@ -1,17 +1,22 @@
 package game.inventory.weapons;
 
+import game.Config;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
 
 public class Shotgun extends Gun {
-    private float bulletSpeed = 15000;
-    private float maxDistance = 200;
-    private float spreadInRadians = (float) (Math.PI / 4);
+    private float bulletSpeed = 0;
+    private float maxDistance = 0;
+    private float spreadInRadians = 0;
     
     public Shotgun() {
         super("/weapons/shotgun.png");
-        setFireRateInMillis(300);
+        setFireRateInMillis(Config.DEFAULT_SHOTGUN_FIRE_RATE_MILLIS);
+        setBulletSpeed(Config.DEFAULT_SHOTGUN_BULLET_SPEED);
+        setMaxDistance(Config.DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE);
+        setSpreadInRadians(Config.DEFAULT_SHOTGUN_SPREAD_RADIANS);
+        setDamage(Config.DEFAULT_SHOTGUN_BULLET_DAMAGE);
         muzzlePosition.set(32, 4);
         handlePosition.set(14, 6);
     }

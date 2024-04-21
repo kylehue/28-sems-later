@@ -1,17 +1,22 @@
 package game.inventory.weapons;
 
+import game.Config;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
 
 public class Rifle extends Gun {
-    private float bulletSpeed = 15000;
-    private float accuracy = 0f; // 0-1 value
-    private float maxDistance = 200;
+    private float bulletSpeed = 0;
+    private float accuracy = 0; // 0-1 value
+    private float maxDistance = 0;
     
     public Rifle() {
         super("/weapons/rifle.png");
-        setFireRateInMillis(50);
+        setFireRateInMillis(Config.DEFAULT_RIFLE_FIRE_RATE_MILLIS);
+        setAccuracy(Config.DEFAULT_RIFLE_ACCURACY);
+        setBulletSpeed(Config.DEFAULT_RIFLE_BULLET_SPEED);
+        setMaxDistance(Config.DEFAULT_RIFLE_BULLET_MAX_DISTANCE);
+        setDamage(Config.DEFAULT_RIFLE_BULLET_DAMAGE);
         muzzlePosition.set(32, 4);
         handlePosition.set(13, 7);
     }

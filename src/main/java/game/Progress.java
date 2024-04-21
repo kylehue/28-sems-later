@@ -5,5 +5,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 public abstract class Progress {
-    public static final ObservableSet<WeaponKind> unlockedWeapons = FXCollections.observableSet(WeaponKind.PISTOL, WeaponKind.SHOTGUN);
+    public static final ObservableSet<WeaponKind> unlockedWeapons = FXCollections.observableSet(
+        WeaponKind.PISTOL,
+        WeaponKind.SHOTGUN,
+        WeaponKind.RIFLE,
+        WeaponKind.GRENADE_LAUNCHER,
+        WeaponKind.SNIPER
+    );
 }

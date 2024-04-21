@@ -1,5 +1,6 @@
 package game.projectiles;
 
+import game.Config;
 import game.World;
 import game.colliders.Collider;
 import game.colliders.CollisionResolvers;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InstantBullet extends Projectile {
-    private float knockBackForce = 10000;
-    private float penetration = 10.5f;
+    private float knockBackForce = Config.DEFAULT_INSTANT_BULLET_KNOCK_BACK_FORCE;
+    private float penetration = Config.DEFAULT_INSTANT_BULLET_PENETRATION;
     private float opacity = 1;
     private boolean shouldStopTravelling = false;
     private final Vector travelledPosition = new Vector();

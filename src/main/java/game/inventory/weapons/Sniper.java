@@ -1,5 +1,6 @@
 package game.inventory.weapons;
 
+import game.Config;
 import game.World;
 import game.projectiles.Bullet;
 import game.projectiles.InstantBullet;
@@ -8,11 +9,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Sniper extends Gun {
-    private float penetration = 15000;
+    private float penetration = 0;
     
     public Sniper() {
         super("/weapons/sniper.png");
-        setFireRateInMillis(500);
+        setFireRateInMillis(Config.DEFAULT_SNIPER_FIRE_RATE_MILLIS);
+        setPenetration(Config.DEFAULT_SNIPER_BULLET_PENETRATION);
+        setDamage(Config.DEFAULT_SNIPER_BULLET_DAMAGE);
         muzzlePosition.set(52, 7);
         handlePosition.set(24, 10);
     }

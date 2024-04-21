@@ -1,5 +1,6 @@
 package game.projectiles;
 
+import game.Config;
 import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
@@ -16,9 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Grenade extends Projectile {
-    private float knockBackForce = 15000;
-    private float aoeDistance = 60;
-    private int detonationTimeInMillis = 1000;
+    private float knockBackForce = Config.DEFAULT_GRENADE_KNOCK_BACK_FORCE;
+    private float aoeDistance = Config.DEFAULT_GRENADE_AOE_DISTANCE;
+    private int detonationTimeInMillis = Config.DEFAULT_GRENADE_DETONATION_TIME_MILLIS;
     private final long startTimeInMillis = System.currentTimeMillis();
     private float speed = 5000;
     private final CircleCollider collider = new CircleCollider();

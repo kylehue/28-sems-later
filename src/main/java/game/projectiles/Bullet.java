@@ -1,5 +1,6 @@
 package game.projectiles;
 
+import game.Config;
 import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
@@ -13,10 +14,10 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public class Bullet extends Projectile {
-    private float knockBackForce = 3000;
-    private float speed = 20000;
-    private float maxDistance = 200;
-    private float penetration = 1;
+    private float knockBackForce = Config.DEFAULT_BULLET_KNOCK_BACK_FORCE;
+    private float speed = Config.DEFAULT_BULLET_SPEED;
+    private float maxDistance = Config.DEFAULT_BULLET_MAX_DISTANCE;
+    private float penetration = Config.DEFAULT_BULLET_PENETRATION;
     private final CircleCollider collider = new CircleCollider();
     private final Image image = Common.loadImage("/weapons/bullet-2.png");
     
