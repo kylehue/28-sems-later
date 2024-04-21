@@ -4,11 +4,11 @@ import game.colliders.Collider;
 import game.utils.Bounds;
 import game.utils.Common;
 import game.utils.Vector;
+import utils.Heap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.PriorityQueue;
 
 public class PathFinder {
     private final int nodeSize;
@@ -89,7 +89,7 @@ public class PathFinder {
         // }
         
         // Perform A* algorithm
-        PriorityQueue<Node> openNodes = new PriorityQueue<>((a, b) -> {
+        Heap<Node> openNodes = new Heap<>((a, b) -> {
             if (a.fCost == b.fCost) return a.hCost - b.hCost;
             return a.fCost - b.fCost;
         });
