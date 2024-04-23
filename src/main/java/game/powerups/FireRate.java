@@ -1,9 +1,9 @@
 package game.powerups;
 
 import game.Progress;
-import game.inventory.WeaponKind;
-import game.inventory.weapons.Gun;
-import game.inventory.weapons.Weapon;
+import game.weapons.WeaponKind;
+import game.weapons.Gun;
+import game.weapons.Weapon;
 
 public class FireRate implements PowerUp {
     public void apply() {

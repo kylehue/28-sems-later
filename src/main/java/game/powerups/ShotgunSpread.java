@@ -1,8 +1,8 @@
 package game.powerups;
 
 import game.Progress;
-import game.inventory.WeaponKind;
-import game.inventory.weapons.Shotgun;
+import game.weapons.WeaponKind;
+import game.weapons.Shotgun;
 
 public class ShotgunSpread implements PowerUp {
     public void apply() {

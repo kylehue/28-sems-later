@@ -1,4 +1,4 @@
-package game.inventory.weapons;
+package game.weapons;
 
 import game.Config;
 import game.World;

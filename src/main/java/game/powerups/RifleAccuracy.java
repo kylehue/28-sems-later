@@ -1,8 +1,8 @@
 package game.powerups;
 
 import game.Progress;
-import game.inventory.WeaponKind;
-import game.inventory.weapons.Rifle;
+import game.weapons.WeaponKind;
+import game.weapons.Rifle;
 
 public class RifleAccuracy implements PowerUp {
     public void apply() {

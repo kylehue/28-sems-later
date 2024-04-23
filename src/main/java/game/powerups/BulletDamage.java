@@ -1,7 +1,7 @@
 package game.powerups;
 
 import game.Progress;
-import game.inventory.WeaponKind;
+import game.weapons.WeaponKind;
 
 public class BulletDamage implements PowerUp {
     public void apply() {

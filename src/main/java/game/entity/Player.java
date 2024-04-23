@@ -3,21 +3,17 @@ package game.entity;
 import game.Config;
 import game.Game;
 import game.Progress;
-import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
-import game.inventory.InventoryManager;
-import game.inventory.weapons.Gun;
-import game.inventory.weapons.Weapon;
+import game.InventoryManager;
+import game.weapons.Gun;
+import game.weapons.Weapon;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
 import game.utils.IntervalMap;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
-import game.utils.Bounds;
 import game.utils.Vector;
-
-import java.util.ArrayList;
 
 public class Player extends Entity {
     // stats

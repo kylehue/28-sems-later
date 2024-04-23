@@ -1,12 +1,9 @@
-package game.inventory.weapons;
+package game.weapons;
 
 import game.Config;
 import game.World;
-import game.projectiles.Bullet;
 import game.projectiles.InstantBullet;
 import game.utils.Vector;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 public class Sniper extends Gun {
     private float penetration = 0;

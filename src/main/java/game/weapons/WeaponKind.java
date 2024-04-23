@@ -1,6 +1,4 @@
-package game.inventory;
-
-import game.inventory.weapons.*;
+package game.weapons;
 
 public enum WeaponKind {
     PISTOL(new Pistol()),

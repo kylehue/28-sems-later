@@ -2,13 +2,8 @@ package game.ui.components;
 
 import game.Game;
 import game.Progress;
-import game.inventory.WeaponKind;
-import game.utils.Vector;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.canvas.Canvas;
+import game.weapons.WeaponKind;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 import java.util.HashMap;
 

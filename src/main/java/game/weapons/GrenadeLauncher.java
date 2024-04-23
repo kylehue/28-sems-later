@@ -1,8 +1,7 @@
-package game.inventory.weapons;
+package game.weapons;
 
 import game.Config;
 import game.World;
-import game.projectiles.Bullet;
 import game.projectiles.Grenade;
 import game.utils.Vector;
 

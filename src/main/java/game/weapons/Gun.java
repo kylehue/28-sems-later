@@ -1,4 +1,4 @@
-package game.inventory.weapons;
+package game.weapons;
 
 import game.World;
 import game.utils.Vector;

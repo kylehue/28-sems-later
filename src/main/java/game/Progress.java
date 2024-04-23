@@ -1,6 +1,6 @@
 package game;
 
-import game.inventory.WeaponKind;
+import game.weapons.WeaponKind;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.FXCollections;

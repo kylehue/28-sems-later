@@ -1,8 +1,8 @@
-package game.inventory;
+package game;
 
-import game.Progress;
 import game.entity.Player;
-import game.inventory.weapons.*;
+import game.weapons.Weapon;
+import game.weapons.WeaponKind;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 

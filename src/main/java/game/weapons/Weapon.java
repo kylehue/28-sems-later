@@ -1,4 +1,4 @@
-package game.inventory.weapons;
+package game.weapons;
 
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
