@@ -29,11 +29,6 @@ public class ColliderWorld {
     
     public void addCollider(Collider collider) {
         this.colliders.add(collider);
-        
-        if (collider instanceof GroupedCollider groupedCollider) {
-            this.colliders.addAll(groupedCollider.getColliders());
-        }
-        
         collider.setColliderWorld(this);
     }
     
@@ -43,9 +38,6 @@ public class ColliderWorld {
             if (!collider.getId().equals(id)) continue;
             this.colliders.remove(i);
             collider.getContacts().remove(id);
-            if (collider instanceof GroupedCollider groupedCollider) {
-                this.colliders.removeAll(groupedCollider.getColliders());
-            }
         }
     }
     
@@ -69,13 +61,7 @@ public class ColliderWorld {
         for (Collider collider : colliders) {
             collider.getContacts().clear();
             collider.update(deltaTime);
-            if (collider instanceof GroupedCollider groupedCollider) {
-                for (Collider collider1 : groupedCollider.getColliders()) {
-                    addColliderToQuadtree(collider1);
-                }
-            } else {
-                addColliderToQuadtree(collider);
-            }
+            addColliderToQuadtree(collider);
         }
         
         HashSet<String> pairs = new HashSet<>();

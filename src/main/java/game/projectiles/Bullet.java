@@ -5,6 +5,7 @@ import game.Game;
 import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
+import game.colliders.GroupedCollider;
 import game.entity.Entity;
 import game.map.Layer;
 import game.map.Material;
@@ -112,7 +113,7 @@ public class Bullet extends Projectile {
             for (Material material : layer.getMaterials()) {
                 Collider obstacle = material.getCollider();
                 if (obstacle == null) continue;
-                boolean isObstacleHit = collider.isCollidingWith(obstacle);
+                boolean isObstacleHit = obstacle.isCollidingWith(collider);
                 if (isObstacleHit) {
                     dispose();
                     return;

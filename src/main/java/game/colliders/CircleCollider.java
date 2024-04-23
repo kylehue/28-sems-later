@@ -67,6 +67,10 @@ public class CircleCollider extends Collider {
                 this,
                 (PolygonCollider) otherCollider
             );
+        } else if (otherCollider instanceof GroupedCollider groupedCollider) {
+            for (Collider collider : groupedCollider.getColliders()) {
+                resolveCollision(collider);
+            }
         }
     }
     

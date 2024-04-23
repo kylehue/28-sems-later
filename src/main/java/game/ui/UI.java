@@ -27,8 +27,8 @@ public class UI {
         initComponents();
         Game.keyHandler.getKeyPressedProperty("weapon-switch").addListener(e -> {
             if (!Game.keyHandler.isKeyPressed("weapon-switch")) return;
-            // weaponSwitch.setVisible(!weaponSwitch.isVisible());
-            showPowerUpSelect();
+            weaponSwitch.setVisible(!weaponSwitch.isVisible());
+            // showPowerUpSelect();
         });
     }
     

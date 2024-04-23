@@ -119,6 +119,10 @@ public class PolygonCollider extends Collider {
                 (CircleCollider) otherCollider,
                 this
             );
+        } else if (otherCollider instanceof GroupedCollider groupedCollider) {
+            for (Collider collider : groupedCollider.getColliders()) {
+                resolveCollision(collider);
+            }
         }
     }
     

@@ -108,4 +108,49 @@ public class GroupedCollider extends Collider {
         
         return clone;
     }
+    
+    private void resolveCollisions(Collider colliderA, Collider colliderB) {
+        if (
+            colliderA instanceof PolygonCollider &&
+                colliderB instanceof PolygonCollider
+        ) {
+            CollisionResolvers.polygonToPolygon(
+                (PolygonCollider) colliderA,
+                (PolygonCollider) colliderB
+            );
+        } else if (
+            colliderA instanceof CircleCollider &&
+                colliderB instanceof PolygonCollider
+        ) {
+            CollisionResolvers.circleToPolygon(
+                (CircleCollider) colliderA,
+                (PolygonCollider) colliderB
+            );
+        } else if (
+            colliderB instanceof CircleCollider &&
+                colliderA instanceof PolygonCollider
+        ) {
+            CollisionResolvers.circleToPolygon(
+                (CircleCollider) colliderB,
+                (PolygonCollider) colliderA
+            );
+        } else if (
+            colliderA instanceof CircleCollider &&
+                colliderB instanceof CircleCollider
+        ) {
+            CollisionResolvers.circleToCircle(
+                (CircleCollider) colliderA,
+                (CircleCollider) colliderB
+            );
+        }
+    }
+    
+    @Override
+    public void resolveCollision(Collider otherCollider) {
+        getContacts().clear();
+        for (Collider collider : colliders) {
+            resolveCollisions(collider, otherCollider);
+            getContacts().addAll(collider.getContacts());
+        }
+    }
 }
