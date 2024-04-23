@@ -20,8 +20,8 @@ public class ImageButton extends Component {
     
     public ImageButton(String imageUrl) {
         this.image = Common.loadImage(imageUrl);
-        setWidth((float) image.getWidth());
-        setHeight((float) image.getHeight());
+        this.width = (float) this.image.getWidth();
+        this.height = (float) this.image.getHeight();
         
         // Setup effects
         ColorAdjust hoverEffect = new ColorAdjust();
@@ -36,7 +36,7 @@ public class ImageButton extends Component {
         this.pressEffect = pressEffect;
         
         Game.mouseHandler.mouseLeftPressedProperty().addListener((e) -> {
-            if (!isVisible) return;
+            if (!isVisible()) return;
             if (!Game.mouseHandler.isMouseLeftPressed()) return;
             if (onClick != null && isMouseOver()) {
                 onClick.run();
@@ -55,7 +55,7 @@ public class ImageButton extends Component {
     
     @Override
     public void render(GraphicsContext ctx) {
-        if (!isVisible) return;
+        if (!isVisible()) return;
         boolean isMouseOver = isMouseOver();
         boolean isMousePressed = Game.mouseHandler.isMouseLeftPressed();
         
@@ -83,20 +83,14 @@ public class ImageButton extends Component {
         this.width = width;
         
         // preserve ratio
-        if (width > 0 && height > 0) {
-            float aspectRatio = (float) (image.getWidth() / image.getHeight());
-            this.height = width / aspectRatio;
-        }
+        this.height = (float) ((width * image.getHeight()) / image.getWidth());
     }
     
     public void setHeight(float height) {
         this.height = height;
         
         // preserve ratio
-        if (width > 0 && height > 0) {
-            float aspectRatio = (float) (image.getWidth() / image.getHeight());
-            this.width = height * aspectRatio;
-        }
+        this.width = (float) ((height * image.getWidth()) / image.getHeight());
     }
     
     public float getWidth() {

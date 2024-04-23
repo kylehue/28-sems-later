@@ -2,6 +2,7 @@ package game.entity;
 
 import game.Config;
 import game.Game;
+import game.Progress;
 import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
@@ -15,6 +16,8 @@ import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Bounds;
 import game.utils.Vector;
+
+import java.util.ArrayList;
 
 public class Player extends Entity {
     // stats
@@ -60,6 +63,8 @@ public class Player extends Entity {
         
         // Misc
         this.setZIndex(Game.ZIndex.PLAYER);
+        
+        maxHealthProperty().bindBidirectional(Progress.maxHealth);
     }
     
     @Override

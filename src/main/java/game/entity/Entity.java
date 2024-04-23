@@ -93,6 +93,10 @@ public abstract class Entity implements Drawable {
         return id;
     }
     
+    public void addMaxHealth(float maxHealth){
+        setMaxHealth(getMaxHealth() + maxHealth);
+    }
+    
     public abstract Collider getCollider();
     
     public Bounds getHitBox() {

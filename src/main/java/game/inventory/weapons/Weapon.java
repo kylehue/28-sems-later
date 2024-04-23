@@ -36,6 +36,10 @@ public abstract class Weapon {
         this.damage = damage;
     }
     
+    public void addDamage(float damage) {
+        this.damage += damage;
+    }
+    
     public Image getImage() {
         return image;
     }

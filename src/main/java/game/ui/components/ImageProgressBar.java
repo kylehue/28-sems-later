@@ -28,20 +28,14 @@ public class ImageProgressBar extends Component {
         this.width = width;
         
         // preserve ratio
-        if (width > 0 && height > 0) {
-            float aspectRatio = (float) (baseImage.getWidth() / baseImage.getHeight());
-            this.height = width / aspectRatio;
-        }
+        this.height = (float) ((width * baseImage.getHeight()) / baseImage.getWidth());
     }
     
     public void setHeight(float height) {
         this.height = height;
         
         // preserve ratio
-        if (width > 0 && height > 0) {
-            float aspectRatio = (float) (baseImage.getWidth() / baseImage.getHeight());
-            this.width = height * aspectRatio;
-        }
+        this.width = (float) ((height * baseImage.getWidth()) / baseImage.getHeight());
     }
     
     public void setCurrentValue(float currentValue) {
