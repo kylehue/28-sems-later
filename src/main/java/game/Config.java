@@ -52,6 +52,12 @@ public abstract class Config {
     public final static int DEFAULT_PLAYER_DASH_INTERVAL_MILLIS = 2000;
     public final static float DEFAULT_PLAYER_SPEED = 1000;
     public final static float DEFAULT_PLAYER_DASH_SPEED = 15000;
+    public final static float DEFAULT_PLAYER_MAX_HEALTH = 100;
+    public final static float DEFAULT_PLAYER_HEALTH = 100;
+    public final static int DEFAULT_PLAYER_MAX_XP = 100;
+    public final static int DEFAULT_PLAYER_XP = 50;
+    public final static int DEFAULT_PLAYER_MAX_LEVEL = 100;
+    public final static int DEFAULT_PLAYER_LEVEL = 1;
     
     // Zombie
     public final static float DEFAULT_ZOMBIE_DAMAGE = 1;

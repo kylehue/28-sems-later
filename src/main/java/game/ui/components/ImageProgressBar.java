@@ -12,6 +12,7 @@ public class ImageProgressBar extends Component {
     private final Image baseImage;
     private final Image barImage;
     private final Vector position = new Vector();
+    private final Vector barOffset = new Vector();
     private final FloatProperty currentValue = new SimpleFloatProperty();
     private final FloatProperty maxValue = new SimpleFloatProperty();
     private float width = 0;
@@ -36,6 +37,14 @@ public class ImageProgressBar extends Component {
         
         // preserve ratio
         this.width = (float) ((height * baseImage.getWidth()) / baseImage.getHeight());
+    }
+    
+    public float getWidth() {
+        return width;
+    }
+    
+    public float getHeight() {
+        return height;
     }
     
     public void setCurrentValue(float currentValue) {
@@ -70,6 +79,26 @@ public class ImageProgressBar extends Component {
         return getCurrentValue() / getMaxValue();
     }
     
+    public Image getBarImage() {
+        return barImage;
+    }
+    
+    public Image getBaseImage() {
+        return baseImage;
+    }
+    
+    public Vector getBarOffset() {
+        return barOffset;
+    }
+    
+    public float getWidthRadio() {
+        return (float) (width / baseImage.getWidth());
+    }
+    
+    public float getHeightRadio() {
+        return (float) (height / baseImage.getHeight());
+    }
+    
     @Override
     public void render(GraphicsContext ctx) {
         float percentage = getPercentage();
@@ -80,16 +109,14 @@ public class ImageProgressBar extends Component {
             width,
             height
         );
+        float widthRatio = getWidthRadio();
+        float heightRatio = getHeightRadio();
         ctx.drawImage(
             barImage,
-            0,
-            0,
-            barImage.getWidth() * percentage,
-            barImage.getHeight(),
-            position.getX(),
-            position.getY(),
-            width * percentage,
-            height
+            position.getX() + barOffset.getX() * widthRatio,
+            position.getY() + barOffset.getY() * heightRatio,
+            barImage.getWidth() * widthRatio * percentage,
+            barImage.getHeight() * heightRatio
         );
     }
 }

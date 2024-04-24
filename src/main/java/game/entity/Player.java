@@ -11,15 +11,21 @@ import game.weapons.Weapon;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
 import game.utils.IntervalMap;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Vector;
 
 public class Player extends Entity {
     // stats
-    private float speed = Config.DEFAULT_PLAYER_SPEED;
-    private float dashSpeed = Config.DEFAULT_PLAYER_DASH_SPEED;
-    private int dashIntervalInMillis = Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS;
+    private final FloatProperty speed = new SimpleFloatProperty();
+    private final FloatProperty dashSpeed = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_DASH_SPEED
+    );
+    private final IntegerProperty dashIntervalInMillis = new SimpleIntegerProperty();
     
     // control flags
     private boolean upPressed = false;
@@ -55,12 +61,15 @@ public class Player extends Entity {
         );
         
         // Initialize intervals
-        intervals.registerIntervalFor(Interval.DASH, dashIntervalInMillis);
+        intervals.registerIntervalFor(Interval.DASH, dashIntervalInMillis.get());
         
         // Misc
         this.setZIndex(Game.ZIndex.PLAYER);
         
         maxHealthProperty().bindBidirectional(Progress.maxHealth);
+        currentHealthProperty().bindBidirectional(Progress.currentHealth);
+        speedProperty().bindBidirectional(Progress.movementSpeed);
+        dashIntervalInMillisProperty().bindBidirectional(Progress.dashInterval);
     }
     
     @Override
@@ -118,9 +127,10 @@ public class Player extends Entity {
     }
     
     public void dash() {
+        intervals.changeIntervalFor(Interval.DASH, dashIntervalInMillis.get());
         if (!intervals.isIntervalOverFor(Interval.DASH)) return;
         
-        float computedSpeed = dashSpeed * collider.getMass();
+        float computedSpeed = dashSpeed.get() * collider.getMass();
         if (upPressed) {
             collider.applyForceY(-computedSpeed);
         } else if (downPressed) {
@@ -175,7 +185,7 @@ public class Player extends Entity {
         position.lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
         
         // x controls
-        float computedSpeed = speed * collider.getMass();
+        float computedSpeed = speed.get() * collider.getMass();
         if (leftPressed || rightPressed) {
             if (leftPressed) {
                 collider.applyForceX(-1 * computedSpeed);
@@ -223,16 +233,15 @@ public class Player extends Entity {
     }
     
     public void setDashIntervalInMillis(int dashIntervalInMillis) {
-        this.dashIntervalInMillis = dashIntervalInMillis;
-        intervals.changeIntervalFor(Interval.DASH, dashIntervalInMillis);
+        this.dashIntervalInMillis.set(dashIntervalInMillis);
     }
     
     public void setDashSpeed(float dashSpeed) {
-        this.dashSpeed = dashSpeed;
+        this.dashSpeed.set(dashSpeed);
     }
     
     public void setSpeed(float speed) {
-        this.speed = speed;
+        this.speed.set(speed);
     }
     
     @Override
@@ -250,14 +259,26 @@ public class Player extends Entity {
     }
     
     public int getDashIntervalInMillis() {
-        return dashIntervalInMillis;
+        return dashIntervalInMillis.get();
     }
     
     public float getDashSpeed() {
-        return dashSpeed;
+        return dashSpeed.get();
     }
     
     public float getSpeed() {
+        return speed.get();
+    }
+    
+    public FloatProperty speedProperty() {
         return speed;
+    }
+    
+    public FloatProperty dashSpeedProperty() {
+        return dashSpeed;
+    }
+    
+    public IntegerProperty dashIntervalInMillisProperty() {
+        return dashIntervalInMillis;
     }
 }

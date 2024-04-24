@@ -1,15 +1,20 @@
 package game.ui;
 
 import game.Game;
+import game.Progress;
 import game.ui.components.Component;
 import game.ui.components.ImageProgressBar;
 import game.ui.components.PowerUpSelect;
 import game.ui.components.WeaponSwitch;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import utils.Common;
 
 import java.util.ArrayList;
 
@@ -19,6 +24,10 @@ public class UI {
     private final ImageProgressBar healthBar = new ImageProgressBar(
         "/ui/health-bar/base.png",
         "/ui/health-bar/bar.png"
+    );
+    private final ImageProgressBar xpBar = new ImageProgressBar(
+        "/ui/xp-bar/base.png",
+        "/ui/xp-bar/bar.png"
     );
     
     private final ArrayList<Component> components = new ArrayList<>();
@@ -36,15 +45,23 @@ public class UI {
         addComponent(weaponSwitch);
         addComponent(powerUpSelect);
         addComponent(healthBar);
+        addComponent(xpBar);
         
-        healthBar.getPosition().set(15, 15);
+        float margin = 10;
+        healthBar.getPosition().set(margin, margin);
+        healthBar.getBarOffset().set(21, 8);
         healthBar.setWidth(350);
-        healthBar.currentValueProperty().bindBidirectional(
-            Game.world.getPlayer().currentHealthProperty()
+        healthBar.currentValueProperty().bindBidirectional(Progress.currentHealth);
+        healthBar.maxValueProperty().bindBidirectional(Progress.maxHealth);
+        
+        xpBar.getPosition().set(
+            healthBar.getPosition().getX() + healthBar.getWidth() + margin,
+            margin
         );
-        healthBar.maxValueProperty().bindBidirectional(
-            Game.world.getPlayer().maxHealthProperty()
-        );
+        xpBar.getBarOffset().set(21, 8);
+        xpBar.setWidth(350);
+        xpBar.currentValueProperty().bindBidirectional(Progress.currentXp);
+        xpBar.maxValueProperty().bindBidirectional(Progress.maxXp);
     }
     
     private void renderFPS(GraphicsContext ctx) {
@@ -69,6 +86,28 @@ public class UI {
         for (Component component : components) {
             component.render(ctx);
         }
+        
+        // Render level
+        ctx.save();
+        ctx.setFont(Common.loadFont(
+            "/fonts/PIXY.ttf",
+            (int) (xpBar.getHeight() / 2)
+        ));
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(Color.color(0, 0, 0, 0.5));
+        dropShadow.setRadius(0);
+        dropShadow.setSpread(0);
+        dropShadow.setOffsetY(xpBar.getHeightRadio());
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
+        ctx.setEffect(dropShadow);
+        ctx.setFill(Color.valueOf("#5bf4a7"));
+        ctx.fillText(
+            String.valueOf(Progress.currentLevel.get()),
+            xpBar.getPosition().getX() + 11 * xpBar.getWidthRadio(),
+            xpBar.getPosition().getY() + 9 * xpBar.getHeightRadio()
+        );
+        ctx.restore();
     }
     
     public void showPowerUpSelect() {

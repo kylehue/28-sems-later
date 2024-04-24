@@ -2,7 +2,9 @@ package game;
 
 import game.weapons.WeaponKind;
 import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
@@ -15,9 +17,30 @@ public abstract class Progress {
         WeaponKind.SNIPER
     );
     
-    public static final FloatProperty maxHealth = new SimpleFloatProperty();
-    public static final FloatProperty movementSpeed = new SimpleFloatProperty();
-    public static final FloatProperty dashInterval = new SimpleFloatProperty();
+    public static final IntegerProperty currentLevel = new SimpleIntegerProperty(
+        Config.DEFAULT_PLAYER_LEVEL
+    );
+    public static final IntegerProperty maxLevel = new SimpleIntegerProperty(
+        Config.DEFAULT_PLAYER_MAX_LEVEL
+    );
+    public static final IntegerProperty currentXp = new SimpleIntegerProperty(
+        Config.DEFAULT_PLAYER_XP
+    );
+    public static final IntegerProperty maxXp = new SimpleIntegerProperty(
+        Config.DEFAULT_PLAYER_MAX_XP
+    );
+    public static final FloatProperty currentHealth = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_HEALTH
+    );
+    public static final FloatProperty maxHealth = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_MAX_HEALTH
+    );
+    public static final FloatProperty movementSpeed = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_SPEED
+    );
+    public static final FloatProperty dashInterval = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS
+    );
     public static final FloatProperty grenadeAoe = new SimpleFloatProperty();
     public static final FloatProperty healthRegen = new SimpleFloatProperty();
     public static final FloatProperty bulletPenetration = new SimpleFloatProperty();

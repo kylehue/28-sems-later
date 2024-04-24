@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 
 import java.util.HashMap;
 
@@ -46,7 +47,7 @@ public class Common {
         }
     }
     
-    private static HashMap<String, Image> loadedImages = new HashMap<>();
+    private final static HashMap<String, Image> loadedImages = new HashMap<>();
     
     public static Image loadImage(String url) {
         Image loadedImage = loadedImages.get(url);
@@ -64,5 +65,19 @@ public class Common {
             e.printStackTrace();
             throw new Error(e);
         }
+    }
+    
+    private final static HashMap<String, Font> loadedFonts = new HashMap<>();
+    
+    public static Font loadFont(String url, int size) {
+        Font loadedFont = loadedFonts.get(url + "." + size);
+        if (loadedFont != null) {
+            return loadedFont;
+        }
+        
+        Font font = Font.loadFont(Common.class.getResourceAsStream(url), size);
+        loadedFonts.put(url, font);
+        
+        return font;
     }
 }
