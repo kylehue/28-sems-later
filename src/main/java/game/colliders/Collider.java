@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class Collider {
+    public static final float VELOCITY_LIMIT = 8.0f;
+    
     /* Misc */
     private ColliderWorld colliderWorld = null;
     private final String id = Common.generateId();
@@ -240,12 +242,12 @@ public abstract class Collider {
         float accelerationX = acceleration.getX();
         float accelerationY = acceleration.getY();
         float deltaTimeSquared = deltaTime * deltaTime;
-        float targetX = (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX;
-        float targetY = (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY;
-        position.add(
-            targetX,
-            targetY
+        Vector target = new Vector(
+            (velocityX + accelerationX * deltaTimeSquared) - friction * velocityX,
+            (velocityY + accelerationY * deltaTimeSquared) - friction * velocityY
         );
+        target.limit(VELOCITY_LIMIT);
+        position.add(target);
         
         this.subUpdate(deltaTime);
         

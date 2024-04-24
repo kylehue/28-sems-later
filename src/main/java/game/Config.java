@@ -72,4 +72,7 @@ public abstract class Config {
     // Projectiles max stats
     public final static float MAX_BULLET_PENETRATION = 3;
     public final static float MAX_INSTANT_BULLET_PENETRATION = 20;
+    
+    // World
+    public final static int MAX_ZOMBIES_COUNT = 500;
 }

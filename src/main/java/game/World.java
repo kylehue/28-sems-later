@@ -237,14 +237,7 @@ public class World {
     }
     
     public Zombie spawnZombie() {
-        float halfMapWidth = (float) map.getTotalWidth() / 2;
-        float halfMapHeight = (float) map.getTotalHeight() / 2;
-        return spawnZombie(
-            new Vector(
-                Common.random(-halfMapWidth, halfMapWidth),
-                Common.random(-halfMapHeight, halfMapHeight)
-            )
-        );
+        return spawnZombie(generateRandomPosition());
     }
     
     public XPLoot spawnXPLoot(Vector initialPosition) {
@@ -270,9 +263,6 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 500; i++) {
-            spawnZombie();
-        }
     }
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
@@ -313,6 +303,13 @@ public class World {
     
     public Vector getMousePosition() {
         return camera.screenToWorld(Game.mouseHandler.getPosition());
+    }
+    
+    public Vector generateRandomPosition() {
+        return new Vector(
+            Common.random(0, map.getTotalWidth()),
+            Common.random(0, map.getTotalHeight())
+        );
     }
     
     public Map getMap() {
