@@ -40,7 +40,7 @@ public class Zombie extends Entity {
         Game.world.getColliderWorld().addCollider(collider);
         
         // Initialize intervals
-        intervals.registerIntervalFor("zombie", 5000);
+        intervals.registerIntervalFor("bitePlayer", 1000);
         intervals.registerIntervalFor(
             "pathToPlayerUpdate",
             (int) Common.random(70, 200)
@@ -120,9 +120,9 @@ public class Zombie extends Entity {
         boolean isCollidingWithPlayer = collider.isCollidingWith(
             player.getCollider()
         );
-        if (intervals.isIntervalOverFor("zombie") && isCollidingWithPlayer) {
+        if (intervals.isIntervalOverFor("bitePlayer") && isCollidingWithPlayer) {
             player.addHealth(-damage);
-            intervals.resetIntervalFor("zombie");
+            intervals.resetIntervalFor("bitePlayer");
         }
     }
     

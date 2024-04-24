@@ -1,6 +1,7 @@
 package game.weapons;
 
 import game.Config;
+import game.Progress;
 import game.World;
 import game.projectiles.Grenade;
 import game.utils.Vector;

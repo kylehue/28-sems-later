@@ -4,7 +4,7 @@ import game.Progress;
 
 public class HealthRegen implements PowerUp {
     public void apply() {
-        Progress.healthRegen.add(1);
+        Progress.healthRegenHealth.set(Progress.healthRegenHealth.get() + 0.01f);
     }
     
     public boolean isAllowedToUse() {

@@ -35,15 +35,13 @@ public abstract class Progress {
     public static final FloatProperty maxHealth = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_MAX_HEALTH
     );
-    public static final FloatProperty movementSpeed = new SimpleFloatProperty(
+    public static final FloatProperty healthRegenHealth = new SimpleFloatProperty(
+        Config.DEFAULT_PLAYER_HEALTH_REGEN_HEALTH
+    );
+    public static final FloatProperty playerSpeed = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_SPEED
     );
     public static final FloatProperty dashInterval = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS
     );
-    public static final FloatProperty grenadeAoe = new SimpleFloatProperty();
-    public static final FloatProperty healthRegen = new SimpleFloatProperty();
-    public static final FloatProperty bulletPenetration = new SimpleFloatProperty();
-    public static final FloatProperty bulletSpeed = new SimpleFloatProperty();
-    public static final FloatProperty bulletMaxDistance = new SimpleFloatProperty();
 }

@@ -13,8 +13,8 @@ public abstract class Loot implements Drawable {
     protected final Vector position = new Vector();
     private final long startTimeInMillis = System.currentTimeMillis();
     private boolean isAutoPickUp = false;
-    private float attractionDistance = 50f;
-    private float attractionSpeed = 5f;
+    private float attractionDistance = 100f;
+    private float attractionSpeed = 7.5f;
     private float pickUpDistance = 10f;
     private int timeLimitInMillis = Integer.MAX_VALUE;
     

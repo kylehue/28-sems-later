@@ -44,6 +44,10 @@ public abstract class Entity implements Drawable {
     public abstract void dispose();
     
     public void setMaxHealth(float maxHealth) {
+        if (getCurrentHealth() > maxHealth) {
+            setCurrentHealth(maxHealth);
+        }
+        
         this.maxHealth.set(maxHealth);
     }
     
@@ -58,7 +62,7 @@ public abstract class Entity implements Drawable {
     }
     
     public void addHealth(float health) {
-        this.currentHealth.set(getCurrentHealth() + health);
+        setCurrentHealth(getCurrentHealth() + health);
     }
     
     public float getCurrentHealth() {

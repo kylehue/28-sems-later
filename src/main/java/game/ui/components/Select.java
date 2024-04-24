@@ -57,9 +57,8 @@ public class Select<T> extends Component {
         if (optionsLength == 0) return;
         optionMaxHeight = 0;
 
-        Canvas canvas = Game.canvas;
         float spacing = getSpacing();
-        float desiredWidth = width == -1 ? (float) canvas.getWidth() : width;
+        float desiredWidth = getWidth();
 
         int index = 0;
         for (T key : optionsOrdered) {
@@ -96,6 +95,11 @@ public class Select<T> extends Component {
         fixBounds();
     }
     
+    public float getWidth() {
+        Canvas canvas = Game.canvas;
+        return width == -1 ? (float) canvas.getWidth() : width;
+    }
+    
     public ObjectProperty<T> selectedOptionProperty() {
         return selectedOption;
     }
@@ -127,5 +131,11 @@ public class Select<T> extends Component {
             imageButton.render(ctx);
             imageButton.setVisible(isVisible());
         }
+        
+        subRender(ctx);
+    }
+    
+    public void subRender(GraphicsContext ctx) {
+    
     }
 }

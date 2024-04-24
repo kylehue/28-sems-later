@@ -116,7 +116,7 @@ public class Grenade extends Projectile {
                 .getPosition()
                 .getDistanceFrom(position);
             float distancePercentage = (aoeDistance - distance) / aoeDistance;
-            float computedDamage = damage * distancePercentage;
+            float computedDamage = getDamage() * distancePercentage;
             entity.addHealth(-computedDamage);
             markEntity(entity);
         }

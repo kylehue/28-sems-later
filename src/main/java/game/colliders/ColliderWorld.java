@@ -47,17 +47,15 @@ public class ColliderWorld {
     }
     
     private void addColliderToQuadtree(Collider collider) {
-        Async.queue2.submit(() -> {
-            quadtree.insert(
-                collider,
-                new Bounds(
-                    collider.getPosition().getX() - collider.getWidth() / 2f,
-                    collider.getPosition().getY() - collider.getHeight() / 2f,
-                    collider.getWidth(),
-                    collider.getHeight()
-                )
-            );
-        });
+        quadtree.insert(
+            collider,
+            new Bounds(
+                collider.getPosition().getX() - collider.getWidth() / 2f,
+                collider.getPosition().getY() - collider.getHeight() / 2f,
+                collider.getWidth(),
+                collider.getHeight()
+            )
+        );
     }
     
     public void fixedUpdate(float deltaTime) {

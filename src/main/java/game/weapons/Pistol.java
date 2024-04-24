@@ -1,6 +1,7 @@
 package game.weapons;
 
 import game.Config;
+import game.Progress;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
@@ -48,8 +49,9 @@ public class Pistol extends Gun {
     @Override
     public void handleShoot(World world, Vector initialPosition, float angle) {
         Bullet bullet = world.spawnBullet(initialPosition, angle);
+        bullet.setDamage(damage);
+        bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
-        bullet.setDamage(damage);
     }
 }

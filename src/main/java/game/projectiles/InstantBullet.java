@@ -100,7 +100,7 @@ public class InstantBullet extends Projectile {
             if (isEntityMarked(entity)) continue;
             if (penetration <= 0) continue;
             float penetrationPercentage = penetration >= 1 ? 1 : penetration;
-            float computedDamage = damage * penetrationPercentage;
+            float computedDamage = getDamage() * penetrationPercentage;
             
             entity.addHealth(-computedDamage);
             penetration -= penetrationPercentage;

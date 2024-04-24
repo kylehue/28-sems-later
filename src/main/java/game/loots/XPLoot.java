@@ -6,7 +6,7 @@ import game.Progress;
 public class XPLoot extends Loot {
     public XPLoot() {
         super("/loots/xp.png");
-        setTimeLimitInMillis(60000);
+        setTimeLimitInMillis(120000);
     }
     
     @Override

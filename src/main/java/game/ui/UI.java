@@ -51,8 +51,8 @@ public class UI {
         healthBar.getPosition().set(margin, margin);
         healthBar.getBarOffset().set(21, 8);
         healthBar.setWidth(350);
-        healthBar.currentValueProperty().bindBidirectional(Progress.currentHealth);
-        healthBar.maxValueProperty().bindBidirectional(Progress.maxHealth);
+        healthBar.currentValueProperty().bind(Progress.currentHealth);
+        healthBar.maxValueProperty().bind(Progress.maxHealth);
         
         xpBar.getPosition().set(
             healthBar.getPosition().getX() + healthBar.getWidth() + margin,
@@ -60,8 +60,8 @@ public class UI {
         );
         xpBar.getBarOffset().set(21, 8);
         xpBar.setWidth(350);
-        xpBar.currentValueProperty().bindBidirectional(Progress.currentXp);
-        xpBar.maxValueProperty().bindBidirectional(Progress.maxXp);
+        xpBar.currentValueProperty().bind(Progress.currentXp);
+        xpBar.maxValueProperty().bind(Progress.maxXp);
     }
     
     private void renderFPS(GraphicsContext ctx) {

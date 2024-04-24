@@ -1,6 +1,7 @@
 package game.weapons;
 
 import game.Config;
+import game.Progress;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
@@ -64,9 +65,10 @@ public class Shotgun extends Gun {
             );
             float computedAngle = angle + angleBias;
             Bullet bullet = world.spawnBullet(initialPosition, computedAngle);
+            bullet.setDamage(damage);
+            bullet.setPenetration(penetration);
             bullet.setSpeed(bulletSpeed);
             bullet.setMaxDistance(maxDistance);
-            bullet.setDamage(damage);
         }
     }
 }

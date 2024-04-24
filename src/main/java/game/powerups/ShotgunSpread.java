@@ -1,17 +1,20 @@
 package game.powerups;
 
+import game.Config;
 import game.Progress;
 import game.weapons.WeaponKind;
 import game.weapons.Shotgun;
 
 public class ShotgunSpread implements PowerUp {
     public void apply() {
-        if (!isAllowedToUse()) return;
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
-        shotgun.setSpreadInRadians(1);
+        shotgun.setSpreadInRadians(
+            (float) (shotgun.getSpreadInRadians() + Math.PI / 128)
+        );
     }
     
     public boolean isAllowedToUse() {
-        return Progress.unlockedWeapons.contains(WeaponKind.SHOTGUN);
+        Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
+        return Progress.unlockedWeapons.contains(WeaponKind.SHOTGUN) && shotgun.getSpreadInRadians() < Config.MAX_SHOTGUN_SPREAD_RADIANS;
     }
 }

@@ -1,7 +1,14 @@
 package game.ui.components;
 
 import game.Game;
+import game.Progress;
 import game.powerups.PowerUpKind;
+import javafx.geometry.VPos;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
+import utils.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,12 +83,7 @@ public class PowerUpSelect extends Select<PowerUpKind> {
         powerUps.add(PowerUpKind.BULLET_MAX_DISTANCE);
         powerUps.add(PowerUpKind.BULLET_PENETRATION);
         powerUps.add(PowerUpKind.BULLET_SPEED);
-        
-        selectedOptionProperty().addListener(e -> {
-            PowerUpKind selected = getSelectedOption();
-            if (selected != null) selected.get().apply();
-            hide();
-        });
+
         isVisibleProperty().addListener(e -> {
             fixBounds();
         });
@@ -119,12 +121,39 @@ public class PowerUpSelect extends Select<PowerUpKind> {
     }
     
     public void show() {
-        randomizePool(3);
+        randomizePool(4);
         setVisible(true);
     }
     
     public void hide() {
         setVisible(false);
         clearOptions();
+    }
+    
+    @Override
+    public void subRender(GraphicsContext ctx) {
+        if (isVisible()) {
+            // Render text
+            ctx.save();
+            ctx.setFont(Common.loadFont(
+                "/fonts/PIXY.ttf",
+                48
+            ));
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.color(0, 0, 0, 1));
+            dropShadow.setRadius(0);
+            dropShadow.setSpread(0);
+            dropShadow.setOffsetY(4);
+            ctx.setTextAlign(TextAlignment.CENTER);
+            ctx.setTextBaseline(VPos.BOTTOM);
+            ctx.setEffect(dropShadow);
+            ctx.setFill(Color.valueOf("white"));
+            ctx.fillText(
+                "Choose an upgrade",
+                getOffset().getX() + getWidth() / 2,
+                getOffset().getY() - 20
+            );
+            ctx.restore();
+        }
     }
 }

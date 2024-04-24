@@ -26,6 +26,8 @@ public class Player extends Entity {
         Config.DEFAULT_PLAYER_DASH_SPEED
     );
     private final IntegerProperty dashIntervalInMillis = new SimpleIntegerProperty();
+    private final int healthRegenIntervalInMillis = 50;
+    private final FloatProperty healthRegenHealth = new SimpleFloatProperty();
     
     // control flags
     private boolean upPressed = false;
@@ -42,7 +44,8 @@ public class Player extends Entity {
     private final InventoryManager inventoryManager = new InventoryManager(this);
     private final IntervalMap intervals = new IntervalMap();
     private enum Interval {
-        DASH
+        DASH,
+        HEALTH_REGEN
     }
     
     // sprites
@@ -61,15 +64,20 @@ public class Player extends Entity {
         );
         
         // Initialize intervals
-        intervals.registerIntervalFor(Interval.DASH, dashIntervalInMillis.get());
+        intervals.registerIntervalFor(Interval.DASH, getDashIntervalInMillis());
+        intervals.registerIntervalFor(Interval.HEALTH_REGEN, healthRegenIntervalInMillis);
         
         // Misc
         this.setZIndex(Game.ZIndex.PLAYER);
         
         maxHealthProperty().bindBidirectional(Progress.maxHealth);
         currentHealthProperty().bindBidirectional(Progress.currentHealth);
-        speedProperty().bindBidirectional(Progress.movementSpeed);
+        speedProperty().bindBidirectional(Progress.playerSpeed);
         dashIntervalInMillisProperty().bindBidirectional(Progress.dashInterval);
+        healthRegenHealthProperty().bindBidirectional(Progress.healthRegenHealth);
+        dashIntervalInMillisProperty().addListener(e -> {
+            intervals.changeIntervalFor(Interval.DASH, getDashIntervalInMillis());
+        });
     }
     
     @Override
@@ -102,6 +110,7 @@ public class Player extends Entity {
     public void update(float deltaTime) {
         this.updateControlFlags();
         this.updateAngleToMouse();
+        this.handleHealthRegen();
         
         if (shootPressed) {
             this.shoot();
@@ -111,6 +120,12 @@ public class Player extends Entity {
     @Override
     public void dispose() {
         // ...
+    }
+    
+    public void handleHealthRegen() {
+        if (!intervals.isIntervalOverFor(Interval.HEALTH_REGEN)) return;
+        addHealth(getHealthRegenHealth());
+        intervals.resetIntervalFor(Interval.HEALTH_REGEN);
     }
     
     public void shoot() {
@@ -244,6 +259,10 @@ public class Player extends Entity {
         this.speed.set(speed);
     }
     
+    public void setHealthRegenHealth(float regenHealth) {
+        healthRegenHealth.set(regenHealth);
+    }
+    
     @Override
     public Vector getRenderPosition() {
         return position.clone().addY(collider.getRadius());
@@ -268,6 +287,14 @@ public class Player extends Entity {
     
     public float getSpeed() {
         return speed.get();
+    }
+    
+    public float getHealthRegenHealth() {
+        return healthRegenHealth.get();
+    }
+    
+    public FloatProperty healthRegenHealthProperty() {
+        return healthRegenHealth;
     }
     
     public FloatProperty speedProperty() {

@@ -1,8 +1,10 @@
 package game.weapons;
 
 import game.Config;
+import game.Progress;
 import game.World;
 import game.projectiles.Bullet;
+import game.utils.Common;
 import game.utils.Vector;
 
 public class Rifle extends Gun {
@@ -58,12 +60,14 @@ public class Rifle extends Gun {
     @Override
     public void handleShoot(World world, Vector initialPosition, float angle) {
         // Add inaccuracy
-        float maxInaccuracy = (float) (Math.PI / 8);
-        angle += (float) (maxInaccuracy * (1 - accuracy) * Math.random() - maxInaccuracy / 2) * (1 - accuracy);
+        float maxInaccuracyAngleInRadians = (float) (Math.PI / 8);
+        float bias = (1 - accuracy) / 2;
+        angle += maxInaccuracyAngleInRadians * Common.random(-bias, bias);
         
         Bullet bullet = world.spawnBullet(initialPosition, angle);
+        bullet.setDamage(damage);
+        bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
-        bullet.setDamage(damage);
     }
 }

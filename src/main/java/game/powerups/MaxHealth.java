@@ -4,7 +4,7 @@ import game.Progress;
 
 public class MaxHealth implements PowerUp {
     public void apply() {
-        Progress.maxHealth.add(1);
+        Progress.maxHealth.set(Progress.maxHealth.get() + 50);
     }
     
     public boolean isAllowedToUse() {
