@@ -9,6 +9,7 @@ public class Rifle extends Gun {
     private float bulletSpeed = 0;
     private float accuracy = 0; // 0-1 value
     private float maxDistance = 0;
+    private float penetration = 0;
     
     public Rifle() {
         super("/weapons/rifle.png");
@@ -17,8 +18,13 @@ public class Rifle extends Gun {
         setBulletSpeed(Config.DEFAULT_RIFLE_BULLET_SPEED);
         setMaxDistance(Config.DEFAULT_RIFLE_BULLET_MAX_DISTANCE);
         setDamage(Config.DEFAULT_RIFLE_BULLET_DAMAGE);
+        setPenetration(Config.DEFAULT_RIFLE_BULLET_PENETRATION);
         setMuzzlePosition(new Vector(32, 4));
         setOrigHandlePosition(new Vector(13, 7));
+    }
+    
+    public void setPenetration(float penetration) {
+        this.penetration = penetration;
     }
     
     public void setBulletSpeed(float bulletSpeed) {
@@ -31,6 +37,10 @@ public class Rifle extends Gun {
     
     public void setMaxDistance(float maxDistance) {
         this.maxDistance = maxDistance;
+    }
+    
+    public float getPenetration() {
+        return penetration;
     }
     
     public float getBulletSpeed() {

@@ -15,10 +15,10 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public class Bullet extends Projectile {
-    private float knockBackForce = Config.DEFAULT_BULLET_KNOCK_BACK_FORCE;
-    private float speed = Config.DEFAULT_BULLET_SPEED;
-    private float maxDistance = Config.DEFAULT_BULLET_MAX_DISTANCE;
-    private float penetration = Config.DEFAULT_BULLET_PENETRATION;
+    private final float knockBackForce = 3000;
+    private float speed = 10000;
+    private float maxDistance = 200;
+    private float penetration = 1;
     private final CircleCollider collider = new CircleCollider();
     private final Image image = Common.loadImage("/weapons/bullet-2.png");
     

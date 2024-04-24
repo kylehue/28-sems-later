@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Grenade extends Projectile {
-    private float knockBackForce = Config.DEFAULT_GRENADE_KNOCK_BACK_FORCE;
+    private final float knockBackForce = 15000;
     private float aoeDistance = Config.DEFAULT_GRENADE_AOE_DISTANCE;
     private int detonationTimeInMillis = Config.DEFAULT_GRENADE_DETONATION_TIME_MILLIS;
     private final long startTimeInMillis = System.currentTimeMillis();
@@ -140,20 +140,12 @@ public class Grenade extends Projectile {
         this.detonationTimeInMillis = detonationTimeInMillis;
     }
     
-    public void setKnockBackForce(float knockBackForce) {
-        this.knockBackForce = knockBackForce;
-    }
-    
     public float getAoeDistance() {
         return aoeDistance;
     }
     
     public int getDetonationTimeInMillis() {
         return detonationTimeInMillis;
-    }
-    
-    public float getKnockBackForce() {
-        return knockBackForce;
     }
     
     public CircleCollider getCollider() {

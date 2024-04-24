@@ -8,6 +8,7 @@ import game.utils.Vector;
 public class Pistol extends Gun {
     private float bulletSpeed = 0;
     private float maxDistance = 0;
+    private float penetration = 0;
     
     public Pistol() {
         super("/weapons/pistol.png");
@@ -15,8 +16,13 @@ public class Pistol extends Gun {
         setBulletSpeed(Config.DEFAULT_PISTOL_BULLET_SPEED);
         setMaxDistance(Config.DEFAULT_PISTOL_BULLET_MAX_DISTANCE);
         setDamage(Config.DEFAULT_PISTOL_BULLET_DAMAGE);
+        setPenetration(Config.DEFAULT_PISTOL_BULLET_PENETRATION);
         setMuzzlePosition(new Vector(14, 3));
         setOrigHandlePosition(new Vector(3, 6));
+    }
+    
+    public void setPenetration(float penetration) {
+        this.penetration = penetration;
     }
     
     public void setBulletSpeed(float bulletSpeed) {
@@ -25,6 +31,10 @@ public class Pistol extends Gun {
     
     public void setMaxDistance(float maxDistance) {
         this.maxDistance = maxDistance;
+    }
+    
+    public float getPenetration() {
+        return penetration;
     }
     
     public float getBulletSpeed() {
