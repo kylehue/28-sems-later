@@ -76,7 +76,11 @@ public class ImageProgressBar extends Component {
     }
     
     public float getPercentage() {
-        return getCurrentValue() / getMaxValue();
+        return game.utils.Common.clamp(
+            getCurrentValue() / getMaxValue(),
+            0,
+            1
+        );
     }
     
     public Image getBarImage() {

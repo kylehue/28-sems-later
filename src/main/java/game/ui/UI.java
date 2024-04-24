@@ -93,24 +93,31 @@ public class UI {
             "/fonts/PIXY.ttf",
             (int) (xpBar.getHeight() / 2)
         ));
+        float widthRatio = xpBar.getWidthRadio();
+        float heightRatio = xpBar.getHeightRadio();
         DropShadow dropShadow = new DropShadow();
         dropShadow.setColor(Color.color(0, 0, 0, 0.5));
         dropShadow.setRadius(0);
         dropShadow.setSpread(0);
-        dropShadow.setOffsetY(xpBar.getHeightRadio());
+        dropShadow.setOffsetY(heightRatio);
         ctx.setTextAlign(TextAlignment.CENTER);
         ctx.setTextBaseline(VPos.CENTER);
         ctx.setEffect(dropShadow);
         ctx.setFill(Color.valueOf("#5bf4a7"));
         ctx.fillText(
             String.valueOf(Progress.currentLevel.get()),
-            xpBar.getPosition().getX() + 11 * xpBar.getWidthRadio(),
-            xpBar.getPosition().getY() + 9 * xpBar.getHeightRadio()
+            xpBar.getPosition().getX() + 11 * widthRatio,
+            xpBar.getPosition().getY() + 9 * heightRatio,
+            18 * widthRatio
         );
         ctx.restore();
     }
     
     public void showPowerUpSelect() {
         powerUpSelect.show();
+    }
+    
+    public PowerUpSelect getPowerUpSelect() {
+        return powerUpSelect;
     }
 }

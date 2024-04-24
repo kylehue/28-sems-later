@@ -2,6 +2,7 @@ package game.colliders;
 
 import game.utils.Bounds;
 import game.utils.Quadtree;
+import utils.Async;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,15 +47,17 @@ public class ColliderWorld {
     }
     
     private void addColliderToQuadtree(Collider collider) {
-        quadtree.insert(
-            collider,
-            new Bounds(
-                collider.getPosition().getX() - collider.getWidth() / 2f,
-                collider.getPosition().getY() - collider.getHeight() / 2f,
-                collider.getWidth(),
-                collider.getHeight()
-            )
-        );
+        Async.queue2.submit(() -> {
+            quadtree.insert(
+                collider,
+                new Bounds(
+                    collider.getPosition().getX() - collider.getWidth() / 2f,
+                    collider.getPosition().getY() - collider.getHeight() / 2f,
+                    collider.getWidth(),
+                    collider.getHeight()
+                )
+            );
+        });
     }
     
     public void fixedUpdate(float deltaTime) {

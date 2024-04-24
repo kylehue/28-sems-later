@@ -70,13 +70,14 @@ public class Common {
     private final static HashMap<String, Font> loadedFonts = new HashMap<>();
     
     public static Font loadFont(String url, int size) {
-        Font loadedFont = loadedFonts.get(url + "." + size);
+        String key = url + "." + size;
+        Font loadedFont = loadedFonts.get(key);
         if (loadedFont != null) {
             return loadedFont;
         }
         
         Font font = Font.loadFont(Common.class.getResourceAsStream(url), size);
-        loadedFonts.put(url, font);
+        loadedFonts.put(key , font);
         
         return font;
     }

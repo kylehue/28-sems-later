@@ -45,7 +45,7 @@ public abstract class Config {
     
     // Grenade Launcher defaults
     public final static int DEFAULT_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 400;
-    public final static float DEFAULT_GRENADE_LAUNCHER_BULLET_DAMAGE = 30;
+    public final static float DEFAULT_GRENADE_LAUNCHER_GRENADE_DAMAGE = 60;
     public final static float DEFAULT_GRENADE_LAUNCHER_AOE_DISTANCE = 60;
     
     // Player
@@ -55,7 +55,7 @@ public abstract class Config {
     public final static float DEFAULT_PLAYER_MAX_HEALTH = 100;
     public final static float DEFAULT_PLAYER_HEALTH = 100;
     public final static int DEFAULT_PLAYER_MAX_XP = 100;
-    public final static int DEFAULT_PLAYER_XP = 50;
+    public final static int DEFAULT_PLAYER_XP = 0;
     public final static int DEFAULT_PLAYER_MAX_LEVEL = 100;
     public final static int DEFAULT_PLAYER_LEVEL = 1;
     

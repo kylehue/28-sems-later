@@ -103,6 +103,16 @@ public class Zombie extends Entity {
         AcidSprite acidSprite = new AcidSprite();
         acidSprite.getPosition().set(position);
         Game.world.addOneTimeSpriteAnimation(acidSprite);
+        
+        // Drop XP
+        for (int i = 0; i < Common.random(3, 10); i++) {
+            Game.world.spawnXPLoot(
+                position.clone().add(
+                    Common.random(-10, 10),
+                    Common.random(-10, 10)
+                )
+            );
+        }
     }
     
     private void checkPlayerCollision() {

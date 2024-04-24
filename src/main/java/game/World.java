@@ -4,6 +4,8 @@ import game.colliders.Collider;
 import game.colliders.ColliderWorld;
 import game.entity.Player;
 import game.entity.Zombie;
+import game.loots.Loot;
+import game.loots.XPLoot;
 import game.projectiles.Bullet;
 import game.projectiles.Grenade;
 import game.projectiles.InstantBullet;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 
 public class World {
     private Player player;
+    private final ArrayList<Loot> loots = new ArrayList<>();
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
@@ -29,6 +32,7 @@ public class World {
     private final ColliderWorld colliderWorld;
     private final PathFinder pathFinder;
     private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
+    private boolean isPaused = false;
     
     /* For debugging */
     public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
@@ -84,6 +88,7 @@ public class World {
         drawables.add(player);
         drawables.addAll(zombies);
         drawables.addAll(projectiles);
+        drawables.addAll(loots);
         for (Layer layer : map.getLayers()) {
             drawables.addAll(layer.getMaterials());
         }
@@ -151,6 +156,7 @@ public class World {
     }
     
     public void fixedUpdate(float deltaTime) {
+        if (isPaused) return;
         this.quadtree.clear();
         map.fixedUpdate(deltaTime);
         
@@ -159,6 +165,11 @@ public class World {
         for (int i = zombies.size() - 1; i >= 0; i--) {
             Zombie zombie = zombies.get(i);
             zombie.fixedUpdate(deltaTime);
+        }
+        
+        for (int i = loots.size() - 1; i >= 0; i--) {
+            Loot loot = loots.get(i);
+            loot.fixedUpdate(deltaTime);
         }
         
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -178,6 +189,7 @@ public class World {
     }
     
     public void update(float deltaTime) {
+        if (isPaused) return;
         player.update(deltaTime);
         
         for (int i = zombies.size() - 1; i >= 0; i--) {
@@ -189,6 +201,8 @@ public class World {
             Projectile projectile = projectiles.get(i);
             projectile.update(deltaTime);
         }
+        
+        Mechanics.update();
         
         this.camera.moveTo(player.getPosition());
         this.camera.zoomTo(400);
@@ -233,6 +247,21 @@ public class World {
         );
     }
     
+    public XPLoot spawnXPLoot(Vector initialPosition) {
+        XPLoot xpLoot = new XPLoot();
+        xpLoot.getPosition().set(initialPosition);
+        loots.add(xpLoot);
+        return xpLoot;
+    }
+    
+    public void pause() {
+        isPaused = true;
+    }
+    
+    public void play() {
+        isPaused = false;
+    }
+    
     public void start() {
         this.player = new Player();
         float halfMapWidth = (float) map.getTotalWidth() / 2;
@@ -241,7 +270,7 @@ public class World {
             halfMapWidth,
             halfMapHeight
         );
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 500; i++) {
             spawnZombie();
         }
     }
@@ -274,6 +303,10 @@ public class World {
         return zombies;
     }
     
+    public ArrayList<Loot> getLoots() {
+        return loots;
+    }
+    
     public Camera getCamera() {
         return camera;
     }
@@ -284,5 +317,9 @@ public class World {
     
     public Map getMap() {
         return map;
+    }
+    
+    public boolean isPaused() {
+        return isPaused;
     }
 }
