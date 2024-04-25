@@ -1,7 +1,6 @@
 package main;
 
 import javafx.application.Application;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application {

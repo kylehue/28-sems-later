@@ -1,7 +1,7 @@
 package game.weapons;
 
 import game.Config;
-import game.Progress;
+import game.Game;
 import game.World;
 import game.projectiles.Grenade;
 import game.utils.Vector;
@@ -32,5 +32,11 @@ public class GrenadeLauncher extends Gun {
         Grenade grenade = world.spawnGrenade(initialPosition, angle);
         grenade.setDamage(damage);
         grenade.setAoeDistance(aoeDistance);
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/grenade-launcher-shot.mp3",
+            initialPosition,
+            300
+        );
     }
 }

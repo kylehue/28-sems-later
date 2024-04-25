@@ -11,18 +11,23 @@ import game.projectiles.Grenade;
 import game.projectiles.InstantBullet;
 import game.projectiles.Projectile;
 import game.utils.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.canvas.GraphicsContext;
 import game.map.Layer;
 import game.map.Material;
 import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
+import javafx.scene.media.MediaPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class World {
     private Player player;
+    private final HashSet<DistanceAwareAudio> distanceAwareAudios = new HashSet<>();
     private final ArrayList<Loot> loots = new ArrayList<>();
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -32,7 +37,12 @@ public class World {
     private final ColliderWorld colliderWorld;
     private final PathFinder pathFinder;
     private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
-    private boolean isPaused = false;
+    private BooleanProperty isPaused = new SimpleBooleanProperty();
+    
+    // audios
+    private final MediaPlayer ambienceAudio = new MediaPlayer(
+        utils.Common.loadMedia("/sounds/ambience.mp3")
+    );
     
     /* For debugging */
     public static final HashMap<String, DebugRenderCallback> debugRender = new HashMap<>();
@@ -69,6 +79,9 @@ public class World {
                 pathFinder.getObstacles().add(collider);
             }
         });
+        
+        ambienceAudio.setCycleCount(Integer.MAX_VALUE);
+        ambienceAudio.play();
     }
     
     public void renderMeta(GraphicsContext ctx) {
@@ -156,7 +169,7 @@ public class World {
     }
     
     public void fixedUpdate(float deltaTime) {
-        if (isPaused) return;
+        if (isPaused()) return;
         this.quadtree.clear();
         map.fixedUpdate(deltaTime);
         
@@ -189,7 +202,7 @@ public class World {
     }
     
     public void update(float deltaTime) {
-        if (isPaused) return;
+        if (isPaused()) return;
         player.update(deltaTime);
         
         for (int i = zombies.size() - 1; i >= 0; i--) {
@@ -200,6 +213,10 @@ public class World {
         for (int i = projectiles.size() - 1; i >= 0; i--) {
             Projectile projectile = projectiles.get(i);
             projectile.update(deltaTime);
+        }
+        
+        for (DistanceAwareAudio audio : distanceAwareAudios) {
+            audio.update();
         }
         
         Mechanics.update();
@@ -247,12 +264,20 @@ public class World {
         return xpLoot;
     }
     
+    public boolean isPaused() {
+        return isPaused.get();
+    }
+    
+    public BooleanProperty isPausedProperty() {
+        return isPaused;
+    }
+    
     public void pause() {
-        isPaused = true;
+        isPaused.set(true);
     }
     
     public void play() {
-        isPaused = false;
+        isPaused.set(false);
     }
     
     public void start() {
@@ -267,6 +292,27 @@ public class World {
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
         oneTimeSpriteAnimations.add(spriteAnimation);
+    }
+    
+    public DistanceAwareAudio addPlayerDistanceAwareAudio(
+        String url,
+        Vector position,
+        float awarenessDistance
+    ) {
+        DistanceAwareAudio distanceAwareAudio = new DistanceAwareAudio(
+            url,
+            position
+        );
+        distanceAwareAudio.getMediaPlayer().play();
+        distanceAwareAudio.setAwarenessPosition(player.getPosition());
+        distanceAwareAudio.setAwarenessDistance(awarenessDistance);
+        distanceAwareAudios.add(distanceAwareAudio);
+        distanceAwareAudio.getMediaPlayer().setOnEndOfMedia(() -> {
+            distanceAwareAudios.remove(distanceAwareAudio);
+            distanceAwareAudio.getMediaPlayer().dispose();
+        });
+        
+        return distanceAwareAudio;
     }
     
     public PathFinder getPathFinder() {
@@ -314,9 +360,5 @@ public class World {
     
     public Map getMap() {
         return map;
-    }
-    
-    public boolean isPaused() {
-        return isPaused;
     }
 }

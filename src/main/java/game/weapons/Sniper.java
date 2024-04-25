@@ -1,6 +1,7 @@
 package game.weapons;
 
 import game.Config;
+import game.Game;
 import game.World;
 import game.projectiles.InstantBullet;
 import game.utils.Vector;
@@ -30,5 +31,11 @@ public class Sniper extends Gun {
         InstantBullet bullet = world.spawnInstantBullet(initialPosition, angle);
         bullet.setPenetration(penetration);
         bullet.setDamage(damage);
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/sniper-shot.mp3",
+            initialPosition,
+            250
+        );
     }
 }

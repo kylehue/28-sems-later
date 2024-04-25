@@ -1,7 +1,7 @@
 package game.weapons;
 
 import game.Config;
-import game.Progress;
+import game.Game;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
@@ -53,5 +53,11 @@ public class Pistol extends Gun {
         bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/gun-shot.mp3",
+            initialPosition,
+            250
+        );
     }
 }

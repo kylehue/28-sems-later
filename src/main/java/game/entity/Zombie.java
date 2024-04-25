@@ -9,6 +9,7 @@ import game.sprites.AcidSprite;
 import game.utils.*;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Paint;
 import utils.Async;
 import game.map.PathFinder;
@@ -113,6 +114,13 @@ public class Zombie extends Entity {
                 )
             );
         }
+        
+        // Audio
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/zombie-death.mp3",
+            position,
+            200
+        );
     }
     
     private void checkPlayerCollision() {

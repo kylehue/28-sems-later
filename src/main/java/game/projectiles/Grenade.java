@@ -12,9 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class Grenade extends Projectile {
     private final float knockBackForce = 15000;
@@ -122,6 +120,12 @@ public class Grenade extends Projectile {
         }
         
         dispose();
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/explosion.mp3",
+            initialPosition,
+            aoeDistance * 2 + 300
+        );
     }
     
     @Override

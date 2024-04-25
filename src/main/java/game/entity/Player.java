@@ -6,6 +6,7 @@ import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.InventoryManager;
+import game.utils.Common;
 import game.weapons.Gun;
 import game.weapons.Weapon;
 import game.sprites.DashSprite;
@@ -18,8 +19,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Vector;
+import javafx.scene.media.MediaPlayer;
 
 public class Player extends Entity {
+    private static final float IDLE_VELOCITY_THRESHOLD = 0.25f;
+    
     // stats
     private final FloatProperty speed = new SimpleFloatProperty();
     private final FloatProperty dashSpeed = new SimpleFloatProperty(
@@ -43,6 +47,7 @@ public class Player extends Entity {
     private float angleToMouse = 0;
     private final InventoryManager inventoryManager = new InventoryManager(this);
     private final IntervalMap intervals = new IntervalMap();
+    
     private enum Interval {
         DASH,
         HEALTH_REGEN
@@ -50,6 +55,14 @@ public class Player extends Entity {
     
     // sprites
     private final PlayerSprite bodySprite = new PlayerSprite();
+    
+    // audios
+    private final MediaPlayer footstepAudio = new MediaPlayer(
+        utils.Common.loadMedia("/sounds/footstep.mp3")
+    );
+    private final MediaPlayer footstepGrassAudio = new MediaPlayer(
+        utils.Common.loadMedia("/sounds/footstep-grass.mp3")
+    );
     
     public Player() {
         // Initialize collider
@@ -77,6 +90,16 @@ public class Player extends Entity {
         healthRegenHealthProperty().bindBidirectional(Progress.healthRegenHealth);
         dashIntervalInMillisProperty().addListener(e -> {
             intervals.changeIntervalFor(Interval.DASH, getDashIntervalInMillis());
+        });
+        
+        footstepAudio.setCycleCount(Integer.MAX_VALUE);
+        footstepGrassAudio.setCycleCount(Integer.MAX_VALUE);
+        
+        Game.world.isPausedProperty().addListener((o, o1, isPaused) -> {
+            if (isPaused) {
+                footstepAudio.stop();
+                footstepGrassAudio.stop();
+            }
         });
     }
     
@@ -111,9 +134,45 @@ public class Player extends Entity {
         this.updateControlFlags();
         this.updateAngleToMouse();
         this.handleHealthRegen();
+        this.handleFootstepAudio();
         
         if (shootPressed) {
             this.shoot();
+        }
+        
+    }
+    
+    private void handleFootstepAudio() {
+        String positionTileId = Game.world.getMap().getLayers().get(0).getTileIdAt(position);
+        boolean isOnGrass = positionTileId.contains("grass")
+            || positionTileId.contains("sand");
+        if (collider.getVelocity().getMagnitude() > IDLE_VELOCITY_THRESHOLD) {
+            // walking
+            if (isOnGrass) {
+                footstepGrassAudio.setVolume(1);
+                footstepGrassAudio.play();
+                footstepAudio.stop();
+            } else {
+                footstepAudio.setVolume(1);
+                footstepAudio.play();
+                footstepGrassAudio.stop();
+            }
+        } else {
+            // not walking
+            float mappedVolume = Common.map(
+                collider.getVelocity().getMagnitude(),
+                0,
+                IDLE_VELOCITY_THRESHOLD,
+                0,
+                1
+            );
+            if (mappedVolume <= 0.05) {
+                footstepAudio.stop();
+                footstepGrassAudio.stop();
+            } else {
+                footstepAudio.setVolume(mappedVolume);
+                footstepGrassAudio.setVolume(mappedVolume);
+            }
         }
     }
     
@@ -151,20 +210,20 @@ public class Player extends Entity {
         } else if (downPressed) {
             collider.applyForceY(computedSpeed);
         }
-
+        
         if (leftPressed) {
             collider.applyForceX(-computedSpeed);
         } else if (rightPressed) {
             collider.applyForceX(computedSpeed);
         }
-
+        
         // fix dash speed in diagonal movement
         if ((leftPressed || rightPressed) && (upPressed || downPressed)) {
             collider.getAcceleration().limit(
                 computedSpeed / collider.getMass()
             );
         }
-
+        
         // if not moving, just dash away from mouse
         if (!upPressed && !downPressed && !leftPressed && !rightPressed) {
             float angle = (float) (Math.PI + angleToMouse);
@@ -234,7 +293,7 @@ public class Player extends Entity {
     }
     
     private void handleSpriteAnimations() {
-        if (this.collider.getVelocity().getMagnitude() <= 0.25) {
+        if (this.collider.getVelocity().getMagnitude() <= IDLE_VELOCITY_THRESHOLD) {
             this.bodySprite.set(PlayerSprite.Animation.Idle);
             
             if (shootPressed) {

@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.Region;
+import javafx.scene.media.Media;
 import javafx.scene.text.Font;
 
 import java.util.HashMap;
@@ -80,5 +81,18 @@ public class Common {
         loadedFonts.put(key , font);
         
         return font;
+    }
+    
+    private final static HashMap<String, Media> loadedMedias = new HashMap<>();
+    public static Media loadMedia(String url) {
+        Media loadedMedia = loadedMedias.get(url);
+        if (loadedMedia != null) {
+            return loadedMedia;
+        }
+        
+        Media media = new Media(Common.class.getResource(url).toString());
+        loadedMedias.put(url , media);
+        
+        return media;
     }
 }

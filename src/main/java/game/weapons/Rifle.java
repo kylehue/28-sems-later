@@ -1,7 +1,7 @@
 package game.weapons;
 
 import game.Config;
-import game.Progress;
+import game.Game;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Common;
@@ -69,5 +69,11 @@ public class Rifle extends Gun {
         bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/gun-shot.mp3",
+            initialPosition,
+            250
+        );
     }
 }

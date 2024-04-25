@@ -1,10 +1,12 @@
 package game.map;
 
 import game.colliders.Collider;
+import game.utils.Vector;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Layer {
@@ -12,10 +14,12 @@ public class Layer {
     private final HashMap<String, Material> registeredMaterials = new HashMap<>();
     private final ArrayList<Material> materials = new ArrayList<>();
     private String matrixSeparator = " ";
-    private String matrix = "";
+    private String[][] matrix = {};
     private int totalWidth = 0;
     private int totalHeight = 0;
     private int zIndex = 0;
+    private int rowCount = 0;
+    private int columnCount = 0;
     
     public Layer(Map map) {
         this.map = map;
@@ -36,13 +40,21 @@ public class Layer {
                 content.append(line).append("\n");
             }
             reader.close();
-            this.matrix = content.toString();
+            this.matrix = Arrays.stream(
+                content.toString().split("\n")).map(v -> v.split(matrixSeparator)
+            ).toArray(String[][]::new);
             this.matrixSeparator = matrixSeparator;
             this.updateTotalSize();
             map.updateTotalSize();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public String getTileIdAt(Vector position) {
+        int xIndex = (int) (position.getX() / map.tileSize);
+        int yIndex = (int) (position.getY() / map.tileSize);
+        return matrix[yIndex][xIndex];
     }
     
     public void registerMaterial(String tileId, Material material) {
@@ -52,9 +64,8 @@ public class Layer {
     
     public void distributeMaterials() {
         materials.clear();
-        String[] rows = matrix.split("\n");
-        for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-            String[] row = rows[rowIndex].split(matrixSeparator);
+        for (int rowIndex = 0; rowIndex < matrix.length; rowIndex++) {
+            String[] row = matrix[rowIndex];
             for (int colIndex = 0; colIndex < row.length; colIndex++) {
                 String tileId = row[colIndex];
                 Material registedMaterial = registeredMaterials.get(tileId);
@@ -87,15 +98,16 @@ public class Layer {
     }
     
     private void updateTotalSize() {
-        String[] rows = matrix.split("\n");
         int maxWidth = 0;
-        for (int i = 0; i < rows.length; i++) {
-            String[] row = rows[i].split(matrixSeparator);
+        for (int i = 0; i < matrix.length; i++) {
+            String[] row = matrix[i];
             maxWidth = Math.max(maxWidth, row.length);
         }
         
         this.totalWidth = maxWidth * map.tileSize;
-        this.totalHeight = rows.length * map.tileSize;
+        this.totalHeight = matrix.length * map.tileSize;
+        this.rowCount = matrix.length;
+        this.columnCount = maxWidth;
     }
     
     public int getTotalWidth() {

@@ -1,7 +1,7 @@
 package game.weapons;
 
 import game.Config;
-import game.Progress;
+import game.Game;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Vector;
@@ -70,5 +70,11 @@ public class Shotgun extends Gun {
             bullet.setSpeed(bulletSpeed);
             bullet.setMaxDistance(maxDistance);
         }
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/shotgun-shot.mp3",
+            initialPosition,
+            250
+        );
     }
 }
