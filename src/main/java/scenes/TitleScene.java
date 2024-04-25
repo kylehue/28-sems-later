@@ -2,11 +2,15 @@ package scenes;
 
 import game.Game;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.MediaPlayer;
 import main.GameApplication;
 import utils.Common;
 import utils.Parallax;
@@ -14,6 +18,11 @@ import utils.Parallax;
 public class TitleScene extends GameApplicationScene {
     public TitleScene(GameApplication gameApplication, String sceneId) {
         super(gameApplication, sceneId);
+        
+        MediaPlayer music = new MediaPlayer(Common.loadMedia("/music/menu.mp3"));
+        music.setCycleCount(Integer.MAX_VALUE);
+        music.setVolume(0.5);
+        music.play();
         
         // Set up the scene's root
         StackPane root = new StackPane();
@@ -38,21 +47,38 @@ public class TitleScene extends GameApplicationScene {
         parallax.getCanvas().heightProperty().bind(root.heightProperty());
         root.getChildren().add(parallax.getCanvas());
         
-        // Setup buttons
-        GridPane btnRoot = new GridPane();
-        Common.setupGridPane(btnRoot, 2, 1);
-        root.getChildren().add(btnRoot);
+        // Setup main layout
+        GridPane mainLayout = new GridPane();
+        Common.setupGridPane(mainLayout, 1, 2);
+        root.getChildren().add(mainLayout);
+        mainLayout.getColumnConstraints().get(0).setPercentWidth(50);
+        mainLayout.getColumnConstraints().get(1).setPercentWidth(50);
         
-        // Set up stuff inside the scene
-        Label title = new Label("cool epic gam");
-        GridPane.setHalignment(title, HPos.CENTER);
-        GridPane.setValignment(title, VPos.CENTER);
-        btnRoot.add(title, 0, 0);
+        // Setup layout on left
+        GridPane leftLayout = new GridPane();
+        Common.setupGridPane(leftLayout, 2, 1);
+        mainLayout.add(leftLayout, 0, 0);
+        leftLayout.getRowConstraints().get(0).setPercentHeight(70);
+        leftLayout.getRowConstraints().get(1).setPercentHeight(30);
         
-        Button startButton = new Button("strat");
+        // Setup logo
+        ImageView imageView = new ImageView(
+            Common.resampleImage(
+                Common.loadImage("/brand/logo.png"),
+                8
+            )
+        );
+        GridPane.setHalignment(imageView, HPos.CENTER);
+        GridPane.setValignment(imageView, VPos.CENTER);
+        imageView.setPreserveRatio(true);
+        imageView.fitWidthProperty().bind(root.widthProperty().divide(2.5));
+        leftLayout.add(imageView, 0, 0);
+        
+        // Setup start button
+        Button startButton = new Button("start");
         GridPane.setHalignment(startButton, HPos.CENTER);
-        GridPane.setValignment(startButton, VPos.CENTER);
-        btnRoot.add(startButton, 0, 1);
+        GridPane.setValignment(startButton, VPos.TOP);
+        leftLayout.add(startButton, 0, 1);
         
         startButton.setOnAction(e -> {
             startButton.setDisable(true);
@@ -60,6 +86,7 @@ public class TitleScene extends GameApplicationScene {
             Game game = gameApplication.getGameScene().getGame();
             game.startGameAsync().setOnSucceeded((t) -> {
                 parallax.pause();
+                music.stop();
                 gameApplication.getSceneManager().setScene(
                     gameApplication.getGameScene().getSceneId()
                 );

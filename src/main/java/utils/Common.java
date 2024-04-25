@@ -3,6 +3,9 @@ package utils;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -68,6 +71,34 @@ public class Common {
         }
     }
     
+    // https://stackoverflow.com/a/16092631
+    public static Image resampleImage(Image input, int scaleFactor) {
+        final int W = (int) input.getWidth();
+        final int H = (int) input.getHeight();
+        final int S = scaleFactor;
+        
+        WritableImage output = new WritableImage(
+            W * S,
+            H * S
+        );
+        
+        PixelReader reader = input.getPixelReader();
+        PixelWriter writer = output.getPixelWriter();
+        
+        for (int y = 0; y < H; y++) {
+            for (int x = 0; x < W; x++) {
+                final int argb = reader.getArgb(x, y);
+                for (int dy = 0; dy < S; dy++) {
+                    for (int dx = 0; dx < S; dx++) {
+                        writer.setArgb(x * S + dx, y * S + dy, argb);
+                    }
+                }
+            }
+        }
+        
+        return output;
+    }
+    
     private final static HashMap<String, Font> loadedFonts = new HashMap<>();
     
     public static Font loadFont(String url, int size) {
@@ -78,12 +109,13 @@ public class Common {
         }
         
         Font font = Font.loadFont(Common.class.getResourceAsStream(url), size);
-        loadedFonts.put(key , font);
+        loadedFonts.put(key, font);
         
         return font;
     }
     
     private final static HashMap<String, Media> loadedMedias = new HashMap<>();
+    
     public static Media loadMedia(String url) {
         Media loadedMedia = loadedMedias.get(url);
         if (loadedMedia != null) {
@@ -91,7 +123,7 @@ public class Common {
         }
         
         Media media = new Media(Common.class.getResource(url).toString());
-        loadedMedias.put(url , media);
+        loadedMedias.put(url, media);
         
         return media;
     }

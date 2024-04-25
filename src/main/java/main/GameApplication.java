@@ -3,6 +3,7 @@ package main;
 import javafx.stage.Stage;
 import scenes.GameScene;
 import scenes.TitleScene;
+import utils.Common;
 import utils.SceneManager;
 
 public class GameApplication {
@@ -16,7 +17,8 @@ public class GameApplication {
         this.sceneManager = new SceneManager(stage);
         
         // Setup window
-        stage.setTitle("Epic game");
+        stage.getIcons().add(Common.loadImage("/brand/head.png"));
+        stage.setTitle("28 Sems Later");
         stage.setWidth(1280);
         stage.setHeight(720);
         stage.setResizable(false);

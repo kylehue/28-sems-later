@@ -1,4 +1,22 @@
 * {
-    -fx-font-family: "Comic Sans MS";
-    -fx-font-size: 50px;
+    -fx-font-family: PIXY;
+}
+
+.button {
+    -fx-font-size: 60px;
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 0, 0.0, 0, 5);
+    -fx-padding: 0;
+}
+
+.button:hover {
+    -fx-font-size: 70px;
+    -fx-cursor: hand;
+}
+
+.button:pressed {
+    -fx-font-size: 70px;
+    -fx-translate-y: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 0, 0.0, 0, 1);
 }
