@@ -23,15 +23,24 @@ public class BulletMaxDistance implements PowerUp {
     private HashSet<Gun> getUpgradableGuns() {
         HashSet<Gun> upgradableGuns = new HashSet<>();
         Pistol pistol = (Pistol) WeaponKind.PISTOL.get();
-        if (pistol.getBulletSpeed() < Config.MAX_PISTOL_MAX_BULLET_DISTANCE) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.PISTOL) &&
+            pistol.getBulletSpeed() < Config.MAX_PISTOL_MAX_BULLET_DISTANCE
+        ) {
             upgradableGuns.add(pistol);
         }
         Rifle rifle = (Rifle) WeaponKind.RIFLE.get();
-        if (rifle.getBulletSpeed() < Config.MAX_RIFLE_MAX_BULLET_DISTANCE) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.RIFLE) &&
+            rifle.getBulletSpeed() < Config.MAX_RIFLE_MAX_BULLET_DISTANCE
+        ) {
             upgradableGuns.add(rifle);
         }
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
-        if (shotgun.getBulletSpeed() < Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.SHOTGUN) &&
+            shotgun.getBulletSpeed() < Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE
+        ) {
             upgradableGuns.add(shotgun);
         }
         return upgradableGuns;

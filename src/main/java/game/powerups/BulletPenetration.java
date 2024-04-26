@@ -25,19 +25,31 @@ public class BulletPenetration implements PowerUp {
     private HashSet<Gun> getUpgradableGuns() {
         HashSet<Gun> upgradableGuns = new HashSet<>();
         Pistol pistol = (Pistol) WeaponKind.PISTOL.get();
-        if (pistol.getPenetration() < Config.MAX_BULLET_PENETRATION) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.PISTOL) &&
+            pistol.getPenetration() < Config.MAX_BULLET_PENETRATION
+        ) {
             upgradableGuns.add(pistol);
         }
         Rifle rifle = (Rifle) WeaponKind.RIFLE.get();
-        if (rifle.getPenetration() < Config.MAX_BULLET_PENETRATION) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.RIFLE) &&
+            rifle.getPenetration() < Config.MAX_BULLET_PENETRATION
+        ) {
             upgradableGuns.add(rifle);
         }
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
-        if (shotgun.getPenetration() < Config.MAX_BULLET_PENETRATION) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.SHOTGUN) &&
+            shotgun.getPenetration() < Config.MAX_BULLET_PENETRATION
+        ) {
             upgradableGuns.add(shotgun);
         }
         Sniper sniper = (Sniper) WeaponKind.SNIPER.get();
-        if (sniper.getPenetration() < Config.MAX_INSTANT_BULLET_PENETRATION) {
+        if (
+            Progress.unlockedWeapons.contains(WeaponKind.SNIPER) &&
+            sniper.getPenetration() < Config.MAX_INSTANT_BULLET_PENETRATION
+        ) {
             upgradableGuns.add(sniper);
         }
         return upgradableGuns;
