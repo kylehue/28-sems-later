@@ -19,7 +19,6 @@ import game.map.Material;
 import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
-import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
 
 import java.util.ArrayList;
@@ -28,7 +27,8 @@ import java.util.HashSet;
 
 public class World {
     private Player player;
-    private final HashSet<DistanceAwareAudio> distanceAwareAudios = new HashSet<>();
+    private final HashSet<DistanceAwareAudio> audios = new HashSet<>();
+    private final HashMap<String, ArrayList<DistanceAwareAudio>> reusableAudiosMap = new HashMap<>();
     private final ArrayList<Loot> loots = new ArrayList<>();
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -216,7 +216,7 @@ public class World {
             projectile.update(deltaTime);
         }
         
-        for (DistanceAwareAudio audio : distanceAwareAudios) {
+        for (DistanceAwareAudio audio : audios) {
             audio.update();
         }
         
@@ -300,18 +300,30 @@ public class World {
         Vector position,
         float awarenessDistance
     ) {
-        DistanceAwareAudio distanceAwareAudio = new DistanceAwareAudio(
-            url,
-            position
-        );
+        ArrayList<DistanceAwareAudio> reusableAudios = reusableAudiosMap.computeIfAbsent(url, (s) -> new ArrayList<>());
+        
+        DistanceAwareAudio distanceAwareAudio;
+        if (!reusableAudios.isEmpty()) {
+            distanceAwareAudio = reusableAudios.removeFirst();
+            distanceAwareAudio.getMediaPlayer().seek(
+                distanceAwareAudio.getMediaPlayer().getStartTime()
+            );
+            distanceAwareAudio.getPosition().set(position);
+        } else {
+            distanceAwareAudio = new DistanceAwareAudio(
+                url,
+                position
+            );
+            distanceAwareAudio.getMediaPlayer().setOnEndOfMedia(() -> {
+                audios.remove(distanceAwareAudio);
+                reusableAudios.add(distanceAwareAudio);
+            });
+        }
+        
         distanceAwareAudio.getMediaPlayer().play();
         distanceAwareAudio.setAwarenessPosition(player.getPosition());
         distanceAwareAudio.setAwarenessDistance(awarenessDistance);
-        distanceAwareAudios.add(distanceAwareAudio);
-        distanceAwareAudio.getMediaPlayer().setOnEndOfMedia(() -> {
-            distanceAwareAudios.remove(distanceAwareAudio);
-            distanceAwareAudio.getMediaPlayer().dispose();
-        });
+        audios.add(distanceAwareAudio);
         
         return distanceAwareAudio;
     }

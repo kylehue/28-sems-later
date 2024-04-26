@@ -14,6 +14,10 @@ public class DistanceAwareAudio {
         this.position.set(position);
     }
     
+    public Vector getPosition() {
+        return position;
+    }
+    
     public void setAwarenessPosition(Vector awarenessPosition) {
         this.awarenessPosition.set(awarenessPosition);
     }
