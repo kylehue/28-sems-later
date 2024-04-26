@@ -138,4 +138,13 @@ public class Select<T> extends Component {
     public void subRender(GraphicsContext ctx) {
     
     }
+    
+    @Override
+    public boolean isBusy() {
+        for (ImageButton imageButton : options.values()) {
+            if (imageButton.isBusy()) return true;
+        }
+        
+        return false;
+    }
 }

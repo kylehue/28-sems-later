@@ -6,6 +6,7 @@ import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.InventoryManager;
+import game.ui.UI;
 import game.utils.Common;
 import game.weapons.Gun;
 import game.weapons.Weapon;
@@ -256,7 +257,7 @@ public class Player extends Entity {
         this.leftPressed = keyHandler.isKeyPressed("left");
         this.rightPressed = keyHandler.isKeyPressed("right");
         this.dashPressed = keyHandler.isKeyPressed("dash");
-        this.shootPressed = Game.mouseHandler.isMouseLeftPressed();
+        this.shootPressed = Game.mouseHandler.isMouseLeftPressed() && !UI.isBusy;
     }
     
     private void handleMovements() {

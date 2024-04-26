@@ -109,6 +109,7 @@ public class Game extends GameLoop {
     
     @Override
     public void fixedUpdate(float deltaTime) {
+        ui.update();
         world.fixedUpdate(deltaTime);
     }
     

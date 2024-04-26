@@ -19,6 +19,7 @@ import utils.Common;
 import java.util.ArrayList;
 
 public class UI {
+    public static boolean isBusy = false;
     private final WeaponSwitch weaponSwitch = new WeaponSwitch();
     private final PowerUpSelect powerUpSelect = new PowerUpSelect();
     private final ImageProgressBar healthBar = new ImageProgressBar(
@@ -37,7 +38,6 @@ public class UI {
         Game.keyHandler.getKeyPressedProperty("weapon-switch").addListener(e -> {
             if (!Game.keyHandler.isKeyPressed("weapon-switch")) return;
             weaponSwitch.setVisible(!weaponSwitch.isVisible());
-            // showPowerUpSelect();
         });
     }
     
@@ -113,11 +113,25 @@ public class UI {
         ctx.restore();
     }
     
+    public void update() {
+        isBusy = false;
+        for (Component component : components) {
+            if (component.isBusy()) {
+                isBusy = true;
+                break;
+            }
+        }
+    }
+    
     public void showPowerUpSelect() {
         powerUpSelect.show();
     }
     
     public PowerUpSelect getPowerUpSelect() {
         return powerUpSelect;
+    }
+    
+    public WeaponSwitch getWeaponSwitch() {
+        return weaponSwitch;
     }
 }

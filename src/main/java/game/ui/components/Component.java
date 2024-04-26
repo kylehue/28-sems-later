@@ -20,4 +20,8 @@ public abstract class Component {
     public BooleanProperty isVisibleProperty() {
         return isVisible;
     }
+    
+    public boolean isBusy() {
+        return false;
+    }
 }

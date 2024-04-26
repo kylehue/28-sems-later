@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public class ImageButton extends Component {
+    private boolean isBusy = false;
     private final Image image;
     private final Vector position = new Vector();
     private float width = -1;
@@ -17,6 +18,7 @@ public class ImageButton extends Component {
     private Effect hoverEffect;
     private Effect pressEffect;
     private Runnable onClick = null;
+    private boolean isMouseOverOnMouseDown = false;
     
     public ImageButton(String imageUrl) {
         this.image = Common.loadImage(imageUrl);
@@ -37,11 +39,30 @@ public class ImageButton extends Component {
         
         Game.mouseHandler.mouseLeftPressedProperty().addListener((e) -> {
             if (!isVisible()) return;
-            if (!Game.mouseHandler.isMouseLeftPressed()) return;
-            if (onClick != null && isMouseOver()) {
-                onClick.run();
+            boolean isMouseLeftPressed = Game.mouseHandler.isMouseLeftPressed();
+            boolean isMouseOver = this.isMouseOver();
+            this.isBusy = isMouseOver && isMouseLeftPressed;
+            if (isMouseLeftPressed) {
+                isMouseOverOnMouseDown = isMouseOver;
+            } else {
+                if (onClick != null && isMouseOverOnMouseDown && isMouseOver) {
+                    onClick.run();
+                    isMouseOverOnMouseDown = false;
+                    this.isBusy = false;
+                }
             }
         });
+        
+        isVisibleProperty().addListener(e -> {
+            if (!isVisible()) {
+                this.isBusy = false;
+            }
+        });
+    }
+    
+    @Override
+    public boolean isBusy() {
+        return isBusy;
     }
     
     public void setOnClick(Runnable onClick) {
@@ -56,12 +77,11 @@ public class ImageButton extends Component {
     @Override
     public void render(GraphicsContext ctx) {
         if (!isVisible()) return;
-        boolean isMouseOver = isMouseOver();
-        boolean isMousePressed = Game.mouseHandler.isMouseLeftPressed();
+        boolean isMouseOver = this.isMouseOver();
         
-        if (isMouseOver) {
+        if (isMouseOverOnMouseDown || isMouseOver) {
             ctx.save();
-            ctx.setEffect(isMousePressed ? pressEffect : hoverEffect);
+            ctx.setEffect(isMouseOverOnMouseDown && Game.mouseHandler.isMouseLeftPressed() ? pressEffect : hoverEffect);
         }
         
         ctx.beginPath();
@@ -74,7 +94,7 @@ public class ImageButton extends Component {
         );
         ctx.closePath();
         
-        if (isMouseOver) {
+        if (isMouseOverOnMouseDown || isMouseOver) {
             ctx.restore();
         }
     }
