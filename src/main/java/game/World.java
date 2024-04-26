@@ -19,6 +19,7 @@ import game.map.Material;
 import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
+import javafx.scene.image.Image;
 import javafx.scene.media.MediaPlayer;
 
 import java.util.ArrayList;
