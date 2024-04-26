@@ -245,6 +245,8 @@ public class Player extends Entity {
         dashSprite.getOrigin().set(-dashSprite.getWidth() / 2, -dashSprite.getHeight());
         Game.world.addOneTimeSpriteAnimation(dashSprite);
         intervals.resetIntervalFor(Interval.DASH);
+        
+        Game.world.addPlayerDistanceAwareAudio("/sounds/dash.mp3", position, 200);
     }
     
     private void updateControlFlags() {
