@@ -7,6 +7,8 @@ import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.colliders.PolygonCollider;
 import game.sprites.AcidSprite;
+import game.sprites.BloodGreenSprite;
+import game.sprites.BloodSprite;
 import game.utils.*;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
@@ -81,6 +83,13 @@ public class Zombie extends Entity {
             );
         });
         damageProperty().bind(Progress.zombieDamage);
+        
+        currentHealthProperty().addListener((o, oldHealth, newHealth) -> {
+            if (newHealth.floatValue() > oldHealth.floatValue()) return;
+            BloodGreenSprite bloodGreenSprite = new BloodGreenSprite();
+            bloodGreenSprite.getPosition().set(getPosition());
+            Game.world.addOneTimeSpriteAnimation(bloodGreenSprite);
+        });
     }
     
     @Override

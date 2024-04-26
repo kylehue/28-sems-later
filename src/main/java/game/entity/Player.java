@@ -6,6 +6,8 @@ import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.InventoryManager;
+import game.sprites.BloodGreenSprite;
+import game.sprites.BloodSprite;
 import game.ui.UI;
 import game.utils.Common;
 import game.weapons.Gun;
@@ -51,7 +53,8 @@ public class Player extends Entity {
     
     private enum Interval {
         DASH,
-        HEALTH_REGEN
+        HEALTH_REGEN,
+        DAMAGE_SOUND
     }
     
     // sprites
@@ -103,6 +106,16 @@ public class Player extends Entity {
                 footstepAudio.stop();
                 footstepGrassAudio.stop();
             }
+        });
+        
+        currentHealthProperty().addListener((o, oldHealth, newHealth) -> {
+            if (newHealth.floatValue() > oldHealth.floatValue()) return;
+            BloodSprite bloodSprite = new BloodSprite();
+            bloodSprite.getPosition().set(getPosition()).add(
+                Common.random(-5, 5),
+                Common.random(-7, 7)
+            );
+            Game.world.addOneTimeSpriteAnimation(bloodSprite);
         });
     }
     
