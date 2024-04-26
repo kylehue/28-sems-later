@@ -275,10 +275,16 @@ public class World {
     
     public void pause() {
         isPaused.set(true);
+        for (DistanceAwareAudio audio : audios) {
+            audio.getMediaPlayer().pause();
+        }
     }
     
     public void play() {
         isPaused.set(false);
+        for (DistanceAwareAudio audio : audios) {
+            audio.getMediaPlayer().play();
+        }
     }
     
     public void start() {
