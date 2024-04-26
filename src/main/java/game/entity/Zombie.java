@@ -32,6 +32,15 @@ public class Zombie extends Entity {
     private ArrayList<Vector> pathToPlayer = new ArrayList<>();
     private final HitEffect hitEffect = new HitEffect();
     private final IntervalMap intervals = new IntervalMap();
+    private final static IntervalMap generalIntervals = new IntervalMap();
+    private float distanceToPlayer = 0;
+    
+    private enum Interval {
+        BITE,
+        PATH_UPDATE,
+        EMIT_SOUND_GROAN,
+        EMIT_SOUND_DEATH
+    }
     
     public Zombie() {
         // Initialize colliders
@@ -44,11 +53,13 @@ public class Zombie extends Entity {
         Game.world.getColliderWorld().addCollider(collider);
         
         // Initialize intervals
-        intervals.registerIntervalFor("bitePlayer", 1000);
+        intervals.registerIntervalFor(Interval.BITE, 1000);
         intervals.registerIntervalFor(
-            "pathToPlayerUpdate",
+            Interval.PATH_UPDATE,
             (int) Common.random(70, 200)
         );
+        generalIntervals.registerIntervalFor(Interval.EMIT_SOUND_DEATH, 300);
+        generalIntervals.registerIntervalFor(Interval.EMIT_SOUND_GROAN, 2000);
         
         // Misc
         this.sprite.randomizeFirstFrame();
@@ -109,10 +120,36 @@ public class Zombie extends Entity {
     public void update(float deltaTime) {
         this.handleSprite();
         this.updateAngleToPlayer();
+        this.updateDistanceToPlayer();
+        this.handleGroan();
         
         if (getCurrentHealth() <= 0) {
             dispose();
         }
+    }
+    
+    private void handleGroan() {
+        if (!generalIntervals.isIntervalOverFor(Interval.EMIT_SOUND_GROAN)) {
+            return;
+        }
+        final int SOUND_DISTANCE = 400;
+        if (distanceToPlayer >= SOUND_DISTANCE) return;
+        String[] pathsToGroan = {
+            "/sounds/zombie-groan-1.mp3",
+            "/sounds/zombie-groan-2.mp3",
+            "/sounds/zombie-groan-brains-1.mp3",
+            "/sounds/zombie-groan-brains-2.mp3"
+        };
+        Game.world.addPlayerDistanceAwareAudio(
+            pathsToGroan[(int) Math.floor(Math.random() * pathsToGroan.length)],
+            position,
+            SOUND_DISTANCE
+        );
+        generalIntervals.changeIntervalFor(
+            Interval.EMIT_SOUND_GROAN,
+            (int) Common.random(1000, 3000)
+        );
+        generalIntervals.resetIntervalFor(Interval.EMIT_SOUND_GROAN);
     }
     
     @Override
@@ -136,11 +173,14 @@ public class Zombie extends Entity {
         }
         
         // Audio
-        Game.world.addPlayerDistanceAwareAudio(
-            "/sounds/zombie-death.mp3",
-            position,
-            200
-        );
+        if (generalIntervals.isIntervalOverFor(Interval.EMIT_SOUND_DEATH)) {
+            Game.world.addPlayerDistanceAwareAudio(
+                "/sounds/zombie-death.mp3",
+                position,
+                200
+            );
+            generalIntervals.resetIntervalFor(Interval.EMIT_SOUND_DEATH);
+        }
     }
     
     private void checkPlayerCollision() {
@@ -148,10 +188,15 @@ public class Zombie extends Entity {
         boolean isCollidingWithPlayer = collider.isCollidingWith(
             player.getCollider()
         );
-        if (intervals.isIntervalOverFor("bitePlayer") && isCollidingWithPlayer) {
+        if (intervals.isIntervalOverFor(Interval.BITE) && isCollidingWithPlayer) {
             player.addHealth(-getDamage());
-            intervals.resetIntervalFor("bitePlayer");
+            intervals.resetIntervalFor(Interval.BITE);
         }
+    }
+    
+    private void updateDistanceToPlayer() {
+        Player player = Game.world.getPlayer();
+        this.distanceToPlayer = player.getPosition().getDistanceFrom(position);
     }
     
     private void updateAngleToPlayer() {
@@ -167,9 +212,8 @@ public class Zombie extends Entity {
     
     private void maybeUpdatePathToPlayer() {
         Player player = Game.world.getPlayer();
-        float distanceToPlayer = player.getPosition().getDistanceFrom(position);
-        intervals.changeIntervalFor("pathToPlayerUpdate", (int) distanceToPlayer);
-        if (intervals.isIntervalOverFor("pathToPlayerUpdate")) {
+        intervals.changeIntervalFor(Interval.PATH_UPDATE, (int) distanceToPlayer);
+        if (intervals.isIntervalOverFor(Interval.PATH_UPDATE)) {
             Async.queue1.submit(() -> {
                 PathFinder pathFinder = Game.world.getPathFinder();
                 pathToPlayer = pathFinder.requestPath(
@@ -177,7 +221,7 @@ public class Zombie extends Entity {
                     player.getCollider().getPosition()
                 );
             });
-            intervals.resetIntervalFor("pathToPlayerUpdate");
+            intervals.resetIntervalFor(Interval.PATH_UPDATE);
         }
     }
     

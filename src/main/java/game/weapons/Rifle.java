@@ -5,6 +5,7 @@ import game.Game;
 import game.World;
 import game.projectiles.Bullet;
 import game.utils.Common;
+import game.utils.IntervalMap;
 import game.utils.Vector;
 
 public class Rifle extends Gun {
@@ -69,7 +70,10 @@ public class Rifle extends Gun {
         bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
-        
+    }
+    
+    @Override
+    protected void handleSound(Vector initialPosition) {
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/gun-shot.mp3",
             initialPosition,

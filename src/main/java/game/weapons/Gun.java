@@ -1,21 +1,31 @@
 package game.weapons;
 
 import game.World;
+import game.utils.IntervalMap;
 import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import utils.Common;
 
 public abstract class Gun extends Weapon {
+    private final static int MIN_SOUND_INTERVAL_MILLIS = 60;
     private final Vector muzzlePosition = new Vector();
     protected int fireRateInMillis = 1000;
-    private long lastShootTime = 0;
     private final Image muzzleFlashImage = Common.loadImage("/weapons/muzzle-flash.png");
     private float muzzleFlashOpacity = 0;
     private boolean isMuzzleFlashEnabled = true;
+    private final IntervalMap intervals = new IntervalMap();
+    
+    private enum Interval {
+        EMIT_SOUND,
+        SHOOT
+    }
     
     public Gun(String imageUrl) {
         super(imageUrl);
+        
+        intervals.registerIntervalFor(Interval.EMIT_SOUND, MIN_SOUND_INTERVAL_MILLIS);
+        intervals.registerIntervalFor(Interval.SHOOT, fireRateInMillis);
     }
     
     public void setMuzzlePosition(Vector vector) {
@@ -40,25 +50,32 @@ public abstract class Gun extends Weapon {
         float angle
     );
     
+    protected abstract void handleSound(Vector initialPosition);
+    
     public void shoot(World world, Vector initialPosition, float angle) {
-        long timeNow = System.currentTimeMillis();
-        if (timeNow - lastShootTime > fireRateInMillis) {
-            float xOffset = muzzlePosition.getX() - getHandlePosition().getX() + 4;
-            Vector computedInitialPosition = initialPosition.clone().add(
-                (float) (Math.cos(angle) * xOffset),
-                (float) (Math.sin(angle) * xOffset)
-            );
-            
-            setHandlePosition(
-                getOrigHandlePosition().addX(
-                    (float) Math.pow(fireRateInMillis, 0.33f)
-                )
-            );
-            muzzleFlashOpacity = 1;
-            
-            handleShoot(world, computedInitialPosition, angle);
-            lastShootTime = timeNow;
+        if (!intervals.isIntervalOverFor(Interval.SHOOT)) return;
+        float xOffset = muzzlePosition.getX() - getHandlePosition().getX() + 4;
+        Vector computedInitialPosition = initialPosition.clone().add(
+            (float) (Math.cos(angle) * xOffset),
+            (float) (Math.sin(angle) * xOffset)
+        );
+        
+        setHandlePosition(
+            getOrigHandlePosition().addX(
+                (float) Math.pow(fireRateInMillis, 0.33f)
+            )
+        );
+        muzzleFlashOpacity = 1;
+        
+        handleShoot(world, computedInitialPosition, angle);
+        
+        if (intervals.isIntervalOverFor(Interval.EMIT_SOUND)) {
+            handleSound(initialPosition);
+            intervals.resetIntervalFor(Interval.EMIT_SOUND);
         }
+        
+        intervals.resetIntervalFor(Interval.SHOOT);
+        intervals.changeIntervalFor(Interval.SHOOT, fireRateInMillis);
     }
     
     public void setMuzzleFlashEnabled(boolean muzzleFlashEnabled) {

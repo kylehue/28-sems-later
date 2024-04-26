@@ -15,8 +15,8 @@ public abstract class Config {
     public final static float MAX_PISTOL_BULLET_SPEED = 25000;
     public final static float DEFAULT_PISTOL_BULLET_PENETRATION = 1;
     
-    // Rifle defaultss
-    public final static int DEFAULT_RIFLE_FIRE_RATE_MILLIS = 5;
+    // Rifle defaults
+    public final static int DEFAULT_RIFLE_FIRE_RATE_MILLIS = 100;
     public final static float MIN_RIFLE_FIRE_RATE_MILLIS = 5;
     public final static float DEFAULT_RIFLE_BULLET_DAMAGE = 15;
     public final static float DEFAULT_RIFLE_BULLET_MAX_DISTANCE = 200;
