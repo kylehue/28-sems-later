@@ -1,9 +1,5 @@
 package game;
 
-import game.colliders.Collider;
-import game.entity.Zombie;
-import game.map.Layer;
-import game.map.Material;
 import game.powerups.PowerUpKind;
 import game.utils.IntervalMap;
 import game.utils.Vector;
@@ -11,6 +7,11 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
 public abstract class Mechanics {
+    private final static int PLAYER_MAX_XP_INCREASE = 50;
+    private final static float PLAYER_HEALTH_INCREASE = 10;
+    private final static int ZOMBIE_COUNT_INCREASE = 10;
+    private final static float ZOMBIE_DAMAGE_INCREASE = 0.01f;
+    
     private final static IntervalMap intervals = new IntervalMap();
     
     private enum Interval {
@@ -25,7 +26,17 @@ public abstract class Mechanics {
         // Level up
         Progress.currentLevel.set(Progress.currentLevel.get() + 1);
         Progress.currentXp.set(0);
-        Progress.maxXp.set(maxXp + 50);
+        Progress.maxXp.set(maxXp + PLAYER_MAX_XP_INCREASE);
+        
+        // Increase player hp
+        Progress.currentHealth.set(Progress.currentHealth.get() + PLAYER_HEALTH_INCREASE);
+        Progress.maxHealth.set(Progress.maxHealth.get() + PLAYER_HEALTH_INCREASE);
+        
+        // Increase zombie count
+        Progress.zombieCount.set(Progress.zombieCount.get() + ZOMBIE_COUNT_INCREASE);
+        
+        // Increase zombie damage
+        Progress.zombieDamage.set(Progress.zombieDamage.get() + ZOMBIE_DAMAGE_INCREASE);
         
         pickPowerUp();
     }
@@ -58,9 +69,10 @@ public abstract class Mechanics {
         if (!intervals.isIntervalOverFor(Interval.SPAWN_ZOMBIE)) return;
         intervals.resetIntervalFor(Interval.SPAWN_ZOMBIE);
         final int BATCH_SIZE = 50;
-        if (Game.world.getZombies().size() < Config.MAX_ZOMBIES_COUNT) {
+        int zombiesCount = Math.min(Progress.zombieCount.get(), Config.MAX_ZOMBIES_COUNT);
+        if (Game.world.getZombies().size() < zombiesCount) {
             int spawnCount = Math.min(
-                Config.MAX_ZOMBIES_COUNT - Game.world.getZombies().size(),
+                zombiesCount - Game.world.getZombies().size(),
                 BATCH_SIZE
             );
             for (int i = 0; i < spawnCount; i++) {

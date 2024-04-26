@@ -2,11 +2,14 @@ package game.entity;
 
 import game.Config;
 import game.Game;
+import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.colliders.PolygonCollider;
 import game.sprites.AcidSprite;
 import game.utils.*;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
 import javafx.scene.media.MediaPlayer;
@@ -18,8 +21,8 @@ import java.util.ArrayList;
 
 public class Zombie extends Entity {
     // stats
-    private float speed = Common.random(300, 750);
-    private float damage = Config.DEFAULT_ZOMBIE_DAMAGE;
+    private final FloatProperty speed = new SimpleFloatProperty();
+    private FloatProperty damage = new SimpleFloatProperty();
     
     // misc
     private final ZombieSprite sprite = new ZombieSprite();
@@ -50,6 +53,23 @@ public class Zombie extends Entity {
         // Misc
         this.sprite.randomizeFirstFrame();
         this.setZIndex(Game.ZIndex.ZOMBIE);
+        
+        // Stats
+        setSpeed(
+            Common.random(
+                Progress.zombieSpeed.get(),
+                Progress.zombieSpeed.get() + 100
+            )
+        );
+        Progress.zombieSpeed.addListener(e -> {
+            setSpeed(
+                Common.random(
+                    Progress.zombieSpeed.get(),
+                    Progress.zombieSpeed.get() + 100
+                )
+            );
+        });
+        damageProperty().bind(Progress.zombieDamage);
     }
     
     @Override
@@ -106,7 +126,7 @@ public class Zombie extends Entity {
         Game.world.addOneTimeSpriteAnimation(acidSprite);
         
         // Drop XP
-        for (int i = 0; i < Common.random(3, 10); i++) {
+        for (int i = 0; i < 1; i++) {
             Game.world.spawnXPLoot(
                 position.clone().add(
                     Common.random(-10, 10),
@@ -129,7 +149,7 @@ public class Zombie extends Entity {
             player.getCollider()
         );
         if (intervals.isIntervalOverFor("bitePlayer") && isCollidingWithPlayer) {
-            player.addHealth(-damage);
+            player.addHealth(-getDamage());
             intervals.resetIntervalFor("bitePlayer");
         }
     }
@@ -165,25 +185,29 @@ public class Zombie extends Entity {
         position.set(collider.getPosition().clone().addY(-collider.getRadius()));
         
         // Move to player
-        if (pathToPlayer.size() > 1) {
+        if (pathToPlayer.size() > 4) {
             Vector stepNext = pathToPlayer.get(Math.max(0, pathToPlayer.size() - 2));
             float angle = collider.getPosition().getAngle(stepNext);
             this.collider.applyForce(
-                (float) (Math.cos(angle) * speed * collider.getMass()),
-                (float) (Math.sin(angle) * speed * collider.getMass())
+                (float) (Math.cos(angle) * getSpeed() * collider.getMass()),
+                (float) (Math.sin(angle) * getSpeed() * collider.getMass())
             );
             this.isFacingOnLeftSide = Math.abs(angle) > (Math.PI / 2);
         } else {
             this.collider.applyForce(
-                (float) (Math.cos(angleToPlayer) * speed * collider.getMass()),
-                (float) (Math.sin(angleToPlayer) * speed * collider.getMass())
+                (float) (Math.cos(angleToPlayer) * getSpeed() * collider.getMass()),
+                (float) (Math.sin(angleToPlayer) * getSpeed() * collider.getMass())
             );
             this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
         }
     }
     
     public void setDamage(float damage) {
-        this.damage = damage;
+        this.damage.set(damage);
+    }
+    
+    public void setSpeed(float speed) {
+        this.speed.set(speed);
     }
     
     @Override
@@ -209,6 +233,18 @@ public class Zombie extends Entity {
     }
     
     public float getDamage() {
+        return damage.get();
+    }
+    
+    public float getSpeed() {
+        return speed.get();
+    }
+    
+    public FloatProperty speedProperty() {
+        return speed;
+    }
+    
+    public FloatProperty damageProperty() {
         return damage;
     }
 }

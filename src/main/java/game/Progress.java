@@ -44,4 +44,15 @@ public abstract class Progress {
     public static final FloatProperty dashInterval = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS
     );
+    
+    // Zombie stats
+    public static final FloatProperty zombieSpeed = new SimpleFloatProperty(
+        Config.DEFAULT_ZOMBIE_SPEED
+    );
+    public static final IntegerProperty zombieCount = new SimpleIntegerProperty(
+        Config.DEFAULT_ZOMBIES_COUNT
+    );
+    public static final FloatProperty zombieDamage = new SimpleFloatProperty(
+        Config.DEFAULT_ZOMBIE_DAMAGE
+    );
 }

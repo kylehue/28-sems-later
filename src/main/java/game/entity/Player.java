@@ -94,6 +94,8 @@ public class Player extends Entity {
         
         footstepAudio.setCycleCount(Integer.MAX_VALUE);
         footstepGrassAudio.setCycleCount(Integer.MAX_VALUE);
+        footstepAudio.setVolume(0.7f);
+        footstepGrassAudio.setVolume(0.7f);
         
         Game.world.isPausedProperty().addListener((o, o1, isPaused) -> {
             if (isPaused) {
