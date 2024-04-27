@@ -55,8 +55,8 @@ public class UI {
         healthBar.maxValueProperty().bind(Progress.maxHealth);
         
         xpBar.getPosition().set(
-            healthBar.getPosition().getX() + healthBar.getWidth() + margin,
-            margin
+            margin,
+            healthBar.getPosition().getY() + healthBar.getHeight() + margin
         );
         xpBar.getBarOffset().set(21, 8);
         xpBar.setWidth(350);
