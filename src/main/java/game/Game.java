@@ -12,6 +12,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
 
@@ -31,6 +32,16 @@ public class Game extends GameLoop {
         public static final int MAP_HIGH = 30;
     }
     
+    public enum Control {
+        MOVE_UP,
+        MOVE_DOWN,
+        MOVE_LEFT,
+        MOVE_RIGHT,
+        DASH,
+        SHOW_WEAPONS,
+        PAUSE_GAME
+    }
+    
     public static final Canvas canvas = new Canvas();
     public static final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
     public static final KeyHandler keyHandler = new KeyHandler();
@@ -41,27 +52,51 @@ public class Game extends GameLoop {
     public Game(GameScene scene) {
         Game.scene = scene;
         
-        keyHandler.getKeyPressedProperty("weapon-switch").addListener(e -> {
-            if (!keyHandler.isKeyPressed("weapon-switch")) return;
+        keyHandler.getKeyPressedProperty(Control.SHOW_WEAPONS).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SHOW_WEAPONS)) return;
             scene.setWeaponSwitchComponentVisible(
                 !scene.isWeaponSwitchComponentVisible()
             );
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.PAUSE_GAME).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.PAUSE_GAME)) return;
+            
+            boolean shouldPause = !scene.isPauseComponentVisible();
+            
+            if (shouldPause) {
+                Game.world.pause();
+                scene.setPauseComponentVisible(true);
+            } else {
+                Game.world.play();
+                scene.setPauseComponentVisible(false);
+            }
+        });
+        
+        scene.setOnContinueGame(() -> {
+            Game.world.play();
+            scene.setPauseComponentVisible(false);
+        });
+        
+        scene.setOnExitGame(() -> {
+            scene.getGameApplication().getSceneManager().setScene(
+                GameApplication.Scene.TITLE
+            );
+            scene.setPauseComponentVisible(false);
+            resetGame();
         });
     }
     
     public void initEventHandlers(Scene scene) {
         // Set up key handler & controls
         keyHandler.listen(scene);
-        keyHandler.registerKey("weapon-switch", KeyCode.F);
-        keyHandler.registerKey("up", KeyCode.UP);
-        keyHandler.registerKey("up", KeyCode.W);
-        keyHandler.registerKey("down", KeyCode.DOWN);
-        keyHandler.registerKey("down", KeyCode.S);
-        keyHandler.registerKey("left", KeyCode.LEFT);
-        keyHandler.registerKey("left", KeyCode.A);
-        keyHandler.registerKey("right", KeyCode.RIGHT);
-        keyHandler.registerKey("right", KeyCode.D);
-        keyHandler.registerKey("dash", KeyCode.SPACE);
+        keyHandler.registerKey(Control.SHOW_WEAPONS, KeyCode.F);
+        keyHandler.registerKey(Control.MOVE_UP, KeyCode.W);
+        keyHandler.registerKey(Control.MOVE_DOWN, KeyCode.S);
+        keyHandler.registerKey(Control.MOVE_LEFT, KeyCode.A);
+        keyHandler.registerKey(Control.MOVE_RIGHT, KeyCode.D);
+        keyHandler.registerKey(Control.DASH, KeyCode.SPACE);
+        keyHandler.registerKey(Control.PAUSE_GAME, KeyCode.ESCAPE);
         
         // Set up mouse handler
         mouseHandler.listen(scene);
@@ -77,6 +112,7 @@ public class Game extends GameLoop {
         scene.setPowerUpSelectionComponentVisible(false);
         scene.setWeaponSwitchComponentVisible(false);
         scene.setGameOverComponentVisible(false);
+        scene.setPauseComponentVisible(false);
         
         Progress.reset();
         

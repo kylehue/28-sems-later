@@ -44,4 +44,8 @@ public abstract class GameApplicationScene {
     public StackPane getDefaultRoot() {
         return defaultRoot;
     }
+    
+    public GameApplication getGameApplication() {
+        return gameApplication;
+    }
 }

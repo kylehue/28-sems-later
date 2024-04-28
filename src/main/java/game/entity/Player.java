@@ -298,11 +298,11 @@ public class Player extends Entity {
         if (Game.world.isGameOver()) return;
         
         KeyHandler keyHandler = Game.keyHandler;
-        this.upPressed = keyHandler.isKeyPressed("up");
-        this.downPressed = keyHandler.isKeyPressed("down");
-        this.leftPressed = keyHandler.isKeyPressed("left");
-        this.rightPressed = keyHandler.isKeyPressed("right");
-        this.dashPressed = keyHandler.isKeyPressed("dash");
+        this.upPressed = keyHandler.isKeyPressed(Game.Control.MOVE_UP);
+        this.downPressed = keyHandler.isKeyPressed(Game.Control.MOVE_DOWN);
+        this.leftPressed = keyHandler.isKeyPressed(Game.Control.MOVE_LEFT);
+        this.rightPressed = keyHandler.isKeyPressed(Game.Control.MOVE_RIGHT);
+        this.dashPressed = keyHandler.isKeyPressed(Game.Control.DASH);
         this.shootPressed = Game.mouseHandler.isMouseLeftPressed();
     }
     

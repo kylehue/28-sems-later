@@ -34,7 +34,10 @@ public class GameScene extends GameApplicationScene {
     private final BooleanProperty isWeaponSwitchComponentVisible = new SimpleBooleanProperty();
     private final BooleanProperty isPowerUpSelectionComponentVisible = new SimpleBooleanProperty();
     private final BooleanProperty isOtherGameComponentsVisible = new SimpleBooleanProperty(true);
+    private final BooleanProperty isPauseComponentVisible = new SimpleBooleanProperty();
     private PowerUpSelectEvent onSelectPowerUp = null;
+    private Runnable onContinueGame = null;
+    private Runnable onExitGame = null;
     
     public GameScene(GameApplication gameApplication, Object sceneKey) {
         super(gameApplication, sceneKey);
@@ -51,6 +54,63 @@ public class GameScene extends GameApplicationScene {
         this.setupOtherGameComponents();
         this.setupWeaponSwitchComponent();
         this.setupPowerUpSelectionComponent();
+        this.setupPauseComponent();
+    }
+    
+    private void setupPauseComponent() {
+        StackPane root = new StackPane();
+        defaultRoot.getChildren().add(root);
+        root.visibleProperty().bind(isPauseComponentVisible);
+        root.setBackground(Background.fill(Color.color(0, 0, 0, 0.5)));
+        
+        VBox parent = new VBox();
+        root.getChildren().add(parent);
+        parent.setAlignment(Pos.CENTER);
+        StackPane.setAlignment(parent, Pos.CENTER);
+        parent.setSpacing(20);
+        
+        // Setup paused text
+        Label pauseTextLabel = createPixelatedLabel(40);
+        parent.getChildren().add(pauseTextLabel);
+        pauseTextLabel.setText("Paused");
+        
+        // Setup buttons
+        VBox buttonsContainer = new VBox();
+        parent.getChildren().add(buttonsContainer);
+        buttonsContainer.setSpacing(10);
+        buttonsContainer.setAlignment(Pos.CENTER);
+        
+        Button continueGameButton = new Button("Continue");
+        buttonsContainer.getChildren().add(continueGameButton);
+        continueGameButton.setOnAction(e -> {
+            if (onContinueGame != null) {
+                onContinueGame.run();
+            }
+        });
+        
+        Button exitGameButton = new Button("Exit Game");
+        buttonsContainer.getChildren().add(exitGameButton);
+        exitGameButton.setOnAction(e -> {
+            if (onExitGame != null) {
+                onExitGame.run();
+            }
+        });
+    }
+    
+    public void setPauseComponentVisible(boolean v) {
+        isPauseComponentVisible.set(v);
+    }
+    
+    public boolean isPauseComponentVisible() {
+        return isPauseComponentVisible.get();
+    }
+    
+    public void setOnContinueGame(Runnable onContinueGame) {
+        this.onContinueGame = onContinueGame;
+    }
+    
+    public void setOnExitGame(Runnable onExitGame) {
+        this.onExitGame = onExitGame;
     }
     
     private void setupGameOverComponent() {
