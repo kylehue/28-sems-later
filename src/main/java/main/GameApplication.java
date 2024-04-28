@@ -12,6 +12,11 @@ public class GameApplication {
     private final GameScene gameScene;
     private final TitleScene titleScene;
     
+    public enum Scene {
+        TITLE,
+        GAME
+    }
+    
     public GameApplication(Stage stage) {
         this.stage = stage;
         this.sceneManager = new SceneManager(stage);
@@ -26,11 +31,11 @@ public class GameApplication {
         stage.show();
         
         // Create the game application's scenes
-        titleScene = new TitleScene(this, "title");
-        gameScene = new GameScene(this, "game");
+        titleScene = new TitleScene(this, Scene.TITLE);
+        gameScene = new GameScene(this, Scene.GAME);
         
         // Set main scene to title screen
-        sceneManager.setScene("title");
+        sceneManager.setScene(Scene.TITLE);
     }
     
     public GameScene getGameScene() {

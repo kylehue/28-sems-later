@@ -36,8 +36,8 @@ public class GameScene extends GameApplicationScene {
     private final BooleanProperty isOtherGameComponentsVisible = new SimpleBooleanProperty(true);
     private PowerUpSelectEvent onSelectPowerUp = null;
     
-    public GameScene(GameApplication gameApplication, String sceneId) {
-        super(gameApplication, sceneId);
+    public GameScene(GameApplication gameApplication, Object sceneKey) {
+        super(gameApplication, sceneKey);
         
         game = new Game(this);
         game.initEventHandlers(scene);
@@ -83,7 +83,7 @@ public class GameScene extends GameApplicationScene {
         VBox.setMargin(mainMenuButton, new Insets(50, 0, 0, 0));
         
         mainMenuButton.setOnMouseClicked(e -> {
-            gameApplication.getSceneManager().setScene("title");
+            gameApplication.getSceneManager().setScene(GameApplication.Scene.TITLE);
             game.resetGame();
         });
     }
