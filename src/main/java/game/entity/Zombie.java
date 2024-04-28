@@ -8,6 +8,7 @@ import game.sprites.BloodGreenSprite;
 import game.utils.*;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
 import utils.Async;
@@ -26,7 +27,6 @@ public class Zombie extends Entity {
     private float angleToPlayer = 0;
     private boolean isFacingOnLeftSide = false;
     private ArrayList<Vector> pathToPlayer = new ArrayList<>();
-    private final HitEffect hitEffect = new HitEffect();
     private final IntervalMap intervals = new IntervalMap();
     private final static IntervalMap generalIntervals = new IntervalMap();
     private float distanceToPlayer = 0;
@@ -68,29 +68,45 @@ public class Zombie extends Entity {
                 Progress.ZOMBIE_SPEED.get() + 100
             )
         );
-        Progress.ZOMBIE_SPEED.addListener(e -> {
-            setSpeed(
-                Common.random(
-                    Progress.ZOMBIE_SPEED.get(),
-                    Progress.ZOMBIE_SPEED.get() + 100
-                )
-            );
-        });
-        damageProperty().bind(Progress.ZOMBIE_DAMAGE);
         
-        currentHealthProperty().addListener((o, oldHealth, newHealth) -> {
-            if (newHealth.floatValue() > oldHealth.floatValue()) return;
-            BloodGreenSprite bloodGreenSprite = new BloodGreenSprite();
-            bloodGreenSprite.getPosition().set(getPosition());
-            Game.world.addOneTimeSpriteAnimation(bloodGreenSprite);
-        });
+        this.bind();
+    }
+    
+    public void bind() {
+        damageProperty().bind(Progress.ZOMBIE_DAMAGE);
+        Progress.ZOMBIE_SPEED.addListener(this::speedListener);
+        currentHealthProperty().addListener(this::currentHealthListener);
+    }
+    
+    public void unbind() {
+        damageProperty().unbind();
+        Progress.ZOMBIE_SPEED.removeListener(this::speedListener);
+        currentHealthProperty().removeListener(this::currentHealthListener);
+    }
+    
+    private void currentHealthListener(
+        ObservableValue<?> o, Number oldHealth, Number newHealth
+    ) {
+        if (newHealth.floatValue() > oldHealth.floatValue()) return;
+        BloodGreenSprite bloodGreenSprite = new BloodGreenSprite();
+        bloodGreenSprite.getPosition().set(getPosition());
+        Game.world.addOneTimeSpriteAnimation(bloodGreenSprite);
+    }
+    
+    private void speedListener(
+        ObservableValue<?> o, Number o1, Number speed
+    ) {
+        setSpeed(
+            Common.random(
+                speed.floatValue() / 2,
+                speed.floatValue()
+            )
+        );
     }
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
-        // hitEffect.begin(ctx);
         this.sprite.render(ctx);
-        // hitEffect.end(ctx);
         
         // // draw path to player
         // for (Vector vector : pathToPlayer) {
@@ -117,7 +133,6 @@ public class Zombie extends Entity {
         this.checkPlayerCollision();
         this.maybeUpdatePathToPlayer();
         this.sprite.nextFrame();
-        hitEffect.updateCurrentHealth(getCurrentHealth());
     }
     
     public void update(float deltaTime) {
@@ -184,6 +199,8 @@ public class Zombie extends Entity {
             );
             generalIntervals.resetIntervalFor(Interval.EMIT_SOUND_DEATH);
         }
+        
+        this.unbind();
     }
     
     private void checkPlayerCollision() {

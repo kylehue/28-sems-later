@@ -2,6 +2,7 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
+import game.entity.Entity;
 import game.entity.Player;
 import game.entity.Zombie;
 import game.loots.Loot;
@@ -312,11 +313,20 @@ public class World {
     }
     
     public void dispose() {
+        // Dispose audios
         for (DistanceAwareAudio audio : audios) {
             audio.getMediaPlayer().dispose();
         }
         ambienceAudio.dispose();
         gameOverAudio.dispose();
+        
+        // Dispose entities
+        ArrayList<Entity> entities = new ArrayList<>();
+        entities.add(player);
+        entities.addAll(zombies);
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            entities.get(i).dispose();
+        }
     }
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {

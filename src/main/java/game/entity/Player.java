@@ -14,6 +14,7 @@ import game.sprites.PlayerSprite;
 import game.utils.IntervalMap;
 import game.weapons.WeaponKind;
 import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Vector;
@@ -82,36 +83,71 @@ public class Player extends Entity {
         // Misc
         this.setZIndex(Game.ZIndex.PLAYER);
         
-        maxHealthProperty().bindBidirectional(Progress.PLAYER_MAX_HEALTH);
-        currentHealthProperty().bindBidirectional(Progress.PLAYER_CURRENT_HEALTH);
-        speedProperty().bindBidirectional(Progress.PLAYER_SPEED);
-        dashIntervalInMillisProperty().bindBidirectional(Progress.PLAYER_DASH_INTERVAL);
-        healthRegenHealthProperty().bindBidirectional(Progress.PLAYER_HEALTH_REGEN_HEALTH);
-        dashIntervalInMillisProperty().addListener(e -> {
-            intervals.changeIntervalFor(Interval.DASH, getDashIntervalInMillis());
-        });
-        
         footstepAudio.setCycleCount(Integer.MAX_VALUE);
         footstepGrassAudio.setCycleCount(Integer.MAX_VALUE);
         footstepAudio.setVolume(0.7f);
         footstepGrassAudio.setVolume(0.7f);
         
-        Game.world.isPausedProperty().addListener((o, o1, isPaused) -> {
-            if (isPaused) {
-                footstepAudio.stop();
-                footstepGrassAudio.stop();
-            }
-        });
+        this.bind();
+    }
+    
+    public void bind() {
+        maxHealthProperty().bindBidirectional(Progress.PLAYER_MAX_HEALTH);
+        currentHealthProperty().bindBidirectional(Progress.PLAYER_CURRENT_HEALTH);
+        speedProperty().bindBidirectional(Progress.PLAYER_SPEED);
+        dashIntervalInMillisProperty().bindBidirectional(Progress.PLAYER_DASH_INTERVAL);
+        healthRegenHealthProperty().bindBidirectional(Progress.PLAYER_HEALTH_REGEN_HEALTH);
         
-        currentHealthProperty().addListener((o, oldHealth, newHealth) -> {
-            if (newHealth.floatValue() > oldHealth.floatValue()) return;
-            BloodSprite bloodSprite = new BloodSprite();
-            bloodSprite.getPosition().set(getPosition()).add(
-                Common.random(-5, 5),
-                Common.random(-7, 7)
-            );
-            Game.world.addOneTimeSpriteAnimation(bloodSprite);
-        });
+        dashIntervalInMillisProperty().addListener(this::dashIntervalListener);
+        Game.world.isPausedProperty().addListener(this::worldPausedListener);
+        currentHealthProperty().addListener(this::currentHealthListener);
+    }
+    
+    public void unbind() {
+        maxHealthProperty().unbindBidirectional(Progress.PLAYER_MAX_HEALTH);
+        currentHealthProperty().unbindBidirectional(Progress.PLAYER_CURRENT_HEALTH);
+        speedProperty().unbindBidirectional(Progress.PLAYER_SPEED);
+        dashIntervalInMillisProperty().unbindBidirectional(Progress.PLAYER_DASH_INTERVAL);
+        healthRegenHealthProperty().unbindBidirectional(Progress.PLAYER_HEALTH_REGEN_HEALTH);
+        
+        dashIntervalInMillisProperty().removeListener(this::dashIntervalListener);
+        Game.world.isPausedProperty().removeListener(this::worldPausedListener);
+        currentHealthProperty().removeListener(this::currentHealthListener);
+    }
+    
+    private void dashIntervalListener(
+        ObservableValue<?> o, Number o1, Number dashInterval
+    ) {
+        intervals.changeIntervalFor(Interval.DASH, dashInterval.intValue());
+    }
+    
+    private void worldPausedListener(
+        ObservableValue<?> o, Boolean o1, Boolean isPaused
+    ) {
+        if (isPaused) {
+            footstepAudio.stop();
+            footstepGrassAudio.stop();
+        }
+    }
+    
+    private void currentHealthListener(
+        ObservableValue<?> o, Number oldHealth, Number newHealth
+    ) {
+        if (newHealth.floatValue() > oldHealth.floatValue()) return;
+        BloodSprite bloodSprite = new BloodSprite();
+        bloodSprite.getPosition().set(getPosition()).add(
+            Common.random(-5, 5),
+            Common.random(-7, 7)
+        );
+        Game.world.addOneTimeSpriteAnimation(bloodSprite);
+    }
+    
+    @Override
+    public void dispose() {
+        this.unbind();
+        footstepAudio.dispose();
+        footstepGrassAudio.dispose();
+        Game.world.getColliderWorld().removeCollider(collider);
     }
     
     @Override
@@ -184,11 +220,6 @@ public class Player extends Entity {
                 footstepGrassAudio.setVolume(mappedVolume);
             }
         }
-    }
-    
-    @Override
-    public void dispose() {
-        // ...
     }
     
     public void handleHealthRegen() {

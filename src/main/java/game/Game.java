@@ -137,7 +137,7 @@ public class Game extends GameLoop {
         clearCanvas();
         world.render(graphicsContext, alpha);
         
-        renderFPS(graphicsContext);
+        // renderFPS(graphicsContext);
     }
     
     @Override
