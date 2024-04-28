@@ -5,8 +5,6 @@ import game.Game;
 import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
-import game.InventoryManager;
-import game.sprites.BloodGreenSprite;
 import game.sprites.BloodSprite;
 import game.utils.Common;
 import game.weapons.Gun;
@@ -14,10 +12,8 @@ import game.weapons.Weapon;
 import game.sprites.DashSprite;
 import game.sprites.PlayerSprite;
 import game.utils.IntervalMap;
-import javafx.beans.property.FloatProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import game.weapons.WeaponKind;
+import javafx.beans.property.*;
 import javafx.scene.canvas.GraphicsContext;
 import event.KeyHandler;
 import game.utils.Vector;
@@ -44,10 +40,10 @@ public class Player extends Entity {
     private boolean shootPressed = false;
     
     // misc
+    private final ObjectProperty<WeaponKind> currentWeapon = new SimpleObjectProperty<>(WeaponKind.PISTOL);
     private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
     private float angleToMouse = 0;
-    private final InventoryManager inventoryManager = new InventoryManager(this);
     private final IntervalMap intervals = new IntervalMap();
     
     private enum Interval {
@@ -134,8 +130,7 @@ public class Player extends Entity {
         if (isFacingOnLeftSide) {
             ctx.scale(1, -1);
         }
-        Weapon currentWeapon = inventoryManager.getCurrentWeapon();
-        currentWeapon.render(ctx, alpha);
+        getCurrentWeapon().render(ctx, alpha);
         ctx.restore();
     }
     
@@ -203,7 +198,7 @@ public class Player extends Entity {
     }
     
     public void shoot() {
-        Weapon currentWeapon = inventoryManager.getCurrentWeapon();
+        Weapon currentWeapon = getCurrentWeapon();
         
         if (!(currentWeapon instanceof Gun currentGun)) return;
         currentGun.shoot(Game.world, position, angleToMouse);
@@ -339,6 +334,10 @@ public class Player extends Entity {
         healthRegenHealth.set(regenHealth);
     }
     
+    public void setCurrentWeapon(WeaponKind weaponKind) {
+        this.currentWeapon.set(weaponKind);
+    }
+    
     @Override
     public Vector getRenderPosition() {
         return position.clone().addY(collider.getRadius());
@@ -347,10 +346,6 @@ public class Player extends Entity {
     @Override
     public Collider getCollider() {
         return collider;
-    }
-    
-    public InventoryManager getInventoryManager() {
-        return inventoryManager;
     }
     
     public int getDashIntervalInMillis() {
@@ -363,6 +358,10 @@ public class Player extends Entity {
     
     public float getSpeed() {
         return speed.get();
+    }
+    
+    public Weapon getCurrentWeapon() {
+        return currentWeapon.get().get();
     }
     
     public float getHealthRegenHealth() {
@@ -383,5 +382,9 @@ public class Player extends Entity {
     
     public IntegerProperty dashIntervalInMillisProperty() {
         return dashIntervalInMillis;
+    }
+    
+    public ObjectProperty<WeaponKind> currentWeaponProperty() {
+        return currentWeapon;
     }
 }

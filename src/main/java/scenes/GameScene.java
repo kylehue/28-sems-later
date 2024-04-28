@@ -258,7 +258,7 @@ public class GameScene extends GameApplicationScene {
                     return;
                 }
                 
-                Game.world.getPlayer().getInventoryManager().setCurrentWeapon(
+                Game.world.getPlayer().setCurrentWeapon(
                     buttonInfo.weaponKind
                 );
                 
