@@ -15,6 +15,6 @@ public class ShotgunSpread implements PowerUp {
     
     public boolean isAllowedToUse() {
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
-        return Progress.unlockedWeapons.contains(WeaponKind.SHOTGUN) && shotgun.getSpreadInRadians() < Config.MAX_SHOTGUN_SPREAD_RADIANS;
+        return Progress.UNLOCKED_WEAPONS.contains(WeaponKind.SHOTGUN) && shotgun.getSpreadInRadians() < Config.MAX_SHOTGUN_SPREAD_RADIANS;
     }
 }

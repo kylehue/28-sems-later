@@ -73,6 +73,13 @@ public class Game extends GameLoop {
             world.start();
         }
         
+        scene.setOtherGameComponentsVisible(true);
+        scene.setPowerUpSelectionComponentVisible(false);
+        scene.setWeaponSwitchComponentVisible(false);
+        scene.setGameOverComponentVisible(false);
+        
+        Progress.reset();
+        
         startLoop();
     }
     

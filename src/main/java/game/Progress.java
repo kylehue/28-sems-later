@@ -9,7 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 public abstract class Progress {
-    public static final ObservableSet<WeaponKind> unlockedWeapons = FXCollections.observableSet(
+    public static final ObservableSet<WeaponKind> UNLOCKED_WEAPONS = FXCollections.observableSet(
         WeaponKind.PISTOL,
         WeaponKind.SHOTGUN,
         WeaponKind.RIFLE,
@@ -17,42 +17,60 @@ public abstract class Progress {
         WeaponKind.SNIPER
     );
     
-    public static final IntegerProperty currentLevel = new SimpleIntegerProperty(
+    public static final IntegerProperty PLAYER_CURRENT_LEVEL = new SimpleIntegerProperty(
         Config.DEFAULT_PLAYER_LEVEL
     );
-    public static final IntegerProperty maxLevel = new SimpleIntegerProperty(
+    public static final IntegerProperty PLAYER_MAX_LEVEL = new SimpleIntegerProperty(
         Config.DEFAULT_PLAYER_MAX_LEVEL
     );
-    public static final IntegerProperty currentXp = new SimpleIntegerProperty(
+    public static final IntegerProperty PLAYER_CURRENT_XP = new SimpleIntegerProperty(
         Config.DEFAULT_PLAYER_XP
     );
-    public static final IntegerProperty maxXp = new SimpleIntegerProperty(
+    public static final IntegerProperty PLAYER_MAX_XP = new SimpleIntegerProperty(
         Config.DEFAULT_PLAYER_MAX_XP
     );
-    public static final FloatProperty currentHealth = new SimpleFloatProperty(
+    public static final FloatProperty PLAYER_CURRENT_HEALTH = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_HEALTH
     );
-    public static final FloatProperty maxHealth = new SimpleFloatProperty(
+    public static final FloatProperty PLAYER_MAX_HEALTH = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_MAX_HEALTH
     );
-    public static final FloatProperty healthRegenHealth = new SimpleFloatProperty(
+    public static final FloatProperty PLAYER_HEALTH_REGEN_HEALTH = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_HEALTH_REGEN_HEALTH
     );
-    public static final FloatProperty playerSpeed = new SimpleFloatProperty(
+    public static final FloatProperty PLAYER_SPEED = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_SPEED
     );
-    public static final FloatProperty dashInterval = new SimpleFloatProperty(
+    public static final FloatProperty PLAYER_DASH_INTERVAL = new SimpleFloatProperty(
         Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS
     );
     
-    // Zombie stats
-    public static final FloatProperty zombieSpeed = new SimpleFloatProperty(
+    public static final FloatProperty ZOMBIE_SPEED = new SimpleFloatProperty(
         Config.DEFAULT_ZOMBIE_SPEED
     );
-    public static final IntegerProperty zombieCount = new SimpleIntegerProperty(
+    public static final IntegerProperty ZOMBIE_COUNT = new SimpleIntegerProperty(
         Config.DEFAULT_ZOMBIES_COUNT
     );
-    public static final FloatProperty zombieDamage = new SimpleFloatProperty(
+    public static final FloatProperty ZOMBIE_DAMAGE = new SimpleFloatProperty(
         Config.DEFAULT_ZOMBIE_DAMAGE
     );
+    
+    public static void reset() {
+        UNLOCKED_WEAPONS.clear();
+        UNLOCKED_WEAPONS.add(WeaponKind.PISTOL);
+        
+        PLAYER_CURRENT_LEVEL.set(Config.DEFAULT_PLAYER_LEVEL);
+        PLAYER_MAX_LEVEL.set(Config.DEFAULT_PLAYER_MAX_LEVEL);
+        PLAYER_CURRENT_XP.set(Config.DEFAULT_PLAYER_XP);
+        PLAYER_MAX_XP.set(Config.DEFAULT_PLAYER_MAX_XP);
+        PLAYER_CURRENT_HEALTH.set(Config.DEFAULT_PLAYER_HEALTH);
+        PLAYER_MAX_HEALTH.set(Config.DEFAULT_PLAYER_MAX_HEALTH);
+        PLAYER_HEALTH_REGEN_HEALTH.set(Config.DEFAULT_PLAYER_HEALTH_REGEN_HEALTH);
+        PLAYER_SPEED.set(Config.DEFAULT_PLAYER_SPEED);
+        PLAYER_DASH_INTERVAL.set(Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS);
+        
+        ZOMBIE_SPEED.set(Config.DEFAULT_ZOMBIE_SPEED);
+        ZOMBIE_COUNT.set(Config.DEFAULT_ZOMBIES_COUNT);
+        ZOMBIE_DAMAGE.set(Config.DEFAULT_ZOMBIE_DAMAGE);
+    }
 }

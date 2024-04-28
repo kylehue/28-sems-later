@@ -27,8 +27,6 @@ import java.util.HashSet;
 
 public class World {
     private Player player;
-    private final HashSet<DistanceAwareAudio> audios = new HashSet<>();
-    private final HashMap<String, ArrayList<DistanceAwareAudio>> reusableAudiosMap = new HashMap<>();
     private final ArrayList<Loot> loots = new ArrayList<>();
     private final ArrayList<Zombie> zombies = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
@@ -39,10 +37,17 @@ public class World {
     private final PathFinder pathFinder;
     private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
     private BooleanProperty isPaused = new SimpleBooleanProperty();
+    private boolean gameOver = false;
+    private float cameraZoom = 400;
     
     // audios
+    private final HashSet<DistanceAwareAudio> audios = new HashSet<>();
+    private final HashMap<String, ArrayList<DistanceAwareAudio>> reusableAudiosMap = new HashMap<>();
     private final MediaPlayer ambienceAudio = new MediaPlayer(
         utils.Common.loadMedia("/sounds/ambience.mp3")
+    );
+    private final MediaPlayer gameOverAudio = new MediaPlayer(
+        utils.Common.loadMedia("/sounds/game-over.mp3")
     );
     
     /* For debugging */
@@ -199,6 +204,10 @@ public class World {
             }
         }
         
+        if (gameOver && cameraZoom < 700) {
+            cameraZoom += 0.3f;
+        }
+        
         colliderWorld.fixedUpdate(deltaTime);
     }
     
@@ -223,7 +232,7 @@ public class World {
         Mechanics.update();
         
         this.camera.moveTo(player.getPosition());
-        this.camera.zoomTo(400);
+        this.camera.zoomTo(cameraZoom);
     }
     
     public Bullet spawnBullet(Vector initialPosition, float angle) {
@@ -287,6 +296,11 @@ public class World {
         }
     }
     
+    public void gameOver() {
+        this.gameOver = true;
+        gameOverAudio.play();
+    }
+    
     public void start() {
         this.player = new Player();
         float halfMapWidth = (float) map.getTotalWidth() / 2;
@@ -302,6 +316,7 @@ public class World {
             audio.getMediaPlayer().dispose();
         }
         ambienceAudio.dispose();
+        gameOverAudio.dispose();
     }
     
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
@@ -339,6 +354,10 @@ public class World {
         audios.add(distanceAwareAudio);
         
         return distanceAwareAudio;
+    }
+    
+    public boolean isGameOver() {
+        return gameOver;
     }
     
     public PathFinder getPathFinder() {

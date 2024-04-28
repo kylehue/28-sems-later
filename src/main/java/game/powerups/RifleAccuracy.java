@@ -13,6 +13,6 @@ public class RifleAccuracy implements PowerUp {
     
     public boolean isAllowedToUse() {
         Rifle rifle = (Rifle) WeaponKind.RIFLE.get();
-        return Progress.unlockedWeapons.contains(WeaponKind.RIFLE) && rifle.getAccuracy() < Config.MAX_RIFLE_ACCURACY;
+        return Progress.UNLOCKED_WEAPONS.contains(WeaponKind.RIFLE) && rifle.getAccuracy() < Config.MAX_RIFLE_ACCURACY;
     }
 }

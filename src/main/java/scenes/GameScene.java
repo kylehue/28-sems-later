@@ -5,11 +5,8 @@ import game.Progress;
 import game.powerups.PowerUpKind;
 import game.weapons.WeaponKind;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.SetChangeListener;
-import javafx.event.Event;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,7 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -36,6 +32,7 @@ public class GameScene extends GameApplicationScene {
     private final BooleanProperty isGameOverComponentVisible = new SimpleBooleanProperty();
     private final BooleanProperty isWeaponSwitchComponentVisible = new SimpleBooleanProperty();
     private final BooleanProperty isPowerUpSelectionComponentVisible = new SimpleBooleanProperty();
+    private final BooleanProperty isOtherGameComponentsVisible = new SimpleBooleanProperty(true);
     private PowerUpSelectEvent onSelectPowerUp = null;
     
     public GameScene(GameApplication gameApplication, String sceneId) {
@@ -50,7 +47,7 @@ public class GameScene extends GameApplicationScene {
         Game.canvas.heightProperty().bind(scene.heightProperty());
         
         this.setupGameOverComponent();
-        this.setupGameComponents();
+        this.setupOtherGameComponents();
         this.setupWeaponSwitchComponent();
         this.setupPowerUpSelectionComponent();
     }
@@ -84,7 +81,7 @@ public class GameScene extends GameApplicationScene {
         });
     }
     
-    public void setGameOverComponentsVisible(boolean v) {
+    public void setGameOverComponentVisible(boolean v) {
         isGameOverComponentVisible.set(v);
     }
     
@@ -107,9 +104,10 @@ public class GameScene extends GameApplicationScene {
         return label;
     }
     
-    private void setupGameComponents() {
+    private void setupOtherGameComponents() {
         // Parent of all
         GridPane parent = new GridPane();
+        parent.visibleProperty().bind(isOtherGameComponentsVisible);
         defaultRoot.getChildren().add(parent);
         Common.setupGridPane(parent, 2, 2);
         parent.getRowConstraints().get(0).setPercentHeight(50);
@@ -136,7 +134,7 @@ public class GameScene extends GameApplicationScene {
                 8 * scaleFactor
             )
         );
-        healthBar.progressProperty().bind(Progress.currentHealth.divide(Progress.maxHealth));
+        healthBar.progressProperty().bind(Progress.PLAYER_CURRENT_HEALTH.divide(Progress.PLAYER_MAX_HEALTH));
         healthBar.setMouseTransparent(true);
         
         // XP bar
@@ -150,15 +148,15 @@ public class GameScene extends GameApplicationScene {
                 8 * scaleFactor
             )
         );
-        Progress.currentXp.addListener(e -> {
-            float currentXp = (float) Progress.currentXp.get();
-            float maxXp = (float) Progress.maxXp.get();
+        Progress.PLAYER_CURRENT_XP.addListener(e -> {
+            float currentXp = (float) Progress.PLAYER_CURRENT_XP.get();
+            float maxXp = (float) Progress.PLAYER_MAX_XP.get();
             xpBar.setProgress(currentXp / maxXp);
         });
         
         // XP text
         Label xpText = createPixelatedLabel(21 * scaleFactor / 2);
-        xpText.textProperty().bind(Progress.currentLevel.asString());
+        xpText.textProperty().bind(Progress.PLAYER_CURRENT_LEVEL.asString());
         xpText.setTextFill(Color.valueOf("#5bf4a7"));
         xpText.prefHeightProperty().bind(xpBar.heightProperty());
         xpText.maxHeightProperty().bind(xpBar.heightProperty());
@@ -168,6 +166,14 @@ public class GameScene extends GameApplicationScene {
         Group xpGroup = new Group(xpBar, xpText);
         xpGroup.setMouseTransparent(true);
         topLeftParent.getChildren().add(xpGroup);
+    }
+    
+    public void setOtherGameComponentsVisible(boolean v) {
+        isOtherGameComponentsVisible.set(v);
+    }
+    
+    public boolean isOtherGameComponentsVisible() {
+        return isOtherGameComponentsVisible.get();
     }
     
     private void setupWeaponSwitchComponent() {
@@ -247,14 +253,14 @@ public class GameScene extends GameApplicationScene {
             ButtonImageSkin buttonImageSkin = new ButtonImageSkin(
                 buttonInfo.button,
                 Common.resampleImage(
-                    Progress.unlockedWeapons.contains(buttonInfo.weaponKind) ? buttonInfo.unlockedImageUrl : buttonInfo.lockedImageUrl,
+                    Progress.UNLOCKED_WEAPONS.contains(buttonInfo.weaponKind) ? buttonInfo.unlockedImageUrl : buttonInfo.lockedImageUrl,
                     scaleFactor
                 )
             );
             buttonInfo.button.setSkin(buttonImageSkin);
             
             buttonInfo.button.setOnAction(e -> {
-                if (!Progress.unlockedWeapons.contains(buttonInfo.weaponKind)) {
+                if (!Progress.UNLOCKED_WEAPONS.contains(buttonInfo.weaponKind)) {
                     return;
                 }
                 
@@ -267,14 +273,14 @@ public class GameScene extends GameApplicationScene {
         }
         
         // Watch lock/unlock weapon buttons
-        Progress.unlockedWeapons.addListener(
+        Progress.UNLOCKED_WEAPONS.addListener(
             (SetChangeListener<? super WeaponKind>) (e) -> {
                 e.getElementAdded();
                 for (ButtonInfo buttonInfo : buttonInfos) {
                     ButtonImageSkin buttonImageSkin = new ButtonImageSkin(
                         buttonInfo.button,
                         Common.resampleImage(
-                            Progress.unlockedWeapons.contains(buttonInfo.weaponKind) ? buttonInfo.unlockedImageUrl : buttonInfo.lockedImageUrl,
+                            Progress.UNLOCKED_WEAPONS.contains(buttonInfo.weaponKind) ? buttonInfo.unlockedImageUrl : buttonInfo.lockedImageUrl,
                             scaleFactor
                         )
                     );

@@ -13,6 +13,6 @@ public class GrenadeAoe implements PowerUp {
     
     public boolean isAllowedToUse() {
         GrenadeLauncher grenadeLauncher = (GrenadeLauncher) WeaponKind.GRENADE_LAUNCHER.get();
-        return Progress.unlockedWeapons.contains(WeaponKind.GRENADE_LAUNCHER) && grenadeLauncher.getAoeDistance() < Config.MAX_GRENADE_LAUNCHER_AOE_DISTANCE;
+        return Progress.UNLOCKED_WEAPONS.contains(WeaponKind.GRENADE_LAUNCHER) && grenadeLauncher.getAoeDistance() < Config.MAX_GRENADE_LAUNCHER_AOE_DISTANCE;
     }
 }

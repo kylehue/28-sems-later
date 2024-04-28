@@ -82,11 +82,11 @@ public class Player extends Entity {
         // Misc
         this.setZIndex(Game.ZIndex.PLAYER);
         
-        maxHealthProperty().bindBidirectional(Progress.maxHealth);
-        currentHealthProperty().bindBidirectional(Progress.currentHealth);
-        speedProperty().bindBidirectional(Progress.playerSpeed);
-        dashIntervalInMillisProperty().bindBidirectional(Progress.dashInterval);
-        healthRegenHealthProperty().bindBidirectional(Progress.healthRegenHealth);
+        maxHealthProperty().bindBidirectional(Progress.PLAYER_MAX_HEALTH);
+        currentHealthProperty().bindBidirectional(Progress.PLAYER_CURRENT_HEALTH);
+        speedProperty().bindBidirectional(Progress.PLAYER_SPEED);
+        dashIntervalInMillisProperty().bindBidirectional(Progress.PLAYER_DASH_INTERVAL);
+        healthRegenHealthProperty().bindBidirectional(Progress.PLAYER_HEALTH_REGEN_HEALTH);
         dashIntervalInMillisProperty().addListener(e -> {
             intervals.changeIntervalFor(Interval.DASH, getDashIntervalInMillis());
         });
@@ -198,19 +198,17 @@ public class Player extends Entity {
     }
     
     public void shoot() {
+        if (Game.world.isGameOver()) return;
+        
         Weapon currentWeapon = getCurrentWeapon();
         
         if (!(currentWeapon instanceof Gun currentGun)) return;
         currentGun.shoot(Game.world, position, angleToMouse);
     }
     
-    private void updateAngleToMouse() {
-        Vector mouseInWorld = Game.world.getMousePosition();
-        this.angleToMouse = position.getAngle(mouseInWorld);
-        this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
-    }
-    
     public void dash() {
+        if (Game.world.isGameOver()) return;
+        
         intervals.changeIntervalFor(Interval.DASH, dashIntervalInMillis.get());
         if (!intervals.isIntervalOverFor(Interval.DASH)) return;
         
@@ -257,7 +255,17 @@ public class Player extends Entity {
         Game.world.addPlayerDistanceAwareAudio("/sounds/dash.mp3", position, 200);
     }
     
+    private void updateAngleToMouse() {
+        if (Game.world.isGameOver()) return;
+        
+        Vector mouseInWorld = Game.world.getMousePosition();
+        this.angleToMouse = position.getAngle(mouseInWorld);
+        this.isFacingOnLeftSide = Math.abs(angleToMouse) > (Math.PI / 2);
+    }
+    
     private void updateControlFlags() {
+        if (Game.world.isGameOver()) return;
+        
         KeyHandler keyHandler = Game.keyHandler;
         this.upPressed = keyHandler.isKeyPressed("up");
         this.downPressed = keyHandler.isKeyPressed("down");
@@ -268,6 +276,8 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
+        if (Game.world.isGameOver()) return;
+        
         position.lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
         
         // x controls

@@ -1,21 +1,15 @@
 package game.entity;
 
-import game.Config;
 import game.Game;
 import game.Progress;
 import game.colliders.CircleCollider;
-import game.colliders.Collider;
-import game.colliders.PolygonCollider;
 import game.sprites.AcidSprite;
 import game.sprites.BloodGreenSprite;
-import game.sprites.BloodSprite;
 import game.utils.*;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.paint.Paint;
 import utils.Async;
 import game.map.PathFinder;
 
@@ -70,19 +64,19 @@ public class Zombie extends Entity {
         // Stats
         setSpeed(
             Common.random(
-                Progress.zombieSpeed.get(),
-                Progress.zombieSpeed.get() + 100
+                Progress.ZOMBIE_SPEED.get(),
+                Progress.ZOMBIE_SPEED.get() + 100
             )
         );
-        Progress.zombieSpeed.addListener(e -> {
+        Progress.ZOMBIE_SPEED.addListener(e -> {
             setSpeed(
                 Common.random(
-                    Progress.zombieSpeed.get(),
-                    Progress.zombieSpeed.get() + 100
+                    Progress.ZOMBIE_SPEED.get(),
+                    Progress.ZOMBIE_SPEED.get() + 100
                 )
             );
         });
-        damageProperty().bind(Progress.zombieDamage);
+        damageProperty().bind(Progress.ZOMBIE_DAMAGE);
         
         currentHealthProperty().addListener((o, oldHealth, newHealth) -> {
             if (newHealth.floatValue() > oldHealth.floatValue()) return;

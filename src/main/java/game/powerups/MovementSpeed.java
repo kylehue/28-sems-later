@@ -5,10 +5,10 @@ import game.Progress;
 
 public class MovementSpeed implements PowerUp {
     public void apply() {
-        Progress.playerSpeed.set(Progress.playerSpeed.get() + 5);
+        Progress.PLAYER_SPEED.set(Progress.PLAYER_SPEED.get() + 5);
     }
     
     public boolean isAllowedToUse() {
-        return Progress.playerSpeed.get() < Config.MAX_PLAYER_SPEED;
+        return Progress.PLAYER_SPEED.get() < Config.MAX_PLAYER_SPEED;
     }
 }

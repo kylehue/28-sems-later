@@ -3,7 +3,6 @@ package game.loots;
 import game.Game;
 import game.Progress;
 import game.utils.Common;
-import game.utils.DistanceAwareAudio;
 
 public class XPLoot extends Loot {
     public XPLoot() {
@@ -14,7 +13,7 @@ public class XPLoot extends Loot {
     
     @Override
     protected void handlePickUp() {
-        Progress.currentXp.set((int) (Progress.currentXp.get() + Common.random(3, 10)));
+        Progress.PLAYER_CURRENT_XP.set((int) (Progress.PLAYER_CURRENT_XP.get() + Common.random(3, 10)));
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/xp.mp3",
             position,

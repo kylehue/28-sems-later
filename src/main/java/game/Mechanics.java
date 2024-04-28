@@ -1,10 +1,7 @@
 package game;
 
-import game.powerups.PowerUpKind;
 import game.utils.IntervalMap;
 import game.utils.Vector;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 
 public abstract class Mechanics {
     private final static int PLAYER_MAX_XP_INCREASE = 50;
@@ -19,24 +16,24 @@ public abstract class Mechanics {
     }
     
     private static void handleLevelingSystem() {
-        int currentXp = Progress.currentXp.get();
-        int maxXp = Progress.maxXp.get();
+        int currentXp = Progress.PLAYER_CURRENT_XP.get();
+        int maxXp = Progress.PLAYER_MAX_XP.get();
         if (currentXp < maxXp) return;
         
         // Level up
-        Progress.currentLevel.set(Progress.currentLevel.get() + 1);
-        Progress.currentXp.set(0);
-        Progress.maxXp.set(maxXp + PLAYER_MAX_XP_INCREASE);
+        Progress.PLAYER_CURRENT_LEVEL.set(Progress.PLAYER_CURRENT_LEVEL.get() + 1);
+        Progress.PLAYER_CURRENT_XP.set(0);
+        Progress.PLAYER_MAX_XP.set(maxXp + PLAYER_MAX_XP_INCREASE);
         
         // Increase player hp
-        Progress.currentHealth.set(Progress.currentHealth.get() + PLAYER_HEALTH_INCREASE);
-        Progress.maxHealth.set(Progress.maxHealth.get() + PLAYER_HEALTH_INCREASE);
+        Progress.PLAYER_CURRENT_HEALTH.set(Progress.PLAYER_CURRENT_HEALTH.get() + PLAYER_HEALTH_INCREASE);
+        Progress.PLAYER_MAX_HEALTH.set(Progress.PLAYER_MAX_HEALTH.get() + PLAYER_HEALTH_INCREASE);
         
         // Increase zombie count
-        Progress.zombieCount.set(Progress.zombieCount.get() + ZOMBIE_COUNT_INCREASE);
+        Progress.ZOMBIE_COUNT.set(Progress.ZOMBIE_COUNT.get() + ZOMBIE_COUNT_INCREASE);
         
         // Increase zombie damage
-        Progress.zombieDamage.set(Progress.zombieDamage.get() + ZOMBIE_DAMAGE_INCREASE);
+        Progress.ZOMBIE_DAMAGE.set(Progress.ZOMBIE_DAMAGE.get() + ZOMBIE_DAMAGE_INCREASE);
         
         pickPowerUp();
     }
@@ -56,7 +53,7 @@ public abstract class Mechanics {
         if (!intervals.isIntervalOverFor(Interval.SPAWN_ZOMBIE)) return;
         intervals.resetIntervalFor(Interval.SPAWN_ZOMBIE);
         final int BATCH_SIZE = 50;
-        int zombiesCount = Math.min(Progress.zombieCount.get(), Config.MAX_ZOMBIES_COUNT);
+        int zombiesCount = Math.min(Progress.ZOMBIE_COUNT.get(), Config.MAX_ZOMBIES_COUNT);
         if (Game.world.getZombies().size() < zombiesCount) {
             int spawnCount = Math.min(
                 zombiesCount - Game.world.getZombies().size(),
@@ -74,6 +71,20 @@ public abstract class Mechanics {
         }
     }
     
+    private static void handleGameOver() {
+        if (Game.world.getPlayer().getCurrentHealth() <= 0) {
+            gameOver();
+        }
+    }
+    
+    private static void gameOver() {
+        Game.scene.setGameOverComponentVisible(true);
+        Game.scene.setPowerUpSelectionComponentVisible(false);
+        Game.scene.setWeaponSwitchComponentVisible(false);
+        Game.scene.setOtherGameComponentsVisible(false);
+        Game.world.gameOver();
+    }
+    
     private static void setup() {
         intervals.registerIntervalFor(Interval.SPAWN_ZOMBIE, 100);
     }
@@ -87,5 +98,6 @@ public abstract class Mechanics {
         }
         handleLevelingSystem();
         handleZombieSpawn();
+        handleGameOver();
     }
 }
