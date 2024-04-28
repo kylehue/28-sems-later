@@ -21,6 +21,7 @@ import game.map.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class World {
     private BooleanProperty isPaused = new SimpleBooleanProperty();
     private boolean gameOver = false;
     private float cameraZoom = 400;
+    private float gameOverOverlayOpacity = 0;
     
     // audios
     private final HashSet<DistanceAwareAudio> audios = new HashSet<>();
@@ -173,6 +175,19 @@ public class World {
         }
         
         this.camera.end();
+        
+        if (gameOver) {
+            ctx.save();
+            ctx.setGlobalAlpha(gameOverOverlayOpacity);
+            ctx.beginPath();
+            ctx.setFill(Color.valueOf("#1f010d"));
+            ctx.fillRect(0, 0, Game.canvas.getWidth(), Game.canvas.getHeight());
+            ctx.closePath();
+            ctx.restore();
+            if (gameOverOverlayOpacity < 0.5) {
+                gameOverOverlayOpacity += 0.001f;
+            }
+        }
     }
     
     public void fixedUpdate(float deltaTime) {

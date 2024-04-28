@@ -143,6 +143,9 @@ public class Zombie extends Entity {
         
         if (getCurrentHealth() <= 0) {
             dispose();
+            Progress.PLAYER_ZOMBIE_KILLS.set(
+                Progress.PLAYER_ZOMBIE_KILLS.get() + 1
+            );
         }
     }
     

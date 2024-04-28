@@ -10,12 +10,12 @@
     -fx-padding: 0;
 }
 
-.button:hover {
-    -fx-font-size: 70px;
+.button:hover, .button:pressed {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 .button:pressed {
-    -fx-font-size: 70px;
     -fx-translate-y: 5px;
     -fx-effect: dropshadow(three-pass-box, transparent, 0, 0.0, 0, 0);
 }

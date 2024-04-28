@@ -17,6 +17,7 @@ public abstract class Progress {
         WeaponKind.SNIPER
     );
     
+    public static final IntegerProperty PLAYER_ZOMBIE_KILLS = new SimpleIntegerProperty();
     public static final IntegerProperty PLAYER_CURRENT_LEVEL = new SimpleIntegerProperty(
         Config.DEFAULT_PLAYER_LEVEL
     );
@@ -59,6 +60,7 @@ public abstract class Progress {
         UNLOCKED_WEAPONS.clear();
         UNLOCKED_WEAPONS.add(WeaponKind.PISTOL);
         
+        PLAYER_ZOMBIE_KILLS.set(0);
         PLAYER_CURRENT_LEVEL.set(Config.DEFAULT_PLAYER_LEVEL);
         PLAYER_MAX_LEVEL.set(Config.DEFAULT_PLAYER_MAX_LEVEL);
         PLAYER_CURRENT_XP.set(Config.DEFAULT_PLAYER_XP);

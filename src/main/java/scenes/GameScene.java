@@ -4,6 +4,7 @@ import game.Game;
 import game.Progress;
 import game.powerups.PowerUpKind;
 import game.weapons.WeaponKind;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.SetChangeListener;
@@ -53,27 +54,33 @@ public class GameScene extends GameApplicationScene {
     }
     
     private void setupGameOverComponent() {
-        GridPane parent = new GridPane();
+        VBox parent = new VBox();
         parent.visibleProperty().bind(isGameOverComponentVisible);
         defaultRoot.getChildren().add(parent);
-        Common.setupGridPane(parent, 2, 1);
-        parent.getRowConstraints().get(0).setPercentHeight(70);
-        parent.getRowConstraints().get(1).setPercentHeight(30);
+        parent.setAlignment(Pos.CENTER);
+        parent.setSpacing(10);
         
+        // Setup game over image
         ImageView gameOverImage = new ImageView(
             Common.resampleImage(
                 Common.loadImage("/ui/game-over/game-over.png"),
                 8
             )
         );
-        GridPane.setHalignment(gameOverImage, HPos.CENTER);
-        GridPane.setValignment(gameOverImage, VPos.CENTER);
-        parent.add(gameOverImage, 0, 0);
+        parent.getChildren().add(gameOverImage);
         
+        // Score & Level
+        Label scoreLabel = createPixelatedLabel(40);
+        parent.getChildren().add(scoreLabel);
+        scoreLabel.textProperty().bind(
+            Bindings.concat("You killed ", Progress.PLAYER_ZOMBIE_KILLS, " zombies.")
+        );
+        VBox.setMargin(scoreLabel, new Insets(20, 0, 0, 0));
+        
+        // Main menu button
         Button mainMenuButton = new Button("Main Menu");
-        GridPane.setHalignment(mainMenuButton, HPos.CENTER);
-        GridPane.setValignment(mainMenuButton, VPos.TOP);
-        parent.add(mainMenuButton, 0, 1);
+        parent.getChildren().add(mainMenuButton);
+        VBox.setMargin(mainMenuButton, new Insets(50, 0, 0, 0));
         
         mainMenuButton.setOnMouseClicked(e -> {
             gameApplication.getSceneManager().setScene("title");
@@ -111,15 +118,26 @@ public class GameScene extends GameApplicationScene {
         defaultRoot.getChildren().add(parent);
         Common.setupGridPane(parent, 2, 2);
         parent.getRowConstraints().get(0).setPercentHeight(50);
+        parent.getRowConstraints().get(0).setFillHeight(false);
         parent.getRowConstraints().get(1).setPercentHeight(50);
+        parent.getRowConstraints().get(1).setFillHeight(false);
         parent.getColumnConstraints().get(0).setPercentWidth(50);
+        parent.getColumnConstraints().get(0).setFillWidth(false);
         parent.getColumnConstraints().get(1).setPercentWidth(50);
+        parent.getColumnConstraints().get(1).setFillWidth(false);
         parent.setPadding(new Insets(10));
         
         // Top left parent
         VBox topLeftParent = new VBox();
         parent.add(topLeftParent, 0, 0);
         topLeftParent.setSpacing(10);
+        GridPane.setHalignment(topLeftParent, HPos.LEFT);
+        
+        // Top right parent
+        VBox topRightParent = new VBox();
+        parent.add(topRightParent, 1, 0);
+        topRightParent.setSpacing(10);
+        GridPane.setHalignment(topRightParent, HPos.RIGHT);
         
         // Health bar
         int scaleFactor = 3;
@@ -166,6 +184,27 @@ public class GameScene extends GameApplicationScene {
         Group xpGroup = new Group(xpBar, xpText);
         xpGroup.setMouseTransparent(true);
         topLeftParent.getChildren().add(xpGroup);
+        
+        // Zombie score
+        HBox zombieScoreContainer = new HBox();
+        topRightParent.getChildren().add(zombieScoreContainer);
+        zombieScoreContainer.setSpacing(10);
+        zombieScoreContainer.setAlignment(Pos.CENTER);
+        
+        ImageView deadZombieImage = new ImageView(
+            Common.resampleImage(
+                "/ui/zombie-head/zombie-head.png",
+                scaleFactor + 1
+            )
+        );
+        zombieScoreContainer.getChildren().add(deadZombieImage);
+        
+        Label killedZombieLabel = createPixelatedLabel(14 * scaleFactor);
+        zombieScoreContainer.getChildren().add(killedZombieLabel);
+        killedZombieLabel.textProperty().bind(
+            Progress.PLAYER_ZOMBIE_KILLS.asString()
+        );
+        killedZombieLabel.setAlignment(Pos.CENTER);
     }
     
     public void setOtherGameComponentsVisible(boolean v) {
