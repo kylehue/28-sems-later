@@ -1,23 +1,41 @@
 package main;
 
+import javafx.application.Application;
 import javafx.stage.Stage;
 import scenes.GameScene;
 import scenes.TitleScene;
 import utils.Common;
 import utils.SceneManager;
 
-public class GameApplication {
-    private final Stage stage;
-    private final SceneManager sceneManager;
-    private final GameScene gameScene;
-    private final TitleScene titleScene;
+public class GameApplication extends Application {
+    private Stage stage;
+    private SceneManager sceneManager;
+    private GameScene gameScene;
+    private TitleScene titleScene;
     
     public enum Scene {
         TITLE,
         GAME
     }
     
-    public GameApplication(Stage stage) {
+    public GameScene getGameScene() {
+        return gameScene;
+    }
+    
+    public TitleScene getTitleScene() {
+        return titleScene;
+    }
+    
+    public SceneManager getSceneManager() {
+        return sceneManager;
+    }
+    
+    public Stage getStage() {
+        return stage;
+    }
+    
+    @Override
+    public void start(Stage stage) {
         this.stage = stage;
         this.sceneManager = new SceneManager(stage);
         
@@ -38,19 +56,8 @@ public class GameApplication {
         sceneManager.setScene(Scene.TITLE);
     }
     
-    public GameScene getGameScene() {
-        return gameScene;
-    }
-    
-    public TitleScene getTitleScene() {
-        return titleScene;
-    }
-    
-    public SceneManager getSceneManager() {
-        return sceneManager;
-    }
-    
-    public Stage getStage() {
-        return stage;
+    public static void execute() {
+        Common.loadFont("/fonts/PIXY.ttf", 14);
+        launch();
     }
 }
