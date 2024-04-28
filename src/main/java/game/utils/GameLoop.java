@@ -20,6 +20,7 @@ public class GameLoop {
         this.timer = new AnimationTimer() {
             @Override
             public void handle(long currentTime) {
+                if (GameLoop.this.timer == null) return;
                 if (previousTime == 0) {
                     previousTime = currentTime;
                     return;
@@ -64,6 +65,17 @@ public class GameLoop {
     
     public int getFrameCount() {
         return frameCount;
+    }
+    
+    public void resetTimer() {
+        this.timer.stop();
+        this.timer = null;
+        this.fps = 0;
+        this.frameCount = 0;
+        this.previousTime = 0;
+        this.accumulatedTime = 0;
+        this.secondsElapsedSinceLastFpsUpdate = 0f;
+        this.framesSinceLastFpsUpdate = 0;
     }
     
     // to be overridden

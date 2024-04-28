@@ -36,7 +36,7 @@ public class KeyHandler extends EventHandler {
     public void registerKey(Object groupId, KeyCode keyCode) {
         HashSet<KeyCode> arr = registeredKeys.computeIfAbsent(groupId, k -> new HashSet<>());
         arr.add(keyCode);
-        registeredKeyProperties.put(groupId, new SimpleBooleanProperty());
+        registeredKeyProperties.putIfAbsent(groupId, new SimpleBooleanProperty());
     }
     
     public boolean isKeyPressed(Object groupId) {
@@ -44,6 +44,12 @@ public class KeyHandler extends EventHandler {
     }
     
     public BooleanProperty getKeyPressedProperty(Object groupId) {
-        return registeredKeyProperties.get(groupId);
+        BooleanProperty keyPressedProperty = registeredKeyProperties.get(groupId);
+        if (keyPressedProperty == null) {
+            keyPressedProperty = new SimpleBooleanProperty();
+            registeredKeyProperties.put(groupId, keyPressedProperty);
+        }
+        
+        return keyPressedProperty;
     }
 }

@@ -43,26 +43,13 @@ public abstract class Mechanics {
     
     private static void pickPowerUp() {
         Game.world.pause();
-        Game.ui.showPowerUpSelect();
-        InvalidationListener listener = new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                Game.world.play();
-                PowerUpKind selectedPowerUp = Game.ui
-                    .getPowerUpSelect()
-                    .selectedOptionProperty()
-                    .get();
-                if (selectedPowerUp != null) {
-                    selectedPowerUp.get().apply();
-                }
-                Game.ui
-                    .getPowerUpSelect()
-                    .selectedOptionProperty()
-                    .removeListener(this);
-                Game.ui.getPowerUpSelect().hide();
-            }
-        };
-        Game.ui.getPowerUpSelect().selectedOptionProperty().addListener(listener);
+        
+        Game.scene.setPowerUpSelectionComponentVisible(true);
+        Game.scene.setOnSelectPowerUp(selectedPowerUp -> {
+            selectedPowerUp.get().apply();
+            Game.scene.setPowerUpSelectionComponentVisible(false);
+            Game.world.play();
+        });
     }
     
     private static void handleZombieSpawn() {

@@ -75,7 +75,7 @@ public class TitleScene extends GameApplicationScene {
         leftLayout.add(imageView, 0, 0);
         
         // Setup start button
-        Button startButton = new Button("start");
+        Button startButton = new Button("Start");
         GridPane.setHalignment(startButton, HPos.CENTER);
         GridPane.setValignment(startButton, VPos.TOP);
         leftLayout.add(startButton, 0, 1);
@@ -85,12 +85,28 @@ public class TitleScene extends GameApplicationScene {
             startButton.setText("Loading...");
             Game game = gameApplication.getGameScene().getGame();
             game.startGameAsync().setOnSucceeded((t) -> {
-                parallax.pause();
-                music.stop();
                 gameApplication.getSceneManager().setScene(
                     gameApplication.getGameScene().getSceneId()
                 );
             });
+        });
+        
+        gameApplication.getSceneManager().currentSceneProperty().addListener(e -> {
+            if (
+                gameApplication
+                    .getSceneManager()
+                    .currentSceneProperty()
+                    .get()
+                    .equals("title")
+            ) {
+                parallax.start();
+                music.play();
+                startButton.setDisable(false);
+                startButton.setText("Start");
+            } else {
+                parallax.pause();
+                music.stop();
+            }
         });
     }
 }

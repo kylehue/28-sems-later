@@ -22,8 +22,6 @@ public abstract class GameApplicationScene {
             getClass().getResource("/styles/global.css").toExternalForm()
         );
         
-        
-        
         Image crosshairImage = utils.Common.loadImage("/weapons/crosshair.png");
         scene.setCursor(
             new ImageCursor(
@@ -43,5 +41,9 @@ public abstract class GameApplicationScene {
     
     public Scene getScene() {
         return scene;
+    }
+    
+    public StackPane getDefaultRoot() {
+        return defaultRoot;
     }
 }

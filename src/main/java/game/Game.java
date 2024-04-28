@@ -2,7 +2,6 @@ package game;
 
 import event.KeyHandler;
 import event.MouseHandler;
-import game.ui.UI;
 import game.utils.GameLoop;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
@@ -10,6 +9,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import scenes.GameScene;
 import utils.Async;
 
 public class Game extends GameLoop {
@@ -33,10 +36,17 @@ public class Game extends GameLoop {
     public static final KeyHandler keyHandler = new KeyHandler();
     public static final MouseHandler mouseHandler = new MouseHandler();
     public static World world;
-    public static UI ui;
-    public static int FPS = 0;
+    public static GameScene scene;
     
-    public Game() {
+    public Game(GameScene scene) {
+        Game.scene = scene;
+        
+        keyHandler.getKeyPressedProperty("weapon-switch").addListener(e -> {
+            if (!keyHandler.isKeyPressed("weapon-switch")) return;
+            scene.setWeaponSwitchComponentVisible(
+                !scene.isWeaponSwitchComponentVisible()
+            );
+        });
     }
     
     public void initEventHandlers(Scene scene) {
@@ -63,10 +73,6 @@ public class Game extends GameLoop {
             world.start();
         }
         
-        if (ui == null) {
-            ui = new UI();
-        }
-        
         startLoop();
     }
     
@@ -91,11 +97,30 @@ public class Game extends GameLoop {
         this.pauseLoop();
     }
     
+    public void resetGame() {
+        this.resetTimer();
+        world.dispose();
+        world = null;
+    }
+    
     private void clearCanvas() {
         graphicsContext.beginPath();
         graphicsContext.setFill(Paint.valueOf("#000000"));
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         graphicsContext.closePath();
+    }
+    
+    private void renderFPS(GraphicsContext ctx) {
+        ctx.beginPath();
+        ctx.setFill(Paint.valueOf("#00FF00"));
+        ctx.setFont(Font.font(null, FontWeight.BOLD, 24));
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.fillText(
+            String.valueOf(getFPS()), ctx.getCanvas().getWidth() - 30,
+            30,
+            100
+        );
+        ctx.closePath();
     }
     
     @Override
@@ -104,18 +129,17 @@ public class Game extends GameLoop {
         
         clearCanvas();
         world.render(graphicsContext, alpha);
-        ui.render(graphicsContext);
+        
+        renderFPS(graphicsContext);
     }
     
     @Override
     public void fixedUpdate(float deltaTime) {
-        ui.update();
         world.fixedUpdate(deltaTime);
     }
     
     @Override
     public void update(float deltaTime) {
         world.update(deltaTime);
-        FPS = (int) getFPS();
     }
 }

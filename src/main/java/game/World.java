@@ -297,6 +297,13 @@ public class World {
         );
     }
     
+    public void dispose() {
+        for (DistanceAwareAudio audio : audios) {
+            audio.getMediaPlayer().dispose();
+        }
+        ambienceAudio.dispose();
+    }
+    
     public void addOneTimeSpriteAnimation(SpriteAnimation spriteAnimation) {
         oneTimeSpriteAnimations.add(spriteAnimation);
     }

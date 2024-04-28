@@ -31,6 +31,10 @@ public class InventoryManager {
         return currentWeapon.get().get();
     }
     
+    public void setCurrentWeapon(WeaponKind weaponKind) {
+        currentWeapon.set(weaponKind);
+    }
+    
     public ObjectProperty<WeaponKind> currentWeaponProperty() {
         return currentWeapon;
     }

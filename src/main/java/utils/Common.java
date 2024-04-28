@@ -71,8 +71,16 @@ public class Common {
         }
     }
     
+    public final static HashMap<String, Image> resampledImages = new HashMap<>();
+    
     // https://stackoverflow.com/a/16092631
     public static Image resampleImage(Image input, int scaleFactor) {
+        String key = input.getUrl() + "." + scaleFactor;
+        Image resampledImage = resampledImages.get(key);
+        if (resampledImage != null) {
+            return resampledImage;
+        }
+        
         final int W = (int) input.getWidth();
         final int H = (int) input.getHeight();
         final int S = scaleFactor;
@@ -96,7 +104,13 @@ public class Common {
             }
         }
         
+        resampledImages.put(key, output);
+        
         return output;
+    }
+    
+    public static Image resampleImage(String input, int scaleFactor) {
+        return resampleImage(loadImage(input), scaleFactor);
     }
     
     private final static HashMap<String, Font> loadedFonts = new HashMap<>();
