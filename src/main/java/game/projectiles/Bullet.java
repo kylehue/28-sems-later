@@ -64,10 +64,10 @@ public class Bullet extends Projectile {
     @Override
     public void fixedUpdate(float deltaTime) {
         handleMovement();
-        handleDisposal();
         
         handleEntityCollision();
         handleObstacleCollision();
+        handleDisposal();
     }
     
     private void handleMovement() {
