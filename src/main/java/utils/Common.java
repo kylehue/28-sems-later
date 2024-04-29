@@ -67,6 +67,7 @@ public class Common {
             return image;
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(url);
             throw new Error(e);
         }
     }

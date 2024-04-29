@@ -16,7 +16,10 @@ public class Parallax extends GameLoop {
     private final Canvas canvas = new Canvas();
     private final GraphicsContext ctx = canvas.getGraphicsContext2D();
     private final MouseHandler mouseHandler = new MouseHandler();
-    private Vector velocity = new Vector(5f, 5f);
+    private final float autoMoveMagnitude = 200;
+    private final Vector velocity = new Vector(5f, 5f);
+    private final Vector autoMovePosition = new Vector();
+    private final Vector autoMoveVelocity = new Vector().randomize(2);
     private float acceleration = 0.1f;
     
     public Parallax(Scene scene) {
@@ -48,19 +51,31 @@ public class Parallax extends GameLoop {
         }
     }
     
+    private void handleAutoMove() {
+        autoMovePosition.add(autoMoveVelocity);
+        if (autoMovePosition.getX() < -autoMoveMagnitude || autoMovePosition.getX() > autoMoveMagnitude) {
+            autoMoveVelocity.setX(-autoMoveVelocity.getX());
+        }
+        
+        if (autoMovePosition.getY() < -autoMoveMagnitude || autoMovePosition.getY() > autoMoveMagnitude) {
+            autoMoveVelocity.setY(-autoMoveVelocity.getY());
+        }
+    }
+    
     @Override
     public void fixedUpdate(float deltaTime) {
+        this.handleAutoMove();
         float mappedX = Common.map(
-            mouseHandler.getPosition().getX(),
-            0.0f,
-            (float) canvas.getWidth(),
+            mouseHandler.getPosition().getX() + autoMovePosition.getX(),
+            -autoMoveMagnitude,
+            (float) canvas.getWidth() + autoMoveMagnitude,
             1,
             -1
         );
         float mappedY = Common.map(
-            mouseHandler.getPosition().getY(),
-            0.0f,
-            (float) canvas.getHeight(),
+            mouseHandler.getPosition().getY() + autoMovePosition.getY(),
+            -autoMoveMagnitude,
+            (float) canvas.getHeight() + autoMoveMagnitude,
             1,
             -1
         );

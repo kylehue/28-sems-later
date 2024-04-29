@@ -15,6 +15,15 @@ import javafx.scene.text.TextAlignment;
 import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
+import utils.Common;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public class Game extends GameLoop {
     public enum CollisionGroup {
@@ -101,6 +110,24 @@ public class Game extends GameLoop {
         // Set up mouse handler
         mouseHandler.listen(scene);
     }
+    
+    // private void preloadAssets()  {
+    //     try{
+    //         String resourcesDir = System.getProperty("user.dir") + "\\src\\main\\resources";
+    //         Stream<Path> paths = Files.walk(Path.of(resourcesDir));
+    //         for (Path path : paths.toList()) {
+    //             if (!Files.isRegularFile(path)) continue;
+    //             String pathStr = path.toString().replace(resourcesDir, "").replaceAll("\\\\", "/");
+    //             if (pathStr.endsWith(".png")) {
+    //                 Common.loadImage(pathStr);
+    //             } else if (pathStr.endsWith(".mp3")) {
+    //                 Common.loadMedia(pathStr);
+    //             }
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    // }
     
     public void startGameSync() {
         if (world == null) {

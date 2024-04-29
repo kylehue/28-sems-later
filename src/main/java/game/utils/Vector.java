@@ -189,6 +189,13 @@ public class Vector {
         return new Vector(this.x, this.y);
     }
     
+    public Vector randomize(float magnitude) {
+        return this.set(
+            (float) (Math.random() - 0.5),
+            (float) (Math.random() - 0.5)
+        ).setMagnitude(magnitude);
+    }
+    
     @Override
     public String toString() {
         return "Vector{" +
