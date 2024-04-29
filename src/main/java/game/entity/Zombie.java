@@ -64,8 +64,8 @@ public class Zombie extends Entity {
         // Stats
         setSpeed(
             Common.random(
-                Progress.ZOMBIE_SPEED.get(),
-                Progress.ZOMBIE_SPEED.get() + 100
+                Progress.ZOMBIE_SPEED.get() / 2,
+                Progress.ZOMBIE_SPEED.get()
             )
         );
         
@@ -74,13 +74,11 @@ public class Zombie extends Entity {
     
     public void bind() {
         damageProperty().bind(Progress.ZOMBIE_DAMAGE);
-        Progress.ZOMBIE_SPEED.addListener(this::speedListener);
         currentHealthProperty().addListener(this::currentHealthListener);
     }
     
     public void unbind() {
         damageProperty().unbind();
-        Progress.ZOMBIE_SPEED.removeListener(this::speedListener);
         currentHealthProperty().removeListener(this::currentHealthListener);
     }
     
@@ -91,17 +89,6 @@ public class Zombie extends Entity {
         BloodGreenSprite bloodGreenSprite = new BloodGreenSprite();
         bloodGreenSprite.getPosition().set(getPosition());
         Game.world.addOneTimeSpriteAnimation(bloodGreenSprite);
-    }
-    
-    private void speedListener(
-        ObservableValue<?> o, Number o1, Number speed
-    ) {
-        setSpeed(
-            Common.random(
-                speed.floatValue() / 2,
-                speed.floatValue()
-            )
-        );
     }
     
     @Override
