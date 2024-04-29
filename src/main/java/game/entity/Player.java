@@ -268,8 +268,6 @@ public class Player extends Entity {
     }
     
     private void handleMovements() {
-        if (Game.world.isGameOver()) return;
-        
         position.lerp(collider.getPosition().clone().addY(-collider.getRadius()), 0.25f);
         
         // x controls

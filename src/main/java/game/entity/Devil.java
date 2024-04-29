@@ -140,8 +140,12 @@ public class Devil extends Seeker {
         if (
             intervals.isIntervalOverFor(Interval.SHOOT_FIREBALL) && isReadyToShootPlayer()
         ) {
+            Bounds playerHitBox = Game.world.getPlayer().getHitBox();
+            float targetX = playerHitBox.getX() + playerHitBox.getWidth() / 2;
+            float targetY = playerHitBox.getY() + playerHitBox.getHeight() / 2;
             float angleToPlayer = position.getAngle(
-                Game.world.getPlayer().getCollider().getPosition()
+                targetX,
+                targetY
             );
             Fireball fireball = Game.world.spawnFireball(
                 collider.getPosition(),
