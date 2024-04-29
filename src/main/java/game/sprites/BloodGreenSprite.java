@@ -9,19 +9,19 @@ public class BloodGreenSprite extends SpriteAnimation {
         this.setTileSize(40, 40);
         this.registerAnimations();
         setFPS(24);
-        this.set(Animation.Default);
+        this.set(Animation.DEFAULT);
     }
     
     public enum Animation {
-        Default
+        DEFAULT
     }
     
     public void set(Animation animation) {
-        this.setAnimation(animation.name());
+        this.setAnimation(animation);
     }
     
     private void registerAnimations() {
-        this.registerAnimation(Animation.Default.name(), new SpriteAnimation.TileLocation[]{
+        this.registerAnimation(Animation.DEFAULT, new SpriteAnimation.TileLocation[]{
             SpriteAnimation.TileLocation.create(0, 0),
             // SpriteAnimation.TileLocation.create(0, 1),
             SpriteAnimation.TileLocation.create(0, 2),

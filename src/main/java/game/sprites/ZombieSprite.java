@@ -8,19 +8,19 @@ public class ZombieSprite extends SpriteAnimation {
         this.setSpriteSheet(Common.loadImage("/sprites/zombie-a.png"));
         this.setTileSize(22, 23);
         this.registerAnimations();
-        this.set(Animation.Walk);
+        this.set(Animation.WALK);
     }
     
     public enum Animation {
-        Walk
+        WALK
     }
     
     public void set(Animation animation) {
-        this.setAnimation(animation.name());
+        this.setAnimation(animation);
     }
     
     private void registerAnimations() {
-        this.registerAnimation(Animation.Walk.name(), new SpriteAnimation.TileLocation[]{
+        this.registerAnimation(Animation.WALK, new SpriteAnimation.TileLocation[]{
             SpriteAnimation.TileLocation.create(0, 0),
             SpriteAnimation.TileLocation.create(0, 1),
             SpriteAnimation.TileLocation.create(0, 2),

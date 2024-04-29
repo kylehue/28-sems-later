@@ -8,23 +8,22 @@ public class PlayerSprite extends SpriteAnimation {
         this.setSpriteSheet(Common.loadImage("/sprites/player.png"));
         this.setTileSize(22, 23);
         this.registerAnimations();
-        this.set(Animation.Idle);
+        this.set(Animation.IDLE);
     }
     
     public enum Animation {
-        Walk,
-        Idle,
-        Reload,
-        Shoot
+        WALK,
+        IDLE,
+        RELOAD,
+        SHOOT
     }
     
     public void set(Animation animation) {
-        this.setAnimation(animation.name());
+        this.setAnimation(animation);
     }
     
     private void registerAnimations() {
-        // Idle
-        this.registerAnimation(Animation.Idle.name(), new TileLocation[]{
+        this.registerAnimation(Animation.IDLE, new TileLocation[]{
             SpriteAnimation.TileLocation.create(0, 0),
             SpriteAnimation.TileLocation.create(0, 1),
             SpriteAnimation.TileLocation.create(0, 2),
@@ -33,8 +32,7 @@ public class PlayerSprite extends SpriteAnimation {
             SpriteAnimation.TileLocation.create(0, 5)
         });
         
-        // Reload
-        this.registerAnimation(Animation.Reload.name(), new TileLocation[]{
+        this.registerAnimation(Animation.RELOAD, new TileLocation[]{
             SpriteAnimation.TileLocation.create(1, 0),
             SpriteAnimation.TileLocation.create(1, 1),
             SpriteAnimation.TileLocation.create(1, 2),
@@ -48,16 +46,14 @@ public class PlayerSprite extends SpriteAnimation {
             SpriteAnimation.TileLocation.create(1, 10)
         });
         
-        // Shoot
-        this.registerAnimation(Animation.Shoot.name(), new TileLocation[]{
+        this.registerAnimation(Animation.SHOOT, new TileLocation[]{
             SpriteAnimation.TileLocation.create(2, 0),
             SpriteAnimation.TileLocation.create(2, 1),
             SpriteAnimation.TileLocation.create(2, 2),
             SpriteAnimation.TileLocation.create(2, 3)
         });
         
-        // Walk
-        this.registerAnimation(Animation.Walk.name(), new TileLocation[]{
+        this.registerAnimation(Animation.WALK, new TileLocation[]{
             SpriteAnimation.TileLocation.create(3, 0),
             SpriteAnimation.TileLocation.create(3, 1),
             SpriteAnimation.TileLocation.create(3, 2),
