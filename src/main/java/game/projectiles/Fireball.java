@@ -36,7 +36,7 @@ public class Fireball extends Projectile {
         collider.excludeResolutionToGroup(Game.CollisionGroup.PLAYER);
         collider.excludeResolutionToGroup(Game.CollisionGroup.MOBS);
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
-        collider.setRadius(4);
+        collider.setRadius(3);
         collider.setFriction(0.9f);
         collider.setMass(5);
     }
@@ -45,6 +45,8 @@ public class Fireball extends Projectile {
     public void render(GraphicsContext ctx, float alpha) {
         sprite.render(ctx);
         sprite.getPosition().set(position);
+        sprite.getOrigin().set(-5.5f, -5.5f);
+        sprite.setAngleInRadians((float) (angle + Math.PI));
         // ctx.save();
         // ctx.translate(
         //     position.getX(),

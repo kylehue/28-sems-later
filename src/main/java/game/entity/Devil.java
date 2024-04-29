@@ -22,7 +22,7 @@ public class Devil extends Seeker {
     // stats
     private final FloatProperty damage = new SimpleFloatProperty();
     private final FloatProperty speed = new SimpleFloatProperty();
-    private final float readyShootDistance = 90;
+    private final float readyShootDistance = 100;
     
     // misc
     private final DevilSprite sprite = new DevilSprite();
@@ -143,7 +143,10 @@ public class Devil extends Seeker {
             float angleToPlayer = position.getAngle(
                 Game.world.getPlayer().getCollider().getPosition()
             );
-            Fireball fireball = Game.world.spawnFireball(getRenderPosition(), angleToPlayer);
+            Fireball fireball = Game.world.spawnFireball(
+                collider.getPosition(),
+                angleToPlayer
+            );
             fireball.setDamage(getDamage());
             intervals.resetIntervalFor(Interval.SHOOT_FIREBALL);
             
