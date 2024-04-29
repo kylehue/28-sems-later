@@ -7,10 +7,11 @@ import game.weapons.WeaponKind;
 import java.util.HashMap;
 
 public abstract class Mechanics {
-    private final static int PLAYER_MAX_XP_INCREASE = 50;
-    private final static float PLAYER_HEALTH_INCREASE = 10;
-    private final static int ZOMBIE_COUNT_INCREASE = 10;
-    private final static float ZOMBIE_DAMAGE_INCREASE = 0.01f;
+    private final static int PLAYER_MAX_XP_INCREASE_PER_LEVEL = 25;
+    private final static float PLAYER_HEALTH_INCREASE_PER_LEVEL = 5;
+    private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 25;
+    private final static float ZOMBIE_DAMAGE_INCREASE_PER_LEVEL = 0.1f;
+    private final static float ZOMBIE_SPEED_INCREASE_PER_LEVEL = 1;
     private final static HashMap<WeaponKind, Integer> weaponsLevelRequirementMap = new HashMap<>() {
         {
             put(WeaponKind.PISTOL, 0);
@@ -37,17 +38,34 @@ public abstract class Mechanics {
         // Level up
         Progress.PLAYER_CURRENT_LEVEL.set(Progress.PLAYER_CURRENT_LEVEL.get() + 1);
         Progress.PLAYER_CURRENT_XP.set(0);
-        Progress.PLAYER_MAX_XP.set(maxXp + PLAYER_MAX_XP_INCREASE);
+        Progress.PLAYER_MAX_XP.set(maxXp + PLAYER_MAX_XP_INCREASE_PER_LEVEL);
         
         // Increase player hp
-        Progress.PLAYER_CURRENT_HEALTH.set(Progress.PLAYER_CURRENT_HEALTH.get() + PLAYER_HEALTH_INCREASE);
-        Progress.PLAYER_MAX_HEALTH.set(Progress.PLAYER_MAX_HEALTH.get() + PLAYER_HEALTH_INCREASE);
+        Progress.PLAYER_CURRENT_HEALTH.set(
+            Progress.PLAYER_CURRENT_HEALTH.get() + PLAYER_HEALTH_INCREASE_PER_LEVEL
+        );
+        Progress.PLAYER_MAX_HEALTH.set(
+            Progress.PLAYER_MAX_HEALTH.get() + PLAYER_HEALTH_INCREASE_PER_LEVEL
+        );
         
         // Increase zombie count
-        Progress.ZOMBIE_COUNT.set(Progress.ZOMBIE_COUNT.get() + ZOMBIE_COUNT_INCREASE);
+        if (Progress.ZOMBIE_COUNT.get() < Config.MAX_ZOMBIES_COUNT) {
+            Progress.ZOMBIE_COUNT.set(
+                Progress.ZOMBIE_COUNT.get() + ZOMBIE_COUNT_INCREASE_PER_LEVEL
+            );
+        }
         
         // Increase zombie damage
-        Progress.ZOMBIE_DAMAGE.set(Progress.ZOMBIE_DAMAGE.get() + ZOMBIE_DAMAGE_INCREASE);
+        Progress.ZOMBIE_DAMAGE.set(
+            Progress.ZOMBIE_DAMAGE.get() + ZOMBIE_DAMAGE_INCREASE_PER_LEVEL
+        );
+        
+        // Increase zombie speed
+        if (Progress.ZOMBIE_SPEED.get() < Config.MAX_ZOMBIE_SPEED) {
+            Progress.ZOMBIE_SPEED.set(
+                Progress.ZOMBIE_SPEED.get() + ZOMBIE_SPEED_INCREASE_PER_LEVEL
+            );
+        }
         
         // Unlock weapons
         weaponsLevelRequirementMap.forEach((weaponKind, levelRequired) -> {
@@ -57,7 +75,7 @@ public abstract class Mechanics {
             ) {
                 Progress.UNLOCKED_WEAPONS.add(weaponKind);
                 Game.scene.getMessages().add(
-                    "You have unlocked a " + weaponKind.name().toLowerCase() + " weapon!"
+                    "You unlocked a " + weaponKind.name().toLowerCase() + "!"
                 );
                 
                 Game.world.getPlayer().setCurrentWeapon(weaponKind);

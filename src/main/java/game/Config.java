@@ -68,7 +68,8 @@ public abstract class Config {
     
     // Zombie
     public final static float DEFAULT_ZOMBIE_DAMAGE = 1;
-    public final static float DEFAULT_ZOMBIE_SPEED = 100;
+    public final static float DEFAULT_ZOMBIE_SPEED = 200;
+    public final static float MAX_ZOMBIE_SPEED = 700;
     
     // Projectiles max stats
     public final static float MAX_BULLET_PENETRATION = 3;
