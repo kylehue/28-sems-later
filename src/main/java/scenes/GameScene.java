@@ -4,14 +4,17 @@ import game.Game;
 import game.Progress;
 import game.powerups.PowerUpKind;
 import game.weapons.WeaponKind;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.SetChangeListener;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,6 +30,8 @@ import skins.ProgressBarImageSkin;
 import utils.Common;
 
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class GameScene extends GameApplicationScene {
     private final Game game;
@@ -38,6 +43,7 @@ public class GameScene extends GameApplicationScene {
     private PowerUpSelectEvent onSelectPowerUp = null;
     private Runnable onContinueGame = null;
     private Runnable onExitGame = null;
+    private final ObservableList<String> messages = FXCollections.observableArrayList();
     
     public GameScene(GameApplication gameApplication, Object sceneKey) {
         super(gameApplication, sceneKey);
@@ -55,6 +61,49 @@ public class GameScene extends GameApplicationScene {
         this.setupWeaponSwitchComponent();
         this.setupPowerUpSelectionComponent();
         this.setupPauseComponent();
+        this.setupMessageComponent();
+    }
+    
+    private void setupMessageComponent() {
+        final int MAX_MESSAGES_SIZE = 5;
+        final int MESSAGE_TIME_LIMIT_SECONDS = 10;
+        
+        VBox parent = new VBox();
+        defaultRoot.getChildren().add(parent);
+        parent.setMouseTransparent(true);
+        StackPane.setMargin(parent, new Insets(120));
+        parent.setAlignment(Pos.TOP_CENTER);
+        
+        messages.addListener((ListChangeListener<String>) change -> {
+            change.next();
+            for (String message : change.getAddedSubList()) {
+                Label label = createPixelatedLabel(32);
+                label.setText(message);
+                label.setTextFill(Color.valueOf("#e4fa52"));
+                parent.getChildren().add(label);
+                CompletableFuture
+                    .delayedExecutor(MESSAGE_TIME_LIMIT_SECONDS, TimeUnit.SECONDS)
+                    .execute(() -> {
+                        Platform.runLater(() -> {
+                            parent.getChildren().remove(label);
+                        });
+                    });
+                
+                for (
+                    int i = 0;
+                    i < parent.getChildren().size() - MAX_MESSAGES_SIZE;
+                    i++
+                ) {
+                    parent.getChildren().removeFirst();
+                }
+                
+                messages.remove(message);
+            }
+        });
+    }
+    
+    public ObservableList<String> getMessages() {
+        return messages;
     }
     
     private void setupPauseComponent() {
@@ -152,13 +201,13 @@ public class GameScene extends GameApplicationScene {
         isGameOverComponentVisible.set(v);
     }
     
-    private Label createPixelatedLabel(int size) {
+    private static Label createPixelatedLabel(int size) {
         Label label = new Label();
         DropShadow dropShadow = new DropShadow();
         dropShadow.setColor(Color.color(0, 0, 0, 0.75));
         dropShadow.setRadius(0);
         dropShadow.setSpread(0);
-        dropShadow.setOffsetY(5);
+        dropShadow.setOffsetY(Math.sqrt(size) / 2);
         label.setTextFill(Color.WHITE);
         label.setEffect(dropShadow);
         label.setAlignment(Pos.CENTER);

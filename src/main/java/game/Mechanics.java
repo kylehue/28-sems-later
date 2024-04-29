@@ -2,12 +2,24 @@ package game;
 
 import game.utils.IntervalMap;
 import game.utils.Vector;
+import game.weapons.WeaponKind;
+
+import java.util.HashMap;
 
 public abstract class Mechanics {
     private final static int PLAYER_MAX_XP_INCREASE = 50;
     private final static float PLAYER_HEALTH_INCREASE = 10;
     private final static int ZOMBIE_COUNT_INCREASE = 10;
     private final static float ZOMBIE_DAMAGE_INCREASE = 0.01f;
+    private final static HashMap<WeaponKind, Integer> weaponsLevelRequirementMap = new HashMap<>() {
+        {
+            put(WeaponKind.PISTOL, 0);
+            put(WeaponKind.RIFLE, 5);
+            put(WeaponKind.SHOTGUN, 10);
+            put(WeaponKind.SNIPER, 15);
+            put(WeaponKind.GRENADE_LAUNCHER, 20);
+        }
+    };
     
     private final static IntervalMap intervals = new IntervalMap();
     
@@ -19,6 +31,8 @@ public abstract class Mechanics {
         int currentXp = Progress.PLAYER_CURRENT_XP.get();
         int maxXp = Progress.PLAYER_MAX_XP.get();
         if (currentXp < maxXp) return;
+        
+        Game.scene.getMessages().add("Level up!");
         
         // Level up
         Progress.PLAYER_CURRENT_LEVEL.set(Progress.PLAYER_CURRENT_LEVEL.get() + 1);
@@ -35,6 +49,21 @@ public abstract class Mechanics {
         // Increase zombie damage
         Progress.ZOMBIE_DAMAGE.set(Progress.ZOMBIE_DAMAGE.get() + ZOMBIE_DAMAGE_INCREASE);
         
+        // Unlock weapons
+        weaponsLevelRequirementMap.forEach((weaponKind, levelRequired) -> {
+            if (
+                !Progress.UNLOCKED_WEAPONS.contains(weaponKind) &&
+                    Progress.PLAYER_CURRENT_LEVEL.get() >= levelRequired
+            ) {
+                Progress.UNLOCKED_WEAPONS.add(weaponKind);
+                Game.scene.getMessages().add(
+                    "You have unlocked a " + weaponKind.name().toLowerCase() + " weapon!"
+                );
+                
+                Game.world.getPlayer().setCurrentWeapon(weaponKind);
+            }
+        });
+        
         pickPowerUp();
     }
     
@@ -44,6 +73,7 @@ public abstract class Mechanics {
         Game.scene.setPowerUpSelectionComponentVisible(true);
         Game.scene.setOnSelectPowerUp(selectedPowerUp -> {
             selectedPowerUp.get().apply();
+            Game.scene.getMessages().add("Your weapons has been upgraded!");
             Game.scene.setPowerUpSelectionComponentVisible(false);
             Game.world.play();
         });
