@@ -70,12 +70,23 @@ public abstract class Config {
     public final static float DEFAULT_ZOMBIE_DAMAGE = 1;
     public final static float DEFAULT_ZOMBIE_SPEED = 200;
     public final static float MAX_ZOMBIE_SPEED = 700;
+    public final static float DEFAULT_ZOMBIE_HEALTH = 100;
+    public final static float DEFAULT_ZOMBIE_MAX_HEALTH = 100;
+    
+    // Devil
+    public final static float DEFAULT_DEVIL_DAMAGE = 20;
+    public final static float DEFAULT_DEVIL_SPEED = 200;
+    public final static float MAX_DEVIL_SPEED = 400;
+    public final static float DEFAULT_DEVIL_HEALTH = 1000;
+    public final static float DEFAULT_DEVIL_MAX_HEALTH = 1000;
     
     // Projectiles max stats
     public final static float MAX_BULLET_PENETRATION = 3;
     public final static float MAX_INSTANT_BULLET_PENETRATION = 20;
     
     // World
-    public final static int DEFAULT_ZOMBIES_COUNT = 100;
-    public final static int MAX_ZOMBIES_COUNT = 700;
+    public final static int DEFAULT_ZOMBIE_COUNT = 100;
+    public final static int MAX_ZOMBIE_COUNT = 700;
+    public final static int DEFAULT_DEVIL_COUNT = 1;
+    public final static int MAX_DEVIL_COUNT = 25;
 }

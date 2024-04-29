@@ -1,5 +1,6 @@
 package game.entity;
 
+import game.Config;
 import game.Game;
 import game.Progress;
 import game.colliders.CircleCollider;
@@ -30,6 +31,10 @@ public class Zombie extends Seeker {
     }
     
     public Zombie() {
+        // Defaults
+        setCurrentHealth(Config.DEFAULT_ZOMBIE_HEALTH);
+        setMaxHealth(Config.DEFAULT_ZOMBIE_MAX_HEALTH);
+        
         // Initialize colliders
         collider.setGroup(Game.CollisionGroup.MOBS);
         collider.addToGroup(Game.CollisionGroup.MAP);
@@ -155,6 +160,11 @@ public class Zombie extends Seeker {
     }
     
     @Override
+    public Vector getRenderPosition() {
+        return collider.getPosition();
+    }
+    
+    @Override
     public void fixedUpdate(float deltaTime) {
         this.handleMovements();
         this.checkPlayerCollision();
@@ -230,10 +240,5 @@ public class Zombie extends Seeker {
             width,
             height
         );
-    }
-    
-    @Override
-    public Vector getRenderPosition() {
-        return collider.getPosition();
     }
 }

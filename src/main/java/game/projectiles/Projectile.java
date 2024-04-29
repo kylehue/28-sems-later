@@ -86,7 +86,7 @@ public abstract class Projectile implements Drawable {
     
     @Override
     public int getZIndex() {
-        return Game.ZIndex.MAP_DECORATIONS;
+        return Game.ZIndex.PROJECTILE;
     }
     
     @Override

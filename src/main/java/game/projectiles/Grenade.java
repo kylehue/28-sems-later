@@ -103,7 +103,7 @@ public class Grenade extends Projectile {
         world.addOneTimeSpriteAnimation(explosionSprite);
         
         // Handle affected entities
-        for (Entity entity : world.getZombies()) {
+        for (Entity entity : world.getEntities(false)) {
             if (isEntityMarked(entity)) continue;
             boolean isEntityAffected = affectedColliders.contains(entity.getCollider().getId());
             if (!isEntityAffected) continue;
@@ -133,6 +133,11 @@ public class Grenade extends Projectile {
         world.getProjectiles().remove(this);
         world.getColliderWorld().removeCollider(collider);
         world.getColliderWorld().removeCollider(aoeCollider);
+    }
+    
+    @Override
+    public int getZIndex() {
+        return Game.ZIndex.MAP_DECORATIONS;
     }
     
     public void setAoeDistance(float aoeDistance) {

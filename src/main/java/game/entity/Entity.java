@@ -15,7 +15,7 @@ public abstract class Entity implements Drawable {
     protected final String id = Common.generateId();
     protected final Vector position = new Vector();
     private final FloatProperty currentHealth = new SimpleFloatProperty(100);
-    private final FloatProperty maxHealth = new SimpleFloatProperty(100);
+    private final FloatProperty maxHealth = new SimpleFloatProperty(Float.MAX_VALUE);
     protected int zIndex = 0;
     
     // to be overridden

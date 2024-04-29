@@ -6,6 +6,7 @@ import game.Progress;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
 import game.sprites.BloodSprite;
+import game.utils.Bounds;
 import game.utils.Common;
 import game.weapons.Gun;
 import game.weapons.Weapon;
@@ -25,9 +26,7 @@ public class Player extends Entity {
     
     // stats
     private final FloatProperty speed = new SimpleFloatProperty();
-    private final FloatProperty dashSpeed = new SimpleFloatProperty(
-        Config.DEFAULT_PLAYER_DASH_SPEED
-    );
+    private final FloatProperty dashSpeed = new SimpleFloatProperty();
     private final IntegerProperty dashIntervalInMillis = new SimpleIntegerProperty();
     private final int healthRegenIntervalInMillis = 50;
     private final FloatProperty healthRegenHealth = new SimpleFloatProperty();
@@ -54,7 +53,7 @@ public class Player extends Entity {
     }
     
     // sprites
-    private final PlayerSprite bodySprite = new PlayerSprite();
+    private final PlayerSprite sprite = new PlayerSprite();
     
     // audios
     private final MediaPlayer footstepAudio = new MediaPlayer(
@@ -65,6 +64,14 @@ public class Player extends Entity {
     );
     
     public Player() {
+        // Defaults
+        setCurrentHealth(Config.DEFAULT_PLAYER_HEALTH);
+        setMaxHealth(Config.DEFAULT_PLAYER_MAX_HEALTH);
+        setSpeed(Config.DEFAULT_PLAYER_SPEED);
+        setDashSpeed(Config.DEFAULT_PLAYER_DASH_SPEED);
+        setHealthRegenHealth(Config.DEFAULT_PLAYER_HEALTH_REGEN_HEALTH);
+        setDashIntervalInMillis(Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS);
+        
         // Initialize collider
         this.collider.setGroup(Game.CollisionGroup.PLAYER);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
@@ -140,52 +147,6 @@ public class Player extends Entity {
             Common.random(-7, 7)
         );
         Game.world.addOneTimeSpriteAnimation(bloodSprite);
-    }
-    
-    @Override
-    public void dispose() {
-        this.unbind();
-        footstepAudio.dispose();
-        footstepGrassAudio.dispose();
-        Game.world.getColliderWorld().removeCollider(collider);
-    }
-    
-    @Override
-    public void render(GraphicsContext ctx, float alpha) {
-        // render body
-        this.bodySprite.render(ctx);
-        this.bodySprite.getPosition().set(position);
-        
-        // render gun
-        ctx.save();
-        ctx.translate(
-            position.getX(),
-            position.getY()
-        );
-        ctx.rotate(Math.toDegrees(angleToMouse));
-        if (isFacingOnLeftSide) {
-            ctx.scale(1, -1);
-        }
-        getCurrentWeapon().render(ctx, alpha);
-        ctx.restore();
-    }
-    
-    public void fixedUpdate(float deltaTime) {
-        this.handleMovements();
-        this.handleSpriteAnimations();
-        this.bodySprite.nextFrame();
-    }
-    
-    public void update(float deltaTime) {
-        this.updateControlFlags();
-        this.updateAngleToMouse();
-        this.handleHealthRegen();
-        this.handleFootstepAudio();
-        
-        if (shootPressed) {
-            this.shoot();
-        }
-        
     }
     
     private void handleFootstepAudio() {
@@ -347,16 +308,16 @@ public class Player extends Entity {
     
     private void handleSpriteAnimations() {
         if (this.collider.getVelocity().getMagnitude() <= IDLE_VELOCITY_THRESHOLD) {
-            this.bodySprite.set(PlayerSprite.Animation.Idle);
+            this.sprite.set(PlayerSprite.Animation.IDLE);
             
             if (shootPressed) {
-                this.bodySprite.set(PlayerSprite.Animation.Shoot);
+                this.sprite.set(PlayerSprite.Animation.SHOOT);
             }
         } else {
-            this.bodySprite.set(PlayerSprite.Animation.Walk);
+            this.sprite.set(PlayerSprite.Animation.WALK);
         }
         
-        this.bodySprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
+        this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
     }
     
     public void setDashIntervalInMillis(int dashIntervalInMillis) {
@@ -377,11 +338,6 @@ public class Player extends Entity {
     
     public void setCurrentWeapon(WeaponKind weaponKind) {
         this.currentWeapon.set(weaponKind);
-    }
-    
-    @Override
-    public Vector getRenderPosition() {
-        return position.clone().addY(collider.getRadius());
     }
     
     @Override
@@ -427,5 +383,69 @@ public class Player extends Entity {
     
     public ObjectProperty<WeaponKind> currentWeaponProperty() {
         return currentWeapon;
+    }
+    
+    @Override
+    public void dispose() {
+        this.unbind();
+        footstepAudio.dispose();
+        footstepGrassAudio.dispose();
+        Game.world.getColliderWorld().removeCollider(collider);
+    }
+    
+    @Override
+    public void render(GraphicsContext ctx, float alpha) {
+        // render body
+        this.sprite.render(ctx);
+        this.sprite.getPosition().set(position);
+        
+        // render gun
+        ctx.save();
+        ctx.translate(
+            position.getX(),
+            position.getY()
+        );
+        ctx.rotate(Math.toDegrees(angleToMouse));
+        if (isFacingOnLeftSide) {
+            ctx.scale(1, -1);
+        }
+        getCurrentWeapon().render(ctx, alpha);
+        ctx.restore();
+    }
+    
+    @Override
+    public Vector getRenderPosition() {
+        return position.clone().addY(collider.getRadius());
+    }
+    
+    @Override
+    public void fixedUpdate(float deltaTime) {
+        this.handleMovements();
+        this.handleSpriteAnimations();
+        this.sprite.nextFrame();
+    }
+    
+    @Override
+    public void update(float deltaTime) {
+        this.updateControlFlags();
+        this.updateAngleToMouse();
+        this.handleHealthRegen();
+        this.handleFootstepAudio();
+        
+        if (shootPressed) {
+            this.shoot();
+        }
+    }
+    
+    @Override
+    public Bounds getHitBox() {
+        float width = sprite.getWidth() * 0.55f;
+        float height = sprite.getHeight() * 0.7f;
+        return new Bounds(
+            position.getX() - width / 2,
+            position.getY() - height / 2,
+            width,
+            height
+        );
     }
 }

@@ -2,15 +2,13 @@ package game;
 
 import game.colliders.Collider;
 import game.colliders.ColliderWorld;
+import game.entity.Devil;
 import game.entity.Entity;
 import game.entity.Player;
 import game.entity.Zombie;
 import game.loots.Loot;
 import game.loots.XPLoot;
-import game.projectiles.Bullet;
-import game.projectiles.Grenade;
-import game.projectiles.InstantBullet;
-import game.projectiles.Projectile;
+import game.projectiles.*;
 import game.utils.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -26,11 +24,13 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class World {
     private Player player;
     private final ArrayList<Loot> loots = new ArrayList<>();
     private final ArrayList<Zombie> zombies = new ArrayList<>();
+    private final ArrayList<Devil> devils = new ArrayList<>();
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
     private final Map map = new CityMap();
@@ -107,8 +107,7 @@ public class World {
         
         // render drawables
         ArrayList<Drawable> drawables = new ArrayList<>();
-        drawables.add(player);
-        drawables.addAll(zombies);
+        drawables.addAll(getEntities(true));
         drawables.addAll(projectiles);
         drawables.addAll(loots);
         for (Layer layer : map.getLayers()) {
@@ -195,11 +194,10 @@ public class World {
         this.quadtree.clear();
         map.fixedUpdate(deltaTime);
         
-        player.fixedUpdate(deltaTime);
-        
-        for (int i = zombies.size() - 1; i >= 0; i--) {
-            Zombie zombie = zombies.get(i);
-            zombie.fixedUpdate(deltaTime);
+        List<Entity> entities = getEntities(true);
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            Entity entity = entities.get(i);
+            entity.fixedUpdate(deltaTime);
         }
         
         for (int i = loots.size() - 1; i >= 0; i--) {
@@ -229,11 +227,11 @@ public class World {
     
     public void update(float deltaTime) {
         if (isPaused()) return;
-        player.update(deltaTime);
         
-        for (int i = zombies.size() - 1; i >= 0; i--) {
-            Zombie zombie = zombies.get(i);
-            zombie.update(deltaTime);
+        List<Entity> entities = getEntities(true);
+        for (int i = entities.size() - 1; i >= 0; i--) {
+            Entity entity = entities.get(i);
+            entity.update(deltaTime);
         }
         
         for (int i = projectiles.size() - 1; i >= 0; i--) {
@@ -272,6 +270,13 @@ public class World {
         return instantBullet;
     }
     
+    public Fireball spawnFireball(Vector initialPosition, float angle) {
+        Fireball fireball = new Fireball(this, initialPosition, angle);
+        colliderWorld.addCollider(fireball.getCollider());
+        projectiles.add(fireball);
+        return fireball;
+    }
+    
     public Zombie spawnZombie(Vector initialPosition) {
         Zombie zombie = new Zombie();
         zombie.getCollider().setPosition(initialPosition);
@@ -279,8 +284,20 @@ public class World {
         return zombie;
     }
     
-    public Zombie spawnZombie() {
-        return spawnZombie(generateRandomPosition());
+    public Devil spawnDevil(Vector initialPosition) {
+        Devil devil = new Devil();
+        devil.getCollider().setPosition(initialPosition);
+        devils.add(devil);
+        return devil;
+    }
+    
+    public List<Entity> getEntities(boolean includePlayer) {
+        ArrayList<Entity> entities = new ArrayList<>();
+        entities.addAll(zombies);
+        entities.addAll(devils);
+        if (includePlayer) entities.add(player);
+        
+        return entities;
     }
     
     public XPLoot spawnXPLoot(Vector initialPosition) {
@@ -407,6 +424,10 @@ public class World {
     
     public ArrayList<Zombie> getZombies() {
         return zombies;
+    }
+    
+    public ArrayList<Devil> getDevils() {
+        return devils;
     }
     
     public ArrayList<Loot> getLoots() {

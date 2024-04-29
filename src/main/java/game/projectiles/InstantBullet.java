@@ -1,6 +1,7 @@
 package game.projectiles;
 
 import game.Config;
+import game.Game;
 import game.World;
 import game.colliders.Collider;
 import game.colliders.CollisionResolvers;
@@ -69,7 +70,7 @@ public class InstantBullet extends Projectile {
         // Get entities that intersects the trajectory of the bullet
         HashMap<String, Vector> entitiesIntersectionMap = new HashMap<>();
         ArrayList<Entity> entities = new ArrayList<>();
-        for (Entity entity : world.getZombies()) {
+        for (Entity entity : world.getEntities(false)) {
             Vector intersection = CollisionResolvers.getLineToBoundsIntersectionPoint(
                 initialPosition,
                 travelledPosition,
@@ -153,6 +154,11 @@ public class InstantBullet extends Projectile {
     @Override
     public void dispose() {
         world.getProjectiles().remove(this);
+    }
+    
+    @Override
+    public int getZIndex() {
+        return Game.ZIndex.MAP_DECORATIONS;
     }
     
     public void setPenetration(float penetration) {

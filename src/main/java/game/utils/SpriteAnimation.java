@@ -5,13 +5,13 @@ import javafx.scene.image.Image;
 import java.util.HashMap;
 
 public class SpriteAnimation {
-    private final HashMap<String, TileLocation[]> registeredAnimations = new HashMap<>();
+    private final HashMap<Object, TileLocation[]> registeredAnimations = new HashMap<>();
     private Image spriteSheet;
     private float tileWidth = -1;
     private float tileHeight = -1;
     private int frameAccumulator = 0;
     private int framesElapsed = 0;
-    private String currentAnimation = null;
+    private Object currentAnimation = null;
     private int fps = 12;
     private float angleInRadians = 0;
     
@@ -31,7 +31,7 @@ public class SpriteAnimation {
         this.spriteSheet = spriteSheet;
     }
     
-    public void registerAnimation(String animationName, TileLocation[] tileLocations) {
+    public void registerAnimation(Object animationName, TileLocation[] tileLocations) {
         registeredAnimations.put(animationName, tileLocations);
         if (currentAnimation == null) {
             currentAnimation = animationName;
@@ -110,7 +110,7 @@ public class SpriteAnimation {
         if (this.height == -1) this.height = this.tileHeight;
     }
     
-    public void setAnimation(String animationName) {
+    public void setAnimation(Object animationName) {
         currentAnimation = animationName;
     }
     

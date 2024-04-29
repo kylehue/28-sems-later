@@ -12,6 +12,9 @@ public abstract class Mechanics {
     private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 25;
     private final static float ZOMBIE_DAMAGE_INCREASE_PER_LEVEL = 0.1f;
     private final static float ZOMBIE_SPEED_INCREASE_PER_LEVEL = 1;
+    private final static float DEVIL_COUNT_INCREASE_PER_LEVEL = 0.25f; // 1 per 4 levels
+    private final static float DEVIL_DAMAGE_INCREASE_PER_LEVEL = 1;
+    private final static float DEVIL_SPEED_INCREASE_PER_LEVEL = 1;
     private final static HashMap<WeaponKind, Integer> weaponsLevelRequirementMap = new HashMap<>() {
         {
             put(WeaponKind.PISTOL, 0);
@@ -25,10 +28,12 @@ public abstract class Mechanics {
     private final static IntervalMap intervals = new IntervalMap();
     
     private enum Interval {
-        SPAWN_ZOMBIE
+        SPAWN_ZOMBIE,
+        SPAWN_DEVIL
     }
     
     private static void handleLevelingSystem() {
+        if (Game.world.isGameOver()) return;
         int currentXp = Progress.PLAYER_CURRENT_XP.get();
         int maxXp = Progress.PLAYER_MAX_XP.get();
         if (currentXp < maxXp) return;
@@ -49,7 +54,7 @@ public abstract class Mechanics {
         );
         
         // Increase zombie count
-        if (Progress.ZOMBIE_COUNT.get() < Config.MAX_ZOMBIES_COUNT) {
+        if (Progress.ZOMBIE_COUNT.get() < Config.MAX_ZOMBIE_COUNT) {
             Progress.ZOMBIE_COUNT.set(
                 Progress.ZOMBIE_COUNT.get() + ZOMBIE_COUNT_INCREASE_PER_LEVEL
             );
@@ -64,6 +69,25 @@ public abstract class Mechanics {
         if (Progress.ZOMBIE_SPEED.get() < Config.MAX_ZOMBIE_SPEED) {
             Progress.ZOMBIE_SPEED.set(
                 Progress.ZOMBIE_SPEED.get() + ZOMBIE_SPEED_INCREASE_PER_LEVEL
+            );
+        }
+        
+        // Increase devil count
+        if (Progress.DEVIL_COUNT.get() < Config.MAX_DEVIL_COUNT) {
+            Progress.DEVIL_COUNT.set(
+                Progress.DEVIL_COUNT.get() + (int) Math.floor(DEVIL_COUNT_INCREASE_PER_LEVEL)
+            );
+        }
+        
+        // Increase devil damage
+        Progress.DEVIL_DAMAGE.set(
+            Progress.DEVIL_DAMAGE.get() + DEVIL_DAMAGE_INCREASE_PER_LEVEL
+        );
+        
+        // Increase devil speed
+        if (Progress.DEVIL_SPEED.get() < Config.MAX_DEVIL_SPEED) {
+            Progress.DEVIL_SPEED.set(
+                Progress.DEVIL_SPEED.get() + DEVIL_SPEED_INCREASE_PER_LEVEL
             );
         }
         
@@ -98,10 +122,12 @@ public abstract class Mechanics {
     }
     
     private static void handleZombieSpawn() {
+        if (Game.world.isGameOver()) return;
+        
         if (!intervals.isIntervalOverFor(Interval.SPAWN_ZOMBIE)) return;
         intervals.resetIntervalFor(Interval.SPAWN_ZOMBIE);
-        final int BATCH_SIZE = 50;
-        int zombiesCount = Math.min(Progress.ZOMBIE_COUNT.get(), Config.MAX_ZOMBIES_COUNT);
+        final int BATCH_SIZE = 10;
+        int zombiesCount = Math.min(Progress.ZOMBIE_COUNT.get(), Config.MAX_ZOMBIE_COUNT);
         if (Game.world.getZombies().size() < zombiesCount) {
             int spawnCount = Math.min(
                 zombiesCount - Game.world.getZombies().size(),
@@ -119,7 +145,25 @@ public abstract class Mechanics {
         }
     }
     
+    private static void handleDevilSpawn() {
+        if (Game.world.isGameOver()) return;
+        
+        if (!intervals.isIntervalOverFor(Interval.SPAWN_DEVIL)) return;
+        intervals.resetIntervalFor(Interval.SPAWN_DEVIL);
+        int devilsCount = Math.min(Progress.DEVIL_COUNT.get(), Config.MAX_DEVIL_COUNT);
+        if (Game.world.getDevils().size() < devilsCount) {
+            // Spawn anywhere outside camera
+            Vector randomPosition = Game.world.generateRandomPosition();
+            while (Game.world.getCamera().isInViewport(randomPosition, 50)) {
+                randomPosition.set(Game.world.generateRandomPosition());
+            }
+            
+            Game.world.spawnDevil(randomPosition);
+        }
+    }
+    
     private static void handleGameOver() {
+        if (Game.world.isGameOver()) return;
         if (Game.world.getPlayer().getCurrentHealth() <= 0) {
             gameOver();
         }
@@ -135,6 +179,7 @@ public abstract class Mechanics {
     
     private static void setup() {
         intervals.registerIntervalFor(Interval.SPAWN_ZOMBIE, 100);
+        intervals.registerIntervalFor(Interval.SPAWN_DEVIL, 100);
     }
     
     private static boolean ticked = false;
@@ -146,6 +191,7 @@ public abstract class Mechanics {
         }
         handleLevelingSystem();
         handleZombieSpawn();
+        handleDevilSpawn();
         handleGameOver();
     }
 }

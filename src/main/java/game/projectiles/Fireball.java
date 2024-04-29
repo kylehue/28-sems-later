@@ -1,31 +1,28 @@
 package game.projectiles;
 
-import game.Config;
 import game.Game;
-import game.Progress;
 import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
-import game.colliders.GroupedCollider;
-import game.entity.Entity;
+import game.entity.Player;
 import game.map.Layer;
 import game.map.Material;
+import game.sprites.FireballExplosionSprite;
+import game.sprites.FireballSprite;
 import game.utils.Vector;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import utils.Common;
 
-public class Bullet extends Projectile {
-    private final float knockBackForce = 3000;
-    private final FloatProperty speed = new SimpleFloatProperty(10000);
-    private final FloatProperty maxDistance = new SimpleFloatProperty(200);
+public class Fireball extends Projectile {
+    private final float knockBackForce = 5000;
+    private final FloatProperty speed = new SimpleFloatProperty(2500);
+    private final FloatProperty maxDistance = new SimpleFloatProperty(300);
     private final FloatProperty penetration = new SimpleFloatProperty(1);
     private final CircleCollider collider = new CircleCollider();
-    private final Image image = Common.loadImage("/weapons/bullet-2.png");
+    private final FireballSprite sprite = new FireballSprite();
     
-    public Bullet(World world, Vector initialPosition, float angle) {
+    public Fireball(World world, Vector initialPosition, float angle) {
         super(world, initialPosition, angle);
         initCollider();
     }
@@ -34,35 +31,39 @@ public class Bullet extends Projectile {
         collider.setPosition(initialPosition);
         collider.setGroup(Game.CollisionGroup.PROJECTILES);
         collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.addToGroup(Game.CollisionGroup.PLAYER);
         collider.excludeResolutionToGroup(Game.CollisionGroup.MAP);
+        collider.excludeResolutionToGroup(Game.CollisionGroup.PLAYER);
         collider.excludeResolutionToGroup(Game.CollisionGroup.MOBS);
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
-        collider.setRadius(2);
+        collider.setRadius(4);
         collider.setFriction(0.9f);
         collider.setMass(5);
     }
     
     @Override
     public void render(GraphicsContext ctx, float alpha) {
-        ctx.save();
-        ctx.translate(
-            position.getX(),
-            position.getY()
-        );
-        ctx.rotate(Math.toDegrees(angle));
-        ctx.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2);
-        ctx.restore();
+        sprite.render(ctx);
+        sprite.getPosition().set(position);
+        // ctx.save();
+        // ctx.translate(
+        //     position.getX(),
+        //     position.getY()
+        // );
+        // // ctx.rotate(Math.toDegrees(angle));
+        // ctx.drawImage(image, -image.getWidth() / 2, -image.getHeight() / 2);
+        // ctx.restore();
     }
     
     @Override
     public void fixedUpdate(float deltaTime) {
         handleMovement();
         
-        handleEntityCollision();
+        handlePlayerCollision();
         handleObstacleCollision();
         handleDisposal();
+        
+        sprite.nextFrame();
     }
     
     private void handleMovement() {
@@ -84,26 +85,26 @@ public class Bullet extends Projectile {
         }
     }
     
-    private void handleEntityCollision() {
-        for (Entity entity : world.getEntities(false)) {
-            if (isEntityMarked(entity)) continue;
-            boolean isEntityHit = collider.isCollidingWith(entity.getHitBox());
-            if (!isEntityHit) continue;
-            
-            float penetrationPercentage = getPenetration() >= 1 ? 1 : getPenetration();
-            float computedDamage = getDamage() * penetrationPercentage;
-            
-            entity.addHealth(-computedDamage);
-            penetration.set(getPenetration() - penetrationPercentage);
-            markEntity(entity);
-            
-            // Add knock back
-            float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
-            entity.getCollider().applyForce(
-                (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage * entity.getCollider().getMass()),
-                (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage * entity.getCollider().getMass())
-            );
-        }
+    private void handlePlayerCollision() {
+        Player player = world.getPlayer();
+        
+        if (isEntityMarked(player)) return;
+        boolean isEntityHit = collider.isCollidingWith(player.getHitBox());
+        if (!isEntityHit) return;
+        
+        float penetrationPercentage = getPenetration() >= 1 ? 1 : getPenetration();
+        float computedDamage = getDamage() * penetrationPercentage;
+        
+        player.addHealth(-computedDamage);
+        penetration.set(getPenetration() - penetrationPercentage);
+        markEntity(player);
+        
+        // Add knock back
+        float angleToBullet = initialPosition.getAngle(player.getCollider().getPosition());
+        player.getCollider().applyForce(
+            (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage * player.getCollider().getMass()),
+            (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage * player.getCollider().getMass())
+        );
     }
     
     private void handleObstacleCollision() {
@@ -124,6 +125,21 @@ public class Bullet extends Projectile {
     public void dispose() {
         world.getProjectiles().remove(this);
         world.getColliderWorld().removeCollider(collider);
+        
+        FireballExplosionSprite fireballExplosion = new FireballExplosionSprite();
+        fireballExplosion.getPosition().set(position);
+        world.addOneTimeSpriteAnimation(fireballExplosion);
+        
+        Game.world.addPlayerDistanceAwareAudio(
+            "/sounds/fireball-hit.mp3",
+            position,
+            250
+        );
+    }
+    
+    @Override
+    public int getZIndex() {
+        return Game.ZIndex.MAP_DECORATIONS;
     }
     
     public void setSpeed(float speed) {

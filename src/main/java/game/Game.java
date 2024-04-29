@@ -15,15 +15,6 @@ import javafx.scene.text.TextAlignment;
 import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
-import utils.Common;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 public class Game extends GameLoop {
     public enum CollisionGroup {
@@ -36,7 +27,8 @@ public class Game extends GameLoop {
     public static class ZIndex {
         public static final int MAP_FLOOR = 10;
         public static final int PLAYER = 20;
-        public static final int ZOMBIE = 20;
+        public static final int MOBS = 20;
+        public static final int PROJECTILE = 21;
         public static final int MAP_DECORATIONS = 20;
         public static final int MAP_HIGH = 30;
     }

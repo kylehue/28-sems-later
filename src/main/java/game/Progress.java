@@ -50,10 +50,20 @@ public abstract class Progress {
         Config.DEFAULT_ZOMBIE_SPEED
     );
     public static final IntegerProperty ZOMBIE_COUNT = new SimpleIntegerProperty(
-        Config.DEFAULT_ZOMBIES_COUNT
+        Config.DEFAULT_ZOMBIE_COUNT
     );
     public static final FloatProperty ZOMBIE_DAMAGE = new SimpleFloatProperty(
         Config.DEFAULT_ZOMBIE_DAMAGE
+    );
+    
+    public static final FloatProperty DEVIL_SPEED = new SimpleFloatProperty(
+        Config.DEFAULT_DEVIL_SPEED
+    );
+    public static final IntegerProperty DEVIL_COUNT = new SimpleIntegerProperty(
+        Config.DEFAULT_DEVIL_COUNT
+    );
+    public static final FloatProperty DEVIL_DAMAGE = new SimpleFloatProperty(
+        Config.DEFAULT_DEVIL_DAMAGE
     );
     
     public static void reset() {
@@ -72,7 +82,11 @@ public abstract class Progress {
         PLAYER_DASH_INTERVAL.set(Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS);
         
         ZOMBIE_SPEED.set(Config.DEFAULT_ZOMBIE_SPEED);
-        ZOMBIE_COUNT.set(Config.DEFAULT_ZOMBIES_COUNT);
+        ZOMBIE_COUNT.set(Config.DEFAULT_ZOMBIE_COUNT);
         ZOMBIE_DAMAGE.set(Config.DEFAULT_ZOMBIE_DAMAGE);
+        
+        DEVIL_SPEED.set(Config.DEFAULT_DEVIL_SPEED);
+        DEVIL_COUNT.set(Config.DEFAULT_DEVIL_COUNT);
+        DEVIL_DAMAGE.set(Config.DEFAULT_DEVIL_DAMAGE);
     }
 }

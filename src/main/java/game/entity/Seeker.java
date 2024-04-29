@@ -40,7 +40,7 @@ public abstract class Seeker extends Entity {
      * Checks if the straight line from this to player
      * has no obstacles.
      */
-    private boolean isPathClear() {
+    private boolean _isPathClear() {
         for (Layer layer : Game.world.getMap().getLayers()) {
             for (Material material : layer.getMaterials()) {
                 Collider obstacle = material.getCollider();
@@ -59,6 +59,10 @@ public abstract class Seeker extends Entity {
         }
         
         return true;
+    }
+    
+    protected boolean isPathClear() {
+        return isPathClear;
     }
     
     protected abstract void handleSeek(float angle);
@@ -97,7 +101,7 @@ public abstract class Seeker extends Entity {
     private void maybeUpdateIfPathIsClear() {
         if (intervalMap.isIntervalOverFor(Interval.UPDATE_IS_PATH_CLEAR)) {
             Async.queue1.submit(() -> {
-                this.isPathClear = this.isPathClear();
+                this.isPathClear = this._isPathClear();
             });
             
             intervalMap.resetIntervalFor(Interval.UPDATE_IS_PATH_CLEAR);
