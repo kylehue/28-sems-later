@@ -11,29 +11,20 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.GraphicsContext;
 import game.sprites.ZombieSprite;
-import utils.Async;
-import game.map.PathFinder;
 
-import java.util.ArrayList;
-
-public class Zombie extends Entity {
+public class Zombie extends Seeker {
     // stats
     private final FloatProperty speed = new SimpleFloatProperty();
-    private FloatProperty damage = new SimpleFloatProperty();
+    private final FloatProperty damage = new SimpleFloatProperty();
     
     // misc
     private final ZombieSprite sprite = new ZombieSprite();
     private final CircleCollider collider = new CircleCollider();
-    private float angleToPlayer = 0;
-    private boolean isFacingOnLeftSide = false;
-    private ArrayList<Vector> pathToPlayer = new ArrayList<>();
     private final IntervalMap intervals = new IntervalMap();
     private final static IntervalMap generalIntervals = new IntervalMap();
-    private float distanceToPlayer = 0;
     
     private enum Interval {
         BITE,
-        PATH_UPDATE,
         EMIT_SOUND_GROAN,
         EMIT_SOUND_DEATH
     }
@@ -50,16 +41,12 @@ public class Zombie extends Entity {
         
         // Initialize intervals
         intervals.registerIntervalFor(Interval.BITE, 1000);
-        intervals.registerIntervalFor(
-            Interval.PATH_UPDATE,
-            (int) Common.random(70, 200)
-        );
         generalIntervals.registerIntervalFor(Interval.EMIT_SOUND_DEATH, 300);
         generalIntervals.registerIntervalFor(Interval.EMIT_SOUND_GROAN, 2000);
         
         // Misc
         this.sprite.randomizeFirstFrame();
-        this.setZIndex(Game.ZIndex.ZOMBIE);
+        this.setZIndex(Game.ZIndex.MOBS);
         
         // Stats
         setSpeed(
@@ -91,56 +78,13 @@ public class Zombie extends Entity {
         Game.world.addOneTimeSpriteAnimation(bloodGreenSprite);
     }
     
-    @Override
-    public void render(GraphicsContext ctx, float alpha) {
-        this.sprite.render(ctx);
-        
-        // // draw path to player
-        // for (Vector vector : pathToPlayer) {
-        //     ctx.beginPath();
-        //     ctx.setFill(Paint.valueOf("rgba(250, 120, 250, 0.85)"));
-        //     ctx.fillOval(vector.getX(), vector.getY(), 8, 8);
-        //     ctx.closePath();
-        // }
-        
-        // // render hit box
-        // ctx.beginPath();
-        // ctx.setFill(Paint.valueOf("rgba(250, 120, 250, 0.85)"));
-        // ctx.fillRect(
-        //     getHitBox().getX(),
-        //     getHitBox().getY(),
-        //     getHitBox().getWidth(),
-        //     getHitBox().getHeight()
-        // );
-        // ctx.closePath();
-    }
-    
-    public void fixedUpdate(float deltaTime) {
-        this.handleMovements();
-        this.checkPlayerCollision();
-        this.maybeUpdatePathToPlayer();
-        this.sprite.nextFrame();
-    }
-    
-    public void update(float deltaTime) {
-        this.handleSprite();
-        this.updateAngleToPlayer();
-        this.updateDistanceToPlayer();
-        this.handleGroan();
-        
-        if (getCurrentHealth() <= 0) {
-            dispose();
-            Progress.PLAYER_ZOMBIE_KILLS.set(
-                Progress.PLAYER_ZOMBIE_KILLS.get() + 1
-            );
-        }
-    }
-    
-    private void handleGroan() {
+    private void emitGroanSound() {
         if (!generalIntervals.isIntervalOverFor(Interval.EMIT_SOUND_GROAN)) {
             return;
         }
         final int SOUND_DISTANCE = 400;
+        Player player = Game.world.getPlayer();
+        float distanceToPlayer = player.getPosition().getDistanceFrom(position);
         if (distanceToPlayer >= SOUND_DISTANCE) return;
         String[] pathsToGroan = {
             "/sounds/zombie-groan-1.mp3",
@@ -158,6 +102,76 @@ public class Zombie extends Entity {
             (int) Common.random(1000, 3000)
         );
         generalIntervals.resetIntervalFor(Interval.EMIT_SOUND_GROAN);
+    }
+    
+    private void checkPlayerCollision() {
+        Player player = Game.world.getPlayer();
+        boolean isCollidingWithPlayer = collider.isCollidingWith(
+            player.getCollider()
+        );
+        if (intervals.isIntervalOverFor(Interval.BITE) && isCollidingWithPlayer) {
+            player.addHealth(-getDamage());
+            intervals.resetIntervalFor(Interval.BITE);
+        }
+    }
+    
+    private void handleSprite() {
+        this.sprite.getPosition().set(position);
+        this.sprite.setHorizontallyFlipped(isFacingOnLeftSide());
+    }
+    
+    private void handleMovements() {
+        position.set(collider.getPosition().clone().addY(-collider.getRadius()));
+        seek(Game.world.getPlayer().getCollider().getPosition());
+    }
+    
+    public void setDamage(float damage) {
+        this.damage.set(damage);
+    }
+    
+    public void setSpeed(float speed) {
+        this.speed.set(speed);
+    }
+    
+    public float getDamage() {
+        return damage.get();
+    }
+    
+    public float getSpeed() {
+        return speed.get();
+    }
+    
+    public FloatProperty speedProperty() {
+        return speed;
+    }
+    
+    public FloatProperty damageProperty() {
+        return damage;
+    }
+    
+    @Override
+    public void render(GraphicsContext ctx, float alpha) {
+        this.sprite.render(ctx);
+    }
+    
+    @Override
+    public void fixedUpdate(float deltaTime) {
+        this.handleMovements();
+        this.checkPlayerCollision();
+        this.sprite.nextFrame();
+    }
+    
+    @Override
+    public void update(float deltaTime) {
+        this.handleSprite();
+        this.emitGroanSound();
+        
+        if (getCurrentHealth() <= 0) {
+            dispose();
+            Progress.PLAYER_ZOMBIE_KILLS.set(
+                Progress.PLAYER_ZOMBIE_KILLS.get() + 1
+            );
+        }
     }
     
     @Override
@@ -193,75 +207,12 @@ public class Zombie extends Entity {
         this.unbind();
     }
     
-    private void checkPlayerCollision() {
-        Player player = Game.world.getPlayer();
-        boolean isCollidingWithPlayer = collider.isCollidingWith(
-            player.getCollider()
+    @Override
+    protected void handleSeek(float angle) {
+        this.collider.applyForce(
+            (float) (Math.cos(angle) * getSpeed() * collider.getMass()),
+            (float) (Math.sin(angle) * getSpeed() * collider.getMass())
         );
-        if (intervals.isIntervalOverFor(Interval.BITE) && isCollidingWithPlayer) {
-            player.addHealth(-getDamage());
-            intervals.resetIntervalFor(Interval.BITE);
-        }
-    }
-    
-    private void updateDistanceToPlayer() {
-        Player player = Game.world.getPlayer();
-        this.distanceToPlayer = player.getPosition().getDistanceFrom(position);
-    }
-    
-    private void updateAngleToPlayer() {
-        Player player = Game.world.getPlayer();
-        this.angleToPlayer = this.position.getAngle(player.getPosition());
-        this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
-    }
-    
-    private void handleSprite() {
-        this.sprite.getPosition().set(position);
-        this.sprite.setHorizontallyFlipped(this.isFacingOnLeftSide);
-    }
-    
-    private void maybeUpdatePathToPlayer() {
-        Player player = Game.world.getPlayer();
-        intervals.changeIntervalFor(Interval.PATH_UPDATE, (int) distanceToPlayer);
-        if (intervals.isIntervalOverFor(Interval.PATH_UPDATE)) {
-            Async.queue1.submit(() -> {
-                PathFinder pathFinder = Game.world.getPathFinder();
-                pathToPlayer = pathFinder.requestPath(
-                    collider.getPosition(),
-                    player.getCollider().getPosition()
-                );
-            });
-            intervals.resetIntervalFor(Interval.PATH_UPDATE);
-        }
-    }
-    
-    private void handleMovements() {
-        position.set(collider.getPosition().clone().addY(-collider.getRadius()));
-        
-        // Move to player
-        if (pathToPlayer.size() > 4) {
-            Vector stepNext = pathToPlayer.get(Math.max(0, pathToPlayer.size() - 2));
-            float angle = collider.getPosition().getAngle(stepNext);
-            this.collider.applyForce(
-                (float) (Math.cos(angle) * getSpeed() * collider.getMass()),
-                (float) (Math.sin(angle) * getSpeed() * collider.getMass())
-            );
-            this.isFacingOnLeftSide = Math.abs(angle) > (Math.PI / 2);
-        } else {
-            this.collider.applyForce(
-                (float) (Math.cos(angleToPlayer) * getSpeed() * collider.getMass()),
-                (float) (Math.sin(angleToPlayer) * getSpeed() * collider.getMass())
-            );
-            this.isFacingOnLeftSide = Math.abs(angleToPlayer) > (Math.PI / 2);
-        }
-    }
-    
-    public void setDamage(float damage) {
-        this.damage.set(damage);
-    }
-    
-    public void setSpeed(float speed) {
-        this.speed.set(speed);
     }
     
     @Override
@@ -284,21 +235,5 @@ public class Zombie extends Entity {
     @Override
     public Vector getRenderPosition() {
         return collider.getPosition();
-    }
-    
-    public float getDamage() {
-        return damage.get();
-    }
-    
-    public float getSpeed() {
-        return speed.get();
-    }
-    
-    public FloatProperty speedProperty() {
-        return speed;
-    }
-    
-    public FloatProperty damageProperty() {
-        return damage;
     }
 }
