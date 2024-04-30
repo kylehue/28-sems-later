@@ -8,6 +8,7 @@ import game.map.Material;
 import game.map.PathFinder;
 import game.utils.IntervalMap;
 import game.utils.Vector;
+import javafx.concurrent.Task;
 import utils.Async;
 
 import java.util.ArrayList;
@@ -97,9 +98,16 @@ public abstract class Seeker extends Entity {
     
     private void maybeUpdateIfPathIsClear() {
         if (intervalMap.isIntervalOverFor(Interval.UPDATE_IS_PATH_CLEAR)) {
-            Async.queue1.submit(() -> {
-                this.isPathClear = this._isPathClear();
-            });
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    Seeker.this.isPathClear = Seeker.this._isPathClear();
+                    return null;
+                }
+            };
+            
+            task.setOnFailed(System.out::println);
+            Async.queue1.submit(task);
             
             intervalMap.resetIntervalFor(Interval.UPDATE_IS_PATH_CLEAR);
         }
@@ -109,13 +117,20 @@ public abstract class Seeker extends Entity {
         if (isPathClear) return;
         
         if (intervalMap.isIntervalOverFor(Interval.UPDATE_PATH)) {
-            Async.queue1.submit(() -> {
-                PathFinder pathFinder = Game.world.getPathFinder();
-                pathToSeek = pathFinder.requestPath(
-                    position,
-                    positionToSeek
-                );
-            });
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    PathFinder pathFinder = Game.world.getPathFinder();
+                    pathToSeek = pathFinder.requestPath(
+                        position,
+                        positionToSeek
+                    );
+                    return null;
+                }
+            };
+            
+            task.setOnFailed(System.out::println);
+            Async.queue1.submit(task);
             
             intervalMap.resetIntervalFor(Interval.UPDATE_PATH);
         }
