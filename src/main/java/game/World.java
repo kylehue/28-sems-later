@@ -315,7 +315,9 @@ public class World {
         return isPaused;
     }
     
+    private int pauseCounter = 0;
     public void pause() {
+        pauseCounter++;
         isPaused.set(true);
         for (DistanceAwareAudio audio : audios) {
             audio.getMediaPlayer().pause();
@@ -323,6 +325,8 @@ public class World {
     }
     
     public void play() {
+        pauseCounter--;
+        if (pauseCounter > 0) return;
         isPaused.set(false);
         for (DistanceAwareAudio audio : audios) {
             audio.getMediaPlayer().play();

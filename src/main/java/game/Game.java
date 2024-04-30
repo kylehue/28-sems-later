@@ -161,10 +161,6 @@ public class Game extends GameLoop {
         return task;
     }
     
-    public void pauseGame() {
-        this.pauseLoop();
-    }
-    
     public void resetGame() {
         this.resetTimer();
         world.dispose();
