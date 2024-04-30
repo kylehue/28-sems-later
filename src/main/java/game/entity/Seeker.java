@@ -29,11 +29,11 @@ public abstract class Seeker extends Entity {
     public Seeker() {
         intervalMap.registerIntervalFor(
             Interval.UPDATE_PATH,
-            150
+            1000
         );
         intervalMap.registerIntervalFor(
             Interval.UPDATE_IS_PATH_CLEAR,
-            100
+            500
         );
     }
     
