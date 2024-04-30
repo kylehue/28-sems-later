@@ -14,14 +14,9 @@ public class Shotgun extends Gun {
     
     public Shotgun() {
         super("/weapons/shotgun.png");
-        setFireRateInMillis(Config.DEFAULT_SHOTGUN_FIRE_RATE_MILLIS);
-        setBulletSpeed(Config.DEFAULT_SHOTGUN_BULLET_SPEED);
-        setMaxDistance(Config.DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE);
-        setSpreadInRadians(Config.DEFAULT_SHOTGUN_SPREAD_RADIANS);
-        setDamage(Config.DEFAULT_SHOTGUN_BULLET_DAMAGE);
-        setPenetration(Config.DEFAULT_SHOTGUN_BULLET_PENETRATION);
         setMuzzlePosition(new Vector(32, 4));
         setOrigHandlePosition(new Vector(14, 6));
+        resetStats();
     }
     
     public void setPenetration(float penetration) {
@@ -54,6 +49,16 @@ public class Shotgun extends Gun {
     
     public float getSpreadInRadians() {
         return spreadInRadians;
+    }
+    
+    @Override
+    public void resetStats() {
+        setFireRateInMillis(Config.DEFAULT_SHOTGUN_FIRE_RATE_MILLIS);
+        setBulletSpeed(Config.DEFAULT_SHOTGUN_BULLET_SPEED);
+        setMaxDistance(Config.DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE);
+        setSpreadInRadians(Config.DEFAULT_SHOTGUN_SPREAD_RADIANS);
+        setDamage(Config.DEFAULT_SHOTGUN_BULLET_DAMAGE);
+        setPenetration(Config.DEFAULT_SHOTGUN_BULLET_PENETRATION);
     }
     
     @Override

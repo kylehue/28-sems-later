@@ -11,11 +11,9 @@ public class Sniper extends Gun {
     
     public Sniper() {
         super("/weapons/sniper.png");
-        setFireRateInMillis(Config.DEFAULT_SNIPER_FIRE_RATE_MILLIS);
-        setPenetration(Config.DEFAULT_SNIPER_BULLET_PENETRATION);
-        setDamage(Config.DEFAULT_SNIPER_BULLET_DAMAGE);
         setMuzzlePosition(new Vector(52, 7));
         setOrigHandlePosition(new Vector(24, 10));
+        resetStats();
     }
     
     public void setPenetration(float penetration) {
@@ -24,6 +22,13 @@ public class Sniper extends Gun {
     
     public float getPenetration() {
         return penetration;
+    }
+    
+    @Override
+    public void resetStats() {
+        setFireRateInMillis(Config.DEFAULT_SNIPER_FIRE_RATE_MILLIS);
+        setPenetration(Config.DEFAULT_SNIPER_BULLET_PENETRATION);
+        setDamage(Config.DEFAULT_SNIPER_BULLET_DAMAGE);
     }
     
     @Override

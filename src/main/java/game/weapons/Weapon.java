@@ -48,6 +48,8 @@ public abstract class Weapon {
         return damage;
     }
     
+    public abstract void resetStats();
+    
     public void render(GraphicsContext ctx, float alpha) {
         Image gunImage = getImage();
         ctx.drawImage(

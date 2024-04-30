@@ -67,6 +67,9 @@ public abstract class Progress {
     );
     
     public static void reset() {
+        for (WeaponKind weaponKind : UNLOCKED_WEAPONS) {
+            weaponKind.get().resetStats();
+        }
         UNLOCKED_WEAPONS.clear();
         UNLOCKED_WEAPONS.add(WeaponKind.PISTOL);
         

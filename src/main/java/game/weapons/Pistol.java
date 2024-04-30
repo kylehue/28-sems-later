@@ -13,13 +13,9 @@ public class Pistol extends Gun {
     
     public Pistol() {
         super("/weapons/pistol.png");
-        setFireRateInMillis(Config.DEFAULT_PISTOL_FIRE_RATE_MILLIS);
-        setBulletSpeed(Config.DEFAULT_PISTOL_BULLET_SPEED);
-        setMaxDistance(Config.DEFAULT_PISTOL_BULLET_MAX_DISTANCE);
-        setDamage(Config.DEFAULT_PISTOL_BULLET_DAMAGE);
-        setPenetration(Config.DEFAULT_PISTOL_BULLET_PENETRATION);
         setMuzzlePosition(new Vector(14, 3));
         setOrigHandlePosition(new Vector(3, 6));
+        resetStats();
     }
     
     public void setPenetration(float penetration) {
@@ -44,6 +40,15 @@ public class Pistol extends Gun {
     
     public float getMaxDistance() {
         return maxDistance;
+    }
+    
+    @Override
+    public void resetStats() {
+        setFireRateInMillis(Config.DEFAULT_PISTOL_FIRE_RATE_MILLIS);
+        setBulletSpeed(Config.DEFAULT_PISTOL_BULLET_SPEED);
+        setMaxDistance(Config.DEFAULT_PISTOL_BULLET_MAX_DISTANCE);
+        setDamage(Config.DEFAULT_PISTOL_BULLET_DAMAGE);
+        setPenetration(Config.DEFAULT_PISTOL_BULLET_PENETRATION);
     }
     
     @Override
