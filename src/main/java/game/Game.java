@@ -3,6 +3,7 @@ package game;
 import event.KeyHandler;
 import event.MouseHandler;
 import game.utils.GameLoop;
+import game.weapons.Weapon;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -34,13 +35,22 @@ public class Game extends GameLoop {
     }
     
     public enum Control {
-        MOVE_UP,
-        MOVE_DOWN,
-        MOVE_LEFT,
-        MOVE_RIGHT,
-        DASH,
-        SHOW_WEAPONS,
-        PAUSE_GAME
+        MOVE_UP(KeyCode.W),
+        MOVE_DOWN(KeyCode.S),
+        MOVE_LEFT(KeyCode.A),
+        MOVE_RIGHT(KeyCode.D),
+        DASH(KeyCode.SPACE),
+        SHOW_WEAPONS(KeyCode.F),
+        PAUSE_GAME(KeyCode.ESCAPE);
+        
+        private final KeyCode weapon;
+        Control(KeyCode weapon) {
+            this.weapon = weapon;
+        }
+        
+        public KeyCode get() {
+            return weapon;
+        }
     }
     
     public static final Canvas canvas = new Canvas();
@@ -91,13 +101,9 @@ public class Game extends GameLoop {
     public void initEventHandlers(Scene scene) {
         // Set up key handler & controls
         keyHandler.listen(scene);
-        keyHandler.registerKey(Control.SHOW_WEAPONS, KeyCode.F);
-        keyHandler.registerKey(Control.MOVE_UP, KeyCode.W);
-        keyHandler.registerKey(Control.MOVE_DOWN, KeyCode.S);
-        keyHandler.registerKey(Control.MOVE_LEFT, KeyCode.A);
-        keyHandler.registerKey(Control.MOVE_RIGHT, KeyCode.D);
-        keyHandler.registerKey(Control.DASH, KeyCode.SPACE);
-        keyHandler.registerKey(Control.PAUSE_GAME, KeyCode.ESCAPE);
+        for (Control control : Control.values()) {
+            keyHandler.registerKey(control, control.get());
+        }
         
         // Set up mouse handler
         mouseHandler.listen(scene);
