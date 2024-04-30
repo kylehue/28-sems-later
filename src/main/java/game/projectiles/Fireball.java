@@ -13,6 +13,7 @@ import game.utils.Vector;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Fireball extends Projectile {
     private final float knockBackForce = 5000;
@@ -44,8 +45,9 @@ public class Fireball extends Projectile {
     @Override
     public void render(GraphicsContext ctx, float alpha) {
         sprite.render(ctx);
-        sprite.getPosition().set(position);
-        sprite.getOrigin().set(-5.5f, -5.5f);
+        final int HALF_SIZE = (int) (sprite.getTileWidth() / 2);
+        sprite.getPosition().set(position).add(HALF_SIZE, HALF_SIZE);
+        sprite.getOrigin().set(-HALF_SIZE, -HALF_SIZE);
         sprite.setAngleInRadians((float) (angle + Math.PI));
         // ctx.save();
         // ctx.translate(
