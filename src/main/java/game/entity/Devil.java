@@ -219,7 +219,7 @@ public class Devil extends Seeker {
         );
         
         // Drop XP
-        for (int i = 0; i < Common.random(7, 15); i++) {
+        for (int i = 0; i < Common.random(20, 30); i++) {
             Game.world.spawnXPLoot(
                 position.clone().add(
                     Common.random(-10, 10),
