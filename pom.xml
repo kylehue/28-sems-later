@@ -6,6 +6,7 @@
 
     <groupId>org.sample-game</groupId>
     <artifactId>sample-game</artifactId>
+    <packaging>jar</packaging>
     <version>1.0.0</version>
 
     <properties>
@@ -48,13 +49,54 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.4.2</version>
                 <configuration>
+                    <finalName>28 Sems Later</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                        <manifestEntries>
+                            <icon>src/main/resources/brand/head.png</icon>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals><goal>launch4j</goal></goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <stayAlive>true</stayAlive>
+                            <outfile>target/28 Sems Later.exe</outfile>
+                            <jar>target/28 Sems Later.jar</jar>
+                            <errTitle>28 Sems Later</errTitle>
+                            <classPath>
+                                <mainClass>main.Main</mainClass>
+                                <addDependencies>false</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                            <jre>
+                                <minVersion>1.5.0</minVersion>
+                            </jre>
+                            <icon>src/main/resources/brand/head.ico</icon>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <fileDescription>28 Sems Later</fileDescription>
+                                <copyright>CH</copyright>
+                                <productVersion>1.0.0.0</productVersion>
+                                <productName>28 Sems Later</productName>
+                                <internalName>28 Sems Later</internalName>
+                                <originalFilename>28 Sems Later.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
