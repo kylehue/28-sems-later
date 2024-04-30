@@ -15,7 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.canvas.GraphicsContext;
 import game.map.Layer;
 import game.map.Material;
-import game.map.PathFinder;
+import game.utils.PathFinder;
 import game.maps.CityMap;
 import game.map.Map;
 import javafx.scene.media.MediaPlayer;
@@ -359,9 +359,7 @@ public class World {
         gameOverAudio.dispose();
         
         // Dispose entities
-        ArrayList<Entity> entities = new ArrayList<>();
-        entities.add(player);
-        entities.addAll(zombies);
+        List<Entity> entities = getEntities(true);
         for (int i = entities.size() - 1; i >= 0; i--) {
             entities.get(i).dispose();
         }

@@ -1,14 +1,19 @@
-package game.map;
+package game.utils;
 
+import game.World;
 import game.colliders.Collider;
+import game.colliders.CollisionResolvers;
 import game.utils.Bounds;
 import game.utils.Common;
 import game.utils.Vector;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import utils.Heap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class PathFinder {
     private final int nodeSize;
@@ -36,31 +41,34 @@ public class PathFinder {
         return obstacles;
     }
     
-    private final Vector lastGoalNodeNotObstacle = new Vector();
-    private final Vector lastStartNodeNotObstacle = new Vector();
-    
     public ArrayList<Vector> requestPath(Vector start, Vector goal) {
         ArrayList<Vector> path = new ArrayList<>();
         
-        Node startNode = getOrCreateNodeFromPosition(start);
-        startNode = getProperNodeIfObstacle(startNode, start, lastStartNodeNotObstacle);
+        Node startNode = getProperNodeIfObstacle(
+            getOrCreateNodeFromPosition(start),
+            start
+        );
         
-        Node goalNode = getOrCreateNodeFromPosition(goal);
-        goalNode = getProperNodeIfObstacle(goalNode, goal, lastGoalNodeNotObstacle);
+        Node goalNode = getProperNodeIfObstacle(
+            getOrCreateNodeFromPosition(goal),
+            goal
+        );
         
         // // render start node
+        // Node finalStartNode = startNode;
         // World.debugRender.put(startNode.x + "." + startNode.y, ctx -> {
         //     ctx.beginPath();
         //     ctx.setFill(Paint.valueOf("rgba(0, 0, 255, 0.5)"));
-        //     ctx.fillRect(startNode.x * nodeSize, startNode.y * nodeSize, nodeSize, nodeSize);
+        //     ctx.fillRect(finalStartNode.x * nodeSize, finalStartNode.y * nodeSize, nodeSize, nodeSize);
         //     ctx.closePath();
         // });
-        
+        //
         // // render goal node
+        // Node finalGoalNode = goalNode;
         // World.debugRender.put(goalNode.x + ".." + goalNode.y, ctx -> {
         //     ctx.beginPath();
-        //     ctx.setFill(Paint.valueOf(goalNode.isObstacle ? "rgba(255, 0, 255, 0.75)" : "rgba(0, 255, 0, 0.5)"));
-        //     ctx.fillRect(goalNode.x * nodeSize + nodeSizeBuffer / 2, goalNode.y * nodeSize + nodeSizeBuffer / 2, nodeSize - nodeSizeBuffer, nodeSize - nodeSizeBuffer);
+        //     ctx.setFill(Paint.valueOf(finalGoalNode.isObstacle ? "rgba(255, 0, 255, 0.75)" : "rgba(0, 255, 0, 0.5)"));
+        //     ctx.fillRect(finalGoalNode.x * nodeSize, finalGoalNode.y * nodeSize, nodeSize, nodeSize);
         //     ctx.closePath();
         // });
         
@@ -137,27 +145,40 @@ public class PathFinder {
      * an obstacle by using the `currentPosition` and `lastPosition` and returns it.
      * If `node` is not an obstacle, it just updates the `lastPosition`.
      */
-    private Node getProperNodeIfObstacle(Node node, Vector currentPosition, Vector lastPosition) {
-        if (node.isObstacle) {
-            Node newTargetNode = getOrCreateNodeFromPosition(
-                lastPosition.clone().setX(currentPosition.getX())
-            );
-            if (newTargetNode.isObstacle) {
-                newTargetNode = getOrCreateNodeFromPosition(
-                    lastPosition.clone().setY(currentPosition.getY())
-                );
-            }
-            if (newTargetNode.isObstacle) {
-                for (Node neighbor : getNodeNeighbors(newTargetNode)) {
-                    if (!neighbor.isObstacle) return neighbor;
-                }
-            }
-            return newTargetNode;
-        } else {
-            lastPosition.set(currentPosition);
+    private Node getProperNodeIfObstacle(Node node, Vector currentPosition) {
+        if (!node.isObstacle) return node;
+        
+        ArrayList<Node> neighbors = new ArrayList<>(
+            getNodeNeighbors(node)
+                .stream()
+                .filter(v -> !v.isObstacle)
+                .toList()
+        );
+        
+        if (neighbors.isEmpty()) {
+            return node;
         }
         
-        return node;
+        float halfNodeSize = (float) nodeSize / 2;
+        neighbors.sort((a, b) -> {
+            Vector nodePosA = new Vector(
+                a.x * nodeSize + halfNodeSize,
+                a.y * nodeSize + halfNodeSize
+            );
+            int distanceA = (int) nodePosA.getDistanceFrom(
+                currentPosition
+            );
+            Vector nodePosB = new Vector(
+                b.x * nodeSize + halfNodeSize,
+                b.y * nodeSize + halfNodeSize
+            );
+            int distanceB = (int) nodePosB.getDistanceFrom(
+                currentPosition
+            );
+            return distanceA - distanceB;
+        });
+        
+        return neighbors.getFirst();
     }
     
     HashSet<String> cachedObstacles = new HashSet<>();

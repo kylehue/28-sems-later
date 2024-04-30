@@ -5,7 +5,7 @@ import game.colliders.Collider;
 import game.colliders.CollisionResolvers;
 import game.map.Layer;
 import game.map.Material;
-import game.map.PathFinder;
+import game.utils.PathFinder;
 import game.utils.IntervalMap;
 import game.utils.Vector;
 import javafx.concurrent.Task;

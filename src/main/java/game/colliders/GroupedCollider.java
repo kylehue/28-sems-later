@@ -50,6 +50,47 @@ public class GroupedCollider extends Collider {
         );
     }
     
+    
+    
+    /**
+     * Check if the given collider is colliding with this collider.
+     */
+    @Override
+    public boolean isCollidingWith(Collider collider) {
+        for (Collider _collider : colliders) {
+            boolean isColliding = _collider.isCollidingWith(collider);
+            if (isColliding) return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if the given bounds is colliding with this collider.
+     */
+    @Override
+    public boolean isCollidingWith(Bounds bounds) {
+        for (Collider _collider : colliders) {
+            boolean isColliding = _collider.isCollidingWith(bounds);
+            if (isColliding) return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if the given line is colliding with this collider.
+     */
+    @Override
+    public boolean isCollidingWith(Vector pointA, Vector pointB) {
+        for (Collider _collider : colliders) {
+            boolean isColliding = _collider.isCollidingWith(pointA, pointB);
+            if (isColliding) return true;
+        }
+        
+        return false;
+    }
+    
     @Override
     public float getWidth() {
         return width;
