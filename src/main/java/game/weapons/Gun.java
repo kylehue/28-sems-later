@@ -83,7 +83,8 @@ public abstract class Gun extends Weapon {
     }
     
     @Override
-    protected void subRender(GraphicsContext ctx, float alpha) {
+    public void render(GraphicsContext ctx, float alpha) {
+        super.render(ctx, alpha);
         if (!isMuzzleFlashEnabled) return;
         muzzleFlashOpacity = game.utils.Common.lerp(muzzleFlashOpacity, 0, 0.4f);
         ctx.save();
