@@ -74,7 +74,7 @@ public abstract class Seeker extends Entity {
         this.maybeUpdatePathToSeek();
         this.maybeUpdateAngleToPathToSeek();
         
-        // Use straightforward angle is path is clear
+        // Use straightforward angle if path is clear
         if (isPathClear) {
             isFacingOnLeftSide = Math.abs(angleToPathToSeek) > (Math.PI / 2);
             handleSeek(angleToPathToSeek);

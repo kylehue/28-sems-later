@@ -256,7 +256,15 @@ public class Player extends Entity {
     }
     
     private void updateControlFlags() {
-        if (Game.world.isGameOver()) return;
+        if (Game.world.isGameOver()) {
+            this.upPressed = false;
+            this.downPressed = false;
+            this.leftPressed = false;
+            this.rightPressed = false;
+            this.dashPressed = false;
+            this.shootPressed = false;
+            return;
+        }
         
         KeyHandler keyHandler = Game.keyHandler;
         this.upPressed = keyHandler.isKeyPressed(Game.Control.MOVE_UP);
