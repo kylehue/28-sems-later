@@ -40,7 +40,7 @@ public class GameApplication extends Application {
         this.sceneManager = new SceneManager(stage);
         
         // Setup window
-        stage.getIcons().add(Common.loadImage("/brand/head.png"));
+        stage.getIcons().add(Common.loadImage("/icon/48x48.png"));
         stage.setTitle("28 Sems Later");
         stage.setWidth(1280);
         stage.setHeight(720);

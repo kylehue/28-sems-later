@@ -54,7 +54,7 @@
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
                         <manifestEntries>
-                            <icon>src/main/resources/brand/head.png</icon>
+                            <icon>src/main/resources/icon/favicon.ico</icon>
                         </manifestEntries>
                     </archive>
                     <descriptorRefs>
@@ -72,7 +72,7 @@
                         <goals><goal>launch4j</goal></goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <stayAlive>true</stayAlive>
+                            <stayAlive>false</stayAlive>
                             <outfile>target/28 Sems Later.exe</outfile>
                             <jar>target/28 Sems Later.jar</jar>
                             <errTitle>28 Sems Later</errTitle>
@@ -84,7 +84,7 @@
                             <jre>
                                 <minVersion>1.5.0</minVersion>
                             </jre>
-                            <icon>src/main/resources/brand/head.ico</icon>
+                            <icon>src/main/resources/icon/favicon.ico</icon>
                             <versionInfo>
                                 <fileVersion>1.0.0.0</fileVersion>
                                 <fileDescription>28 Sems Later</fileDescription>
