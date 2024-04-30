@@ -36,10 +36,7 @@ public class Sniper extends Gun {
         InstantBullet bullet = world.spawnInstantBullet(initialPosition, angle);
         bullet.setPenetration(penetration);
         bullet.setDamage(damage);
-    }
-    
-    @Override
-    protected void handleSound(Vector initialPosition) {
+        
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/sniper-shot.mp3",
             initialPosition,

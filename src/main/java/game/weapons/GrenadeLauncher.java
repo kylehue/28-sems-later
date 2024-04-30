@@ -37,10 +37,7 @@ public class GrenadeLauncher extends Gun {
         Grenade grenade = world.spawnGrenade(initialPosition, angle);
         grenade.setDamage(damage);
         grenade.setAoeDistance(aoeDistance);
-    }
-    
-    @Override
-    protected void handleSound(Vector initialPosition) {
+        
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/grenade-launcher-shot.mp3",
             initialPosition,

@@ -8,7 +8,6 @@ import javafx.scene.image.Image;
 import utils.Common;
 
 public abstract class Gun extends Weapon {
-    private final static int MIN_SOUND_INTERVAL_MILLIS = 60;
     private final Vector muzzlePosition = new Vector();
     protected int fireRateInMillis = 1000;
     private final Image muzzleFlashImage = Common.loadImage("/weapons/muzzle-flash.png");
@@ -17,14 +16,12 @@ public abstract class Gun extends Weapon {
     private final IntervalMap intervals = new IntervalMap();
     
     private enum Interval {
-        EMIT_SOUND,
         SHOOT
     }
     
     public Gun(String imageUrl) {
         super(imageUrl);
         
-        intervals.registerIntervalFor(Interval.EMIT_SOUND, MIN_SOUND_INTERVAL_MILLIS);
         intervals.registerIntervalFor(Interval.SHOOT, fireRateInMillis);
     }
     
@@ -50,8 +47,6 @@ public abstract class Gun extends Weapon {
         float angle
     );
     
-    protected abstract void handleSound(Vector initialPosition);
-    
     public void shoot(World world, Vector initialPosition, float angle) {
         if (!intervals.isIntervalOverFor(Interval.SHOOT)) return;
         float xOffset = muzzlePosition.getX() - getHandlePosition().getX() + 4;
@@ -68,11 +63,6 @@ public abstract class Gun extends Weapon {
         muzzleFlashOpacity = 1;
         
         handleShoot(world, computedInitialPosition, angle);
-        
-        if (intervals.isIntervalOverFor(Interval.EMIT_SOUND)) {
-            handleSound(initialPosition);
-            intervals.resetIntervalFor(Interval.EMIT_SOUND);
-        }
         
         intervals.resetIntervalFor(Interval.SHOOT);
         intervals.changeIntervalFor(Interval.SHOOT, fireRateInMillis);

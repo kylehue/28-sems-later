@@ -58,10 +58,7 @@ public class Pistol extends Gun {
         bullet.setPenetration(penetration);
         bullet.setSpeed(bulletSpeed);
         bullet.setMaxDistance(maxDistance);
-    }
-    
-    @Override
-    protected void handleSound(Vector initialPosition) {
+        
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/gun-shot.mp3",
             initialPosition,

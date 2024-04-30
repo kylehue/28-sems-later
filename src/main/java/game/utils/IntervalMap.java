@@ -27,6 +27,7 @@ public class IntervalMap {
     }
     
     public void registerIntervalFor(Object key, int intervalRateInMillis) {
+        if (registeredIntervals.containsKey(key)) return;
         Interval interval = new Interval();
         interval.interval = intervalRateInMillis;
         registeredIntervals.put(key, interval);

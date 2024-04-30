@@ -75,10 +75,7 @@ public class Shotgun extends Gun {
             bullet.setSpeed(bulletSpeed);
             bullet.setMaxDistance(maxDistance);
         }
-    }
-    
-    @Override
-    protected void handleSound(Vector initialPosition) {
+        
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/shotgun-shot.mp3",
             initialPosition,

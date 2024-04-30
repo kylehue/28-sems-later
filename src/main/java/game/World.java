@@ -44,6 +44,8 @@ public class World {
     private float gameOverOverlayOpacity = 0;
     
     // audios
+    private final static int MIN_AUDIO_INTERVAL_MILLIS = 70;
+    private final IntervalMap audioIntervalMap = new IntervalMap();
     private final HashSet<DistanceAwareAudio> audios = new HashSet<>();
     private final HashMap<String, ArrayList<DistanceAwareAudio>> reusableAudiosMap = new HashMap<>();
     private final MediaPlayer ambienceAudio = new MediaPlayer(
@@ -369,11 +371,15 @@ public class World {
         oneTimeSpriteAnimations.add(spriteAnimation);
     }
     
-    public DistanceAwareAudio addPlayerDistanceAwareAudio(
+    public void addPlayerDistanceAwareAudio(
         String url,
         Vector position,
         float awarenessDistance
     ) {
+        audioIntervalMap.registerIntervalFor(url, MIN_AUDIO_INTERVAL_MILLIS);
+        if (!audioIntervalMap.isIntervalOverFor(url)) return;
+        audioIntervalMap.resetIntervalFor(url);
+        
         ArrayList<DistanceAwareAudio> reusableAudios = reusableAudiosMap.computeIfAbsent(url, (s) -> new ArrayList<>());
         
         DistanceAwareAudio distanceAwareAudio;
@@ -398,8 +404,6 @@ public class World {
         distanceAwareAudio.setAwarenessPosition(player.getPosition());
         distanceAwareAudio.setAwarenessDistance(awarenessDistance);
         audios.add(distanceAwareAudio);
-        
-        return distanceAwareAudio;
     }
     
     public boolean isGameOver() {

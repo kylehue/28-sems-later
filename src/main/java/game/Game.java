@@ -3,7 +3,6 @@ package game;
 import event.KeyHandler;
 import event.MouseHandler;
 import game.utils.GameLoop;
-import game.weapons.Weapon;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
