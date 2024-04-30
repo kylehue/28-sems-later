@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public abstract class Seeker extends Entity {
     private ArrayList<Vector> pathToSeek = new ArrayList<>();
-    private float angleToPathToSeek = 0;
+    private float angleToSeek = 0;
     private final Vector positionToSeek = new Vector();
     private boolean isPathClear = false;
     private final IntervalMap intervalMap = new IntervalMap();
@@ -70,32 +70,29 @@ public abstract class Seeker extends Entity {
     protected void seek(Vector positionToSeek) {
         this.positionToSeek.set(positionToSeek);
         
-        this.maybeUpdateIfPathIsClear();
-        this.maybeUpdatePathToSeek();
-        this.maybeUpdateAngleToPathToSeek();
-        
-        // Use straightforward angle if path is clear
-        if (isPathClear) {
-            isFacingOnLeftSide = Math.abs(angleToPathToSeek) > (Math.PI / 2);
-            handleSeek(angleToPathToSeek);
-        }
-        
-        // Use pathfinder if path has obstacles
-        if (!isPathClear && pathToSeek.size() > 1) {
-            Vector step = pathToSeek.get(Math.max(0, pathToSeek.size() - 2));
-            float angle = position.getAngle(step);
-            isFacingOnLeftSide = Math.abs(angle) > (Math.PI / 2);
-            handleSeek(angle);
-        }
+        maybeUpdateIfPathIsClear();
+        maybeUpdatePathToSeek();
+        maybeUpdateAngleToSeek();
+        handleSeek(angleToSeek);
     }
     
     protected boolean isFacingOnLeftSide() {
         return isFacingOnLeftSide;
     }
     
-    private void maybeUpdateAngleToPathToSeek() {
-        if (!isPathClear) return;
-        angleToPathToSeek = position.getAngle(positionToSeek);
+    private void maybeUpdateAngleToSeek() {
+        // Use straightforward angle if path is clear
+        if (isPathClear) {
+            angleToSeek = position.getAngle(positionToSeek);
+        }
+        
+        // Use pathfinder if path has obstacles
+        if (!isPathClear && pathToSeek.size() > 1) {
+            Vector step = pathToSeek.get(Math.max(0, pathToSeek.size() - 2));
+            angleToSeek = position.getAngle(step);
+        }
+        
+        isFacingOnLeftSide = Math.abs(angleToSeek) > (Math.PI / 2);
     }
     
     private void maybeUpdateIfPathIsClear() {
