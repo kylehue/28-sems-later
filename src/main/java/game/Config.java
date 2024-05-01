@@ -30,14 +30,14 @@ public abstract class Config {
     // Shotgun defaults
     public final static int DEFAULT_SHOTGUN_FIRE_RATE_MILLIS = 500;
     public final static int MIN_SHOTGUN_FIRE_RATE_MILLIS = 250;
-    public final static float DEFAULT_SHOTGUN_BULLET_DAMAGE = 10;
+    public final static float DEFAULT_SHOTGUN_BULLET_DAMAGE = 20;
     public final static float DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE = 200;
     public final static float MAX_SHOTGUN_MAX_BULLET_DISTANCE = 400;
     public final static float DEFAULT_SHOTGUN_BULLET_SPEED = 15000;
     public final static float MAX_SHOTGUN_BULLET_SPEED = 25000;
-    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1.1f;
-    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 8);
-    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 4);
+    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1f;
+    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 6);
+    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 3);
     
     // Sniper defaults
     public final static int DEFAULT_SNIPER_FIRE_RATE_MILLIS = 1400;
