@@ -29,7 +29,7 @@ public abstract class Seeker extends Entity {
     public Seeker() {
         intervalMap.registerIntervalFor(
             Interval.UPDATE_PATH,
-            1000
+            4000
         );
         intervalMap.registerIntervalFor(
             Interval.UPDATE_IS_PATH_CLEAR,
@@ -89,8 +89,18 @@ public abstract class Seeker extends Entity {
         
         // Use pathfinder if path has obstacles
         if (!isPathClear && pathToSeek.size() > 1) {
+            int[] currentGridPosition = Game.world.getPathFinder().convertWorldPositionToGridPosition(position);
             Vector step = pathToSeek.get(Math.max(0, pathToSeek.size() - 2));
+            int[] targetGridPosition = Game.world.getPathFinder().convertWorldPositionToGridPosition(step);
+            
+            if (
+                currentGridPosition[0] == targetGridPosition[0] && currentGridPosition[1] == targetGridPosition[1]
+            ) {
+                pathToSeek.removeLast();
+            }
+            
             angleToSeek = position.getAngle(step);
+            
         }
         
         isFacingOnLeftSide = Math.abs(angleToSeek) > (Math.PI / 2);
