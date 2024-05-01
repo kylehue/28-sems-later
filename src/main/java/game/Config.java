@@ -35,9 +35,9 @@ public abstract class Config {
     public final static float MAX_SHOTGUN_MAX_BULLET_DISTANCE = 400;
     public final static float DEFAULT_SHOTGUN_BULLET_SPEED = 15000;
     public final static float MAX_SHOTGUN_BULLET_SPEED = 25000;
-    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1;
-    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 4);
-    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 2);
+    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1.1f;
+    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 8);
+    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 4);
     
     // Sniper defaults
     public final static int DEFAULT_SNIPER_FIRE_RATE_MILLIS = 1400;
@@ -69,7 +69,7 @@ public abstract class Config {
     // Zombie
     public final static float DEFAULT_ZOMBIE_DAMAGE = 1;
     public final static float DEFAULT_ZOMBIE_SPEED = 200;
-    public final static float MAX_ZOMBIE_SPEED = 700;
+    public final static float MAX_ZOMBIE_SPEED = 800;
     public final static float DEFAULT_ZOMBIE_HEALTH = 100;
     public final static float DEFAULT_ZOMBIE_MAX_HEALTH = 100;
     
@@ -86,7 +86,7 @@ public abstract class Config {
     
     // World
     public final static int DEFAULT_ZOMBIE_COUNT = 100;
-    public final static int MAX_ZOMBIE_COUNT = 700;
+    public final static int MAX_ZOMBIE_COUNT = 600;
     public final static int DEFAULT_DEVIL_COUNT = 1;
     public final static int MAX_DEVIL_COUNT = 25;
 }
