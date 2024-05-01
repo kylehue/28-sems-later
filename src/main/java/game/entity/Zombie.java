@@ -54,6 +54,8 @@ public class Zombie extends Seeker {
         this.setZIndex(Game.ZIndex.MOBS);
         
         // Stats
+        setMaxHealth(Progress.ZOMBIE_HEALTH.get());
+        setCurrentHealth(Progress.ZOMBIE_HEALTH.get());
         setSpeed(
             Common.random(
                 Progress.ZOMBIE_SPEED.get() / 2,

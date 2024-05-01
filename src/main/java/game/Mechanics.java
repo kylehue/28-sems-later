@@ -9,9 +9,11 @@ import java.util.HashMap;
 public abstract class Mechanics {
     private final static int PLAYER_MAX_XP_INCREASE_PER_LEVEL = 15;
     private final static float PLAYER_HEALTH_INCREASE_PER_LEVEL = 5;
+    private final static float ZOMBIE_HEALTH_INCREASE_PER_LEVEL = 3;
     private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 35;
     private final static float ZOMBIE_DAMAGE_INCREASE_PER_LEVEL = 0.2f;
     private final static float ZOMBIE_SPEED_INCREASE_PER_LEVEL = 4;
+    private final static float DEVIL_HEALTH_INCREASE_PER_LEVEL = 15;
     private final static int DEVIL_COUNT_INCREASE_PER_5_LEVELS = 1;
     private final static float DEVIL_DAMAGE_INCREASE_PER_LEVEL = 1;
     private final static float DEVIL_SPEED_INCREASE_PER_LEVEL = 1.5f;
@@ -60,6 +62,11 @@ public abstract class Mechanics {
             );
         }
         
+        // Increase zombie health
+        Progress.ZOMBIE_HEALTH.set(
+            Progress.ZOMBIE_HEALTH.get() + ZOMBIE_HEALTH_INCREASE_PER_LEVEL
+        );
+        
         // Increase zombie damage
         Progress.ZOMBIE_DAMAGE.set(
             Progress.ZOMBIE_DAMAGE.get() + ZOMBIE_DAMAGE_INCREASE_PER_LEVEL
@@ -81,6 +88,11 @@ public abstract class Mechanics {
                 Progress.DEVIL_COUNT.get() + DEVIL_COUNT_INCREASE_PER_5_LEVELS
             );
         }
+        
+        // Increase devil health
+        Progress.DEVIL_HEALTH.set(
+            Progress.DEVIL_HEALTH.get() + DEVIL_HEALTH_INCREASE_PER_LEVEL
+        );
         
         // Increase devil damage
         Progress.DEVIL_DAMAGE.set(

@@ -61,6 +61,8 @@ public class Devil extends Seeker {
         this.setZIndex(Game.ZIndex.MOBS);
         
         // Stats
+        setMaxHealth(Progress.DEVIL_HEALTH.get());
+        setCurrentHealth(Progress.DEVIL_HEALTH.get());
         setSpeed(
             Common.random(
                 Progress.DEVIL_SPEED.get() / 2,

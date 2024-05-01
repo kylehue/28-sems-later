@@ -46,6 +46,9 @@ public abstract class Progress {
         Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS
     );
     
+    public static final FloatProperty ZOMBIE_HEALTH = new SimpleFloatProperty(
+        Config.DEFAULT_ZOMBIE_HEALTH
+    );
     public static final FloatProperty ZOMBIE_SPEED = new SimpleFloatProperty(
         Config.DEFAULT_ZOMBIE_SPEED
     );
@@ -56,6 +59,9 @@ public abstract class Progress {
         Config.DEFAULT_ZOMBIE_DAMAGE
     );
     
+    public static final FloatProperty DEVIL_HEALTH = new SimpleFloatProperty(
+        Config.DEFAULT_DEVIL_HEALTH
+    );
     public static final FloatProperty DEVIL_SPEED = new SimpleFloatProperty(
         Config.DEFAULT_DEVIL_SPEED
     );
@@ -86,10 +92,12 @@ public abstract class Progress {
         
         ZOMBIE_SPEED.set(Config.DEFAULT_ZOMBIE_SPEED);
         ZOMBIE_COUNT.set(Config.DEFAULT_ZOMBIE_COUNT);
+        ZOMBIE_HEALTH.set(Config.DEFAULT_ZOMBIE_HEALTH);
         ZOMBIE_DAMAGE.set(Config.DEFAULT_ZOMBIE_DAMAGE);
         
         DEVIL_SPEED.set(Config.DEFAULT_DEVIL_SPEED);
         DEVIL_COUNT.set(Config.DEFAULT_DEVIL_COUNT);
+        DEVIL_HEALTH.set(Config.DEFAULT_DEVIL_HEALTH);
         DEVIL_DAMAGE.set(Config.DEFAULT_DEVIL_DAMAGE);
     }
 }
