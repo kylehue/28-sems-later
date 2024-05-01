@@ -6,7 +6,7 @@ import game.weapons.WeaponKind;
 public class BulletDamage implements PowerUp {
     @Override
     public void apply() {
-        for (WeaponKind weaponKind : Progress.UNLOCKED_WEAPONS) {
+        for (WeaponKind weaponKind : WeaponKind.values()) {
             weaponKind.get().addDamage(5);
         }
     }
