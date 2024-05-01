@@ -11,13 +11,13 @@ public class BulletPenetration implements PowerUp {
     public void apply() {
         for (Gun gun : getUpgradableGuns()) {
             if (gun instanceof Pistol pistol) {
-                pistol.setPenetration(pistol.getPenetration() + 0.001f);
+                pistol.setPenetration(pistol.getPenetration() + 0.5f);
             } else if (gun instanceof Rifle rifle) {
-                rifle.setPenetration(rifle.getPenetration() + 0.001f);
+                rifle.setPenetration(rifle.getPenetration() + 0.5f);
             } else if (gun instanceof Shotgun shotgun) {
-                shotgun.setPenetration(shotgun.getPenetration() + 0.001f);
+                shotgun.setPenetration(shotgun.getPenetration() + 0.5f);
             } else if (gun instanceof Sniper sniper) {
-                sniper.setPenetration(sniper.getPenetration() + 0.1f);
+                sniper.setPenetration(sniper.getPenetration() + 1f);
             }
         }
     }

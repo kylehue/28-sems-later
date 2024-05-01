@@ -43,7 +43,7 @@ public abstract class Config {
     public final static int DEFAULT_SNIPER_FIRE_RATE_MILLIS = 1400;
     public final static float MIN_SNIPER_FIRE_RATE_MILLIS = 1000;
     public final static float DEFAULT_SNIPER_BULLET_DAMAGE = 100;
-    public final static float DEFAULT_SNIPER_BULLET_PENETRATION = 5.5f;
+    public final static float DEFAULT_SNIPER_BULLET_PENETRATION = 10f;
     
     // Grenade Launcher defaults
     public final static int DEFAULT_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 900;
@@ -60,7 +60,7 @@ public abstract class Config {
     public final static float DEFAULT_PLAYER_DASH_SPEED = 15000;
     public final static float DEFAULT_PLAYER_MAX_HEALTH = 100;
     public final static float DEFAULT_PLAYER_HEALTH = 100;
-    public final static float DEFAULT_PLAYER_HEALTH_REGEN_HEALTH = 0.05f;
+    public final static float DEFAULT_PLAYER_HEALTH_REGEN_HEALTH = 0f;
     public final static int DEFAULT_PLAYER_MAX_XP = 50;
     public final static int DEFAULT_PLAYER_XP = 0;
     public final static int DEFAULT_PLAYER_MAX_LEVEL = 9999;

@@ -9,7 +9,7 @@ public class ShotgunSpread implements PowerUp {
     public void apply() {
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
         shotgun.setSpreadInRadians(
-            (float) (shotgun.getSpreadInRadians() + Math.PI / 128)
+            (float) (shotgun.getSpreadInRadians() + Math.PI / 64)
         );
     }
     

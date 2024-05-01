@@ -9,7 +9,7 @@ import java.util.HashSet;
 public class FireRate implements PowerUp {
     public void apply() {
         for (Gun gun : getUpgradableGuns()) {
-            gun.setFireRateInMillis(gun.getFireRateInMillis() - 10);
+            gun.setFireRateInMillis(gun.getFireRateInMillis() - 30);
         }
     }
     

@@ -8,7 +8,7 @@ import game.weapons.WeaponKind;
 public class GrenadeAoe implements PowerUp {
     public void apply() {
         GrenadeLauncher grenadeLauncher = (GrenadeLauncher) WeaponKind.GRENADE_LAUNCHER.get();
-        grenadeLauncher.setAoeDistance(grenadeLauncher.getAoeDistance() + 2.5f);
+        grenadeLauncher.setAoeDistance(grenadeLauncher.getAoeDistance() + 3.5f);
     }
     
     public boolean isAllowedToUse() {

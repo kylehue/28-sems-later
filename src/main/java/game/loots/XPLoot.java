@@ -13,7 +13,7 @@ public class XPLoot extends Loot {
     
     @Override
     protected void handlePickUp() {
-        Progress.PLAYER_CURRENT_XP.set((int) (Progress.PLAYER_CURRENT_XP.get() + Common.random(3, 10)));
+        Progress.PLAYER_CURRENT_XP.set((int) (Progress.PLAYER_CURRENT_XP.get() + Common.random(6, 12)));
         Game.world.addPlayerDistanceAwareAudio(
             "/sounds/xp.mp3",
             position,
