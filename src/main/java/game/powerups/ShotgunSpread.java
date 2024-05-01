@@ -11,6 +11,10 @@ public class ShotgunSpread implements PowerUp {
         shotgun.setSpreadInRadians(
             (float) (shotgun.getSpreadInRadians() + Math.PI / 64)
         );
+        
+        if (shotgun.getSpreadInRadians() > Config.MAX_SHOTGUN_SPREAD_RADIANS) {
+            shotgun.setSpreadInRadians(Config.MAX_SHOTGUN_SPREAD_RADIANS);
+        }
     }
     
     public boolean isAllowedToUse() {

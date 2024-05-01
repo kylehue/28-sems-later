@@ -9,6 +9,10 @@ public class RifleAccuracy implements PowerUp {
     public void apply() {
         Rifle rifle = (Rifle) WeaponKind.RIFLE.get();
         rifle.setAccuracy(rifle.getAccuracy() + 0.025f);
+        
+        if (rifle.getAccuracy() > Config.MAX_RIFLE_ACCURACY) {
+            rifle.setAccuracy(Config.MAX_RIFLE_ACCURACY);
+        }
     }
     
     public boolean isAllowedToUse() {

@@ -30,7 +30,7 @@ public abstract class Gun extends Weapon {
     }
     
     public void setFireRateInMillis(int fireRateInMillis) {
-        this.fireRateInMillis = fireRateInMillis;
+        this.fireRateInMillis = Math.max(0, fireRateInMillis);
     }
     
     public int getFireRateInMillis() {

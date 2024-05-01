@@ -10,6 +10,28 @@ public class FireRate implements PowerUp {
     public void apply() {
         for (Gun gun : getUpgradableGuns()) {
             gun.setFireRateInMillis(gun.getFireRateInMillis() - 30);
+            
+            if (gun instanceof Pistol pistol) {
+                if (pistol.getFireRateInMillis() < Config.MIN_PISTOL_FIRE_RATE_MILLIS) {
+                    pistol.setFireRateInMillis(Config.MIN_PISTOL_FIRE_RATE_MILLIS);
+                }
+            } else if (gun instanceof Rifle rifle) {
+                if (rifle.getFireRateInMillis() < Config.MIN_RIFLE_FIRE_RATE_MILLIS) {
+                    rifle.setFireRateInMillis(Config.MIN_RIFLE_FIRE_RATE_MILLIS);
+                }
+            } else if (gun instanceof Shotgun shotgun) {
+                if (shotgun.getFireRateInMillis() < Config.MIN_SHOTGUN_FIRE_RATE_MILLIS) {
+                    shotgun.setFireRateInMillis(Config.MIN_SHOTGUN_FIRE_RATE_MILLIS);
+                }
+            } else if (gun instanceof Sniper sniper) {
+                if (sniper.getFireRateInMillis() < Config.MIN_SNIPER_FIRE_RATE_MILLIS) {
+                    sniper.setFireRateInMillis(Config.MIN_SNIPER_FIRE_RATE_MILLIS);
+                }
+            } else if (gun instanceof GrenadeLauncher grenadeLauncher) {
+                if (grenadeLauncher.getFireRateInMillis() < Config.MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS) {
+                    grenadeLauncher.setFireRateInMillis(Config.MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS);
+                }
+            }
         }
     }
     

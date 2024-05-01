@@ -7,7 +7,7 @@ public abstract class Config {
     
     // Pistol defaults
     public final static int DEFAULT_PISTOL_FIRE_RATE_MILLIS = 300;
-    public final static float MIN_PISTOL_FIRE_RATE_MILLIS = 150;
+    public final static int MIN_PISTOL_FIRE_RATE_MILLIS = 150;
     public final static float DEFAULT_PISTOL_BULLET_DAMAGE = 30;
     public final static float DEFAULT_PISTOL_BULLET_MAX_DISTANCE = 200;
     public final static float MAX_PISTOL_MAX_BULLET_DISTANCE = 400;
@@ -17,7 +17,7 @@ public abstract class Config {
     
     // Rifle defaults
     public final static int DEFAULT_RIFLE_FIRE_RATE_MILLIS = 100;
-    public final static float MIN_RIFLE_FIRE_RATE_MILLIS = 5;
+    public final static int MIN_RIFLE_FIRE_RATE_MILLIS = 5;
     public final static float DEFAULT_RIFLE_BULLET_DAMAGE = 15;
     public final static float DEFAULT_RIFLE_BULLET_MAX_DISTANCE = 200;
     public final static float MAX_RIFLE_MAX_BULLET_DISTANCE = 400;
@@ -29,7 +29,7 @@ public abstract class Config {
     
     // Shotgun defaults
     public final static int DEFAULT_SHOTGUN_FIRE_RATE_MILLIS = 500;
-    public final static float MIN_SHOTGUN_FIRE_RATE_MILLIS = 250;
+    public final static int MIN_SHOTGUN_FIRE_RATE_MILLIS = 250;
     public final static float DEFAULT_SHOTGUN_BULLET_DAMAGE = 10;
     public final static float DEFAULT_SHOTGUN_BULLET_MAX_DISTANCE = 200;
     public final static float MAX_SHOTGUN_MAX_BULLET_DISTANCE = 400;
@@ -41,20 +41,20 @@ public abstract class Config {
     
     // Sniper defaults
     public final static int DEFAULT_SNIPER_FIRE_RATE_MILLIS = 1400;
-    public final static float MIN_SNIPER_FIRE_RATE_MILLIS = 1000;
+    public final static int MIN_SNIPER_FIRE_RATE_MILLIS = 1000;
     public final static float DEFAULT_SNIPER_BULLET_DAMAGE = 100;
     public final static float DEFAULT_SNIPER_BULLET_PENETRATION = 10f;
     
     // Grenade Launcher defaults
     public final static int DEFAULT_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 900;
-    public final static float MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 700;
+    public final static int MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 700;
     public final static float DEFAULT_GRENADE_LAUNCHER_GRENADE_DAMAGE = 80;
     public final static float DEFAULT_GRENADE_LAUNCHER_AOE_DISTANCE = 60;
     public final static float MAX_GRENADE_LAUNCHER_AOE_DISTANCE = 120;
     
     // Player
     public final static int DEFAULT_PLAYER_DASH_INTERVAL_MILLIS = 2000;
-    public final static float MIN_PLAYER_DASH_INTERVAL_MILLIS = 1000;
+    public final static int MIN_PLAYER_DASH_INTERVAL_MILLIS = 1000;
     public final static float DEFAULT_PLAYER_SPEED = 1000;
     public final static float MAX_PLAYER_SPEED = 1200;
     public final static float DEFAULT_PLAYER_DASH_SPEED = 15000;

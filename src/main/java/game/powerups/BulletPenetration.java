@@ -12,12 +12,28 @@ public class BulletPenetration implements PowerUp {
         for (Gun gun : getUpgradableGuns()) {
             if (gun instanceof Pistol pistol) {
                 pistol.setPenetration(pistol.getPenetration() + 0.5f);
+                
+                if (pistol.getPenetration() > Config.MAX_BULLET_PENETRATION) {
+                    pistol.setPenetration(Config.MAX_BULLET_PENETRATION);
+                }
             } else if (gun instanceof Rifle rifle) {
                 rifle.setPenetration(rifle.getPenetration() + 0.5f);
+                
+                if (rifle.getPenetration() > Config.MAX_BULLET_PENETRATION) {
+                    rifle.setPenetration(Config.MAX_BULLET_PENETRATION);
+                }
             } else if (gun instanceof Shotgun shotgun) {
                 shotgun.setPenetration(shotgun.getPenetration() + 0.5f);
+                
+                if (shotgun.getPenetration() > Config.MAX_BULLET_PENETRATION) {
+                    shotgun.setPenetration(Config.MAX_BULLET_PENETRATION);
+                }
             } else if (gun instanceof Sniper sniper) {
                 sniper.setPenetration(sniper.getPenetration() + 1f);
+                
+                if (sniper.getPenetration() > Config.MAX_INSTANT_BULLET_PENETRATION) {
+                    sniper.setPenetration(Config.MAX_INSTANT_BULLET_PENETRATION);
+                }
             }
         }
     }
