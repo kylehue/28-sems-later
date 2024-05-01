@@ -12,7 +12,7 @@ public abstract class Mechanics {
     private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 35;
     private final static float ZOMBIE_DAMAGE_INCREASE_PER_LEVEL = 0.2f;
     private final static float ZOMBIE_SPEED_INCREASE_PER_LEVEL = 4;
-    private final static int DEVIL_COUNT_INCREASE_PER_10_LEVELS = 2;
+    private final static int DEVIL_COUNT_INCREASE_PER_5_LEVELS = 1;
     private final static float DEVIL_DAMAGE_INCREASE_PER_LEVEL = 1;
     private final static float DEVIL_SPEED_INCREASE_PER_LEVEL = 1.5f;
     private final static HashMap<WeaponKind, Integer> weaponsLevelRequirementMap = new HashMap<>() {
@@ -75,10 +75,10 @@ public abstract class Mechanics {
         // Increase devil count
         if (
             Progress.DEVIL_COUNT.get() < Config.MAX_DEVIL_COUNT &&
-                Progress.PLAYER_CURRENT_LEVEL.get() % 10 == 0
+                Progress.PLAYER_CURRENT_LEVEL.get() % 5 == 0
         ) {
             Progress.DEVIL_COUNT.set(
-                Progress.DEVIL_COUNT.get() + DEVIL_COUNT_INCREASE_PER_10_LEVELS
+                Progress.DEVIL_COUNT.get() + DEVIL_COUNT_INCREASE_PER_5_LEVELS
             );
         }
         
