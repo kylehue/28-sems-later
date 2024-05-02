@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InstantBullet extends Projectile {
-    private final float knockBackForce = 10000;
+    private final float knockBackForce = 20000;
     private float penetration = 1;
     private float opacity = 1;
     private boolean shouldStopTravelling = false;
