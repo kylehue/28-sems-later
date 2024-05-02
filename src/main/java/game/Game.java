@@ -224,7 +224,9 @@ public class Game extends GameLoop {
         scene.setGameOverComponentVisible(false);
         scene.setPauseComponentVisible(false);
         
-        Progress.reset();
+        if (System.getenv("MODE").equals("production")) {
+            Progress.reset();
+        }
         
         startLoop();
     }

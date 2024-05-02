@@ -111,8 +111,8 @@ public class InstantBullet extends Projectile {
             // Add knock back
             float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
             entity.getCollider().applyForce(
-                (float) (Math.cos(angleToBullet) * knockBackForce * entity.getCollider().getMass()),
-                (float) (Math.sin(angleToBullet) * knockBackForce * entity.getCollider().getMass())
+                (float) (Math.cos(angleToBullet) * knockBackForce),
+                (float) (Math.sin(angleToBullet) * knockBackForce)
             );
         }
         

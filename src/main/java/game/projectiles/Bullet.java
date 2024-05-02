@@ -41,7 +41,7 @@ public class Bullet extends Projectile {
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
         collider.setRadius(2);
         collider.setFriction(0.9f);
-        collider.setMass(5);
+        collider.setMass(1);
     }
     
     @Override
@@ -100,8 +100,8 @@ public class Bullet extends Projectile {
             // Add knock back
             float angleToBullet = initialPosition.getAngle(entity.getCollider().getPosition());
             entity.getCollider().applyForce(
-                (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage * entity.getCollider().getMass()),
-                (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage * entity.getCollider().getMass())
+                (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage),
+                (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage)
             );
         }
     }

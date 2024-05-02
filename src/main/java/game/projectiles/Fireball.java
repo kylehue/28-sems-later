@@ -16,7 +16,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Fireball extends Projectile {
-    private final float knockBackForce = 5000;
+    private final float knockBackForce = 15000;
     private final FloatProperty speed = new SimpleFloatProperty(2500);
     private final FloatProperty maxDistance = new SimpleFloatProperty(300);
     private final FloatProperty penetration = new SimpleFloatProperty(1);
@@ -39,7 +39,7 @@ public class Fireball extends Projectile {
         collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
         collider.setRadius(3);
         collider.setFriction(0.9f);
-        collider.setMass(5);
+        collider.setMass(1);
     }
     
     @Override
@@ -106,8 +106,8 @@ public class Fireball extends Projectile {
         // Add knock back
         float angleToBullet = initialPosition.getAngle(player.getCollider().getPosition());
         player.getCollider().applyForce(
-            (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage * player.getCollider().getMass()),
-            (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage * player.getCollider().getMass())
+            (float) (Math.cos(angleToBullet) * knockBackForce * penetrationPercentage),
+            (float) (Math.sin(angleToBullet) * knockBackForce * penetrationPercentage)
         );
     }
     

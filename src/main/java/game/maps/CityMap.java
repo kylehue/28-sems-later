@@ -432,7 +432,7 @@ public class CityMap extends Map {
         trashCanCollider.setRadius(5);
         trashCanCollider.setGroup(Game.CollisionGroup.MAP);
         trashCanCollider.addToGroup(Game.CollisionGroup.MAP);
-        trashCanCollider.setMass(100);
+        trashCanCollider.setMass(1);
         trashCan.setCollider(trashCanCollider);
         
         Material barrel = new Material("/maps/city/decorations/barrel.png");
@@ -442,7 +442,7 @@ public class CityMap extends Map {
         barrelCollider.setRadius(8);
         barrelCollider.setGroup(Game.CollisionGroup.MAP);
         barrelCollider.addToGroup(Game.CollisionGroup.MAP);
-        barrelCollider.setMass(400);
+        barrelCollider.setMass(4);
         barrel.setCollider(barrelCollider);
         
         Material car = new Material("/maps/city/decorations/car.png");

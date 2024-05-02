@@ -38,7 +38,7 @@ public class Grenade extends Projectile {
         collider.addToGroup(Game.CollisionGroup.PLAYER);
         collider.setRadius(3);
         collider.setFriction(0.05f);
-        collider.setMass(5);
+        collider.setMass(1);
         aoeCollider.setRadius(aoeDistance);
     }
     
@@ -91,8 +91,8 @@ public class Grenade extends Projectile {
             // Add some knock back
             float angleToBomb = position.getAngle(_collider.getPosition());
             _collider.applyForce(
-                (float) (Math.cos(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass() / aoeDistance,
-                (float) (Math.sin(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce * _collider.getMass() / aoeDistance
+                (float) (Math.cos(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce / aoeDistance,
+                (float) (Math.sin(angleToBomb) * (aoeDistance - distanceToBomb)) * knockBackForce / aoeDistance
             );
         }
         

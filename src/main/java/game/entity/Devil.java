@@ -46,7 +46,7 @@ public class Devil extends Seeker {
         collider.addToGroup(Game.CollisionGroup.MOBS);
         collider.addToGroup(Game.CollisionGroup.PROJECTILES);
         collider.setRadius(6);
-        collider.setMass(100);
+        collider.setMass(5);
         Game.world.getColliderWorld().addCollider(collider);
         
         // Initialize intervals

@@ -78,7 +78,7 @@ public class Player extends Entity {
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MAP);
         this.collider.addToGroup(Game.CollisionGroup.MOBS);
-        this.collider.setMass(50);
+        this.collider.setMass(5);
         this.collider.setRadius(5);
         Game.world.getColliderWorld().addCollider(
             this.collider
