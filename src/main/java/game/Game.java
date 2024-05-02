@@ -3,6 +3,7 @@ package game;
 import event.KeyHandler;
 import event.MouseHandler;
 import game.utils.GameLoop;
+import game.weapons.WeaponKind;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,6 +16,8 @@ import javafx.scene.text.TextAlignment;
 import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Game extends GameLoop {
     public enum CollisionGroup {
@@ -34,6 +37,12 @@ public class Game extends GameLoop {
     }
     
     public enum Control {
+        SWITCH_TO_PISTOL(KeyCode.DIGIT1),
+        SWITCH_TO_RIFLE(KeyCode.DIGIT2),
+        SWITCH_TO_SHOTGUN(KeyCode.DIGIT3),
+        SWITCH_TO_SNIPER(KeyCode.DIGIT4),
+        SWITCH_TO_GRENADE_LAUNCHER(KeyCode.DIGIT5),
+        SWITCH_TO_PREVIOUS_WEAPON(KeyCode.Q),
         MOVE_UP(KeyCode.W),
         MOVE_DOWN(KeyCode.S),
         MOVE_LEFT(KeyCode.A),
@@ -43,6 +52,7 @@ public class Game extends GameLoop {
         PAUSE_GAME(KeyCode.ESCAPE);
         
         private final KeyCode weapon;
+        
         Control(KeyCode weapon) {
             this.weapon = weapon;
         }
@@ -82,6 +92,82 @@ public class Game extends GameLoop {
                 scene.setPauseComponentVisible(false);
             }
         });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_PISTOL).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_PISTOL)) return;
+            if (world == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            if (!Progress.UNLOCKED_WEAPONS.contains(WeaponKind.PISTOL)) {
+                scene.getMessages().add("Pistol hasn't been unlocked yet!");
+                return;
+            }
+            
+            world.getPlayer().setCurrentWeapon(WeaponKind.PISTOL);
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_RIFLE).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_RIFLE)) return;
+            if (world == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            if (!Progress.UNLOCKED_WEAPONS.contains(WeaponKind.RIFLE)) {
+                scene.getMessages().add("Rifle hasn't been unlocked yet!");
+                return;
+            }
+            
+            world.getPlayer().setCurrentWeapon(WeaponKind.RIFLE);
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_SHOTGUN).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_SHOTGUN)) return;
+            if (world == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            if (!Progress.UNLOCKED_WEAPONS.contains(WeaponKind.SHOTGUN)) {
+                scene.getMessages().add("Shotgun hasn't been unlocked yet!");
+                return;
+            }
+            
+            world.getPlayer().setCurrentWeapon(WeaponKind.SHOTGUN);
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_SNIPER).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_SNIPER)) return;
+            if (world == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            if (!Progress.UNLOCKED_WEAPONS.contains(WeaponKind.SNIPER)) {
+                scene.getMessages().add("Sniper hasn't been unlocked yet!");
+                return;
+            }
+            
+            world.getPlayer().setCurrentWeapon(WeaponKind.SNIPER);
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_GRENADE_LAUNCHER).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_GRENADE_LAUNCHER)) return;
+            if (world == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            if (!Progress.UNLOCKED_WEAPONS.contains(WeaponKind.GRENADE_LAUNCHER)) {
+                scene.getMessages().add("Grenade Launcher hasn't been unlocked yet!");
+                return;
+            }
+            
+            world.getPlayer().setCurrentWeapon(WeaponKind.GRENADE_LAUNCHER);
+        });
+        
+        keyHandler.getKeyPressedProperty(Control.SWITCH_TO_PREVIOUS_WEAPON).addListener(e -> {
+            if (!keyHandler.isKeyPressed(Control.SWITCH_TO_PREVIOUS_WEAPON)) return;
+            if (world == null) return;
+            if (world.getPlayer().getPreviousWeapon() == null) return;
+            if (world.isGameOver()) return;
+            if (world.isPaused()) return;
+            
+            world.getPlayer().setCurrentWeapon(world.getPlayer().getPreviousWeapon());
+        });
+        
         
         scene.setOnContinueGame(() -> {
             Game.world.play();

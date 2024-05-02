@@ -40,6 +40,7 @@ public class Player extends Entity {
     private boolean shootPressed = false;
     
     // misc
+    private final ObjectProperty<WeaponKind> previousWeapon = new SimpleObjectProperty<>();
     private final ObjectProperty<WeaponKind> currentWeapon = new SimpleObjectProperty<>(WeaponKind.PISTOL);
     private final CircleCollider collider = new CircleCollider();
     private boolean isFacingOnLeftSide = false;
@@ -343,6 +344,7 @@ public class Player extends Entity {
     }
     
     public void setCurrentWeapon(WeaponKind weaponKind) {
+        this.previousWeapon.set(this.currentWeapon.get());
         this.currentWeapon.set(weaponKind);
     }
     
@@ -371,6 +373,10 @@ public class Player extends Entity {
         return healthRegenHealth.get();
     }
     
+    public WeaponKind getPreviousWeapon() {
+        return previousWeapon.get();
+    }
+    
     public FloatProperty healthRegenHealthProperty() {
         return healthRegenHealth;
     }
@@ -389,6 +395,10 @@ public class Player extends Entity {
     
     public ObjectProperty<WeaponKind> currentWeaponProperty() {
         return currentWeapon;
+    }
+    
+    public ObjectProperty<WeaponKind> previousWeaponProperty() {
+        return previousWeapon;
     }
     
     @Override

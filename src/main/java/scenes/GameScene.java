@@ -414,6 +414,7 @@ public class GameScene extends GameApplicationScene {
             
             buttonInfo.button.setOnAction(e -> {
                 if (!Progress.UNLOCKED_WEAPONS.contains(buttonInfo.weaponKind)) {
+                    messages.add(buttonInfo.weaponKind.name() + " hasn't been unlocked yet!");
                     return;
                 }
                 
