@@ -7,16 +7,16 @@ import game.weapons.WeaponKind;
 import java.util.HashMap;
 
 public abstract class Mechanics {
-    private final static int PLAYER_MAX_XP_INCREASE_PER_LEVEL = 15;
+    private final static int PLAYER_MAX_XP_INCREASE_PER_LEVEL = 20;
     private final static float PLAYER_HEALTH_INCREASE_PER_LEVEL = 5;
     private final static float ZOMBIE_HEALTH_INCREASE_PER_LEVEL = 3;
-    private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 35;
+    private final static int ZOMBIE_COUNT_INCREASE_PER_LEVEL = 20;
     private final static float ZOMBIE_DAMAGE_INCREASE_PER_LEVEL = 0.2f;
     private final static float ZOMBIE_SPEED_INCREASE_PER_LEVEL = 4;
     private final static float DEVIL_HEALTH_INCREASE_PER_LEVEL = 15;
     private final static int DEVIL_COUNT_INCREASE_PER_5_LEVELS = 1;
     private final static float DEVIL_DAMAGE_INCREASE_PER_LEVEL = 1;
-    private final static float DEVIL_SPEED_INCREASE_PER_LEVEL = 1.5f;
+    private final static float DEVIL_SPEED_INCREASE_PER_LEVEL = 2;
     private final static HashMap<WeaponKind, Integer> weaponsLevelRequirementMap = new HashMap<>() {
         {
             put(WeaponKind.PISTOL, 0);

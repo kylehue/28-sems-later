@@ -11,19 +11,19 @@ public class BulletMaxDistance implements PowerUp {
     public void apply() {
         for (Gun gun : getUpgradableGuns()) {
             if (gun instanceof Pistol pistol) {
-                pistol.setMaxDistance(pistol.getMaxDistance() + 10);
+                pistol.setMaxDistance(pistol.getMaxDistance() + 50);
                 
                 if (pistol.getMaxDistance() > Config.MAX_PISTOL_MAX_BULLET_DISTANCE) {
                     pistol.setMaxDistance(Config.MAX_PISTOL_MAX_BULLET_DISTANCE);
                 }
             } else if (gun instanceof Rifle rifle) {
-                rifle.setMaxDistance(rifle.getMaxDistance() + 10);
+                rifle.setMaxDistance(rifle.getMaxDistance() + 50);
                 
                 if (rifle.getMaxDistance() > Config.MAX_RIFLE_MAX_BULLET_DISTANCE) {
                     rifle.setMaxDistance(Config.MAX_RIFLE_MAX_BULLET_DISTANCE);
                 }
             } else if (gun instanceof Shotgun shotgun) {
-                shotgun.setMaxDistance(shotgun.getMaxDistance() + 10);
+                shotgun.setMaxDistance(shotgun.getMaxDistance() + 50);
                 
                 if (shotgun.getMaxDistance() > Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE) {
                     shotgun.setMaxDistance(Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE);

@@ -14,16 +14,18 @@ public abstract class Config {
     public final static float DEFAULT_PISTOL_BULLET_SPEED = 15000;
     public final static float MAX_PISTOL_BULLET_SPEED = 25000;
     public final static float DEFAULT_PISTOL_BULLET_PENETRATION = 1;
+    public final static float MAX_PISTOL_BULLET_PENETRATION = 2;
     
     // Rifle defaults
     public final static int DEFAULT_RIFLE_FIRE_RATE_MILLIS = 100;
-    public final static int MIN_RIFLE_FIRE_RATE_MILLIS = 5;
-    public final static float DEFAULT_RIFLE_BULLET_DAMAGE = 15;
+    public final static int MIN_RIFLE_FIRE_RATE_MILLIS = 40;
+    public final static float DEFAULT_RIFLE_BULLET_DAMAGE = 20;
     public final static float DEFAULT_RIFLE_BULLET_MAX_DISTANCE = 200;
     public final static float MAX_RIFLE_MAX_BULLET_DISTANCE = 400;
     public final static float DEFAULT_RIFLE_BULLET_SPEED = 15000;
     public final static float MAX_RIFLE_BULLET_SPEED = 25000;
     public final static float DEFAULT_RIFLE_BULLET_PENETRATION = 1;
+    public final static float MAX_RIFLE_BULLET_PENETRATION = 2.5f;
     public final static float DEFAULT_RIFLE_ACCURACY = 0; /* 0-1 */
     public final static float MAX_RIFLE_ACCURACY = 0.8f; /* 0-1 */
     
@@ -35,20 +37,22 @@ public abstract class Config {
     public final static float MAX_SHOTGUN_MAX_BULLET_DISTANCE = 400;
     public final static float DEFAULT_SHOTGUN_BULLET_SPEED = 15000;
     public final static float MAX_SHOTGUN_BULLET_SPEED = 25000;
-    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1f;
-    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 6);
-    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) (Math.PI / 3);
+    public final static float DEFAULT_SHOTGUN_BULLET_PENETRATION = 1.5f;
+    public final static float MAX_SHOTGUN_BULLET_PENETRATION = 4.5f;
+    public final static float DEFAULT_SHOTGUN_SPREAD_RADIANS = (float) Math.toRadians(30);
+    public final static float MAX_SHOTGUN_SPREAD_RADIANS = (float) Math.toRadians(60);
     
     // Sniper defaults
     public final static int DEFAULT_SNIPER_FIRE_RATE_MILLIS = 1400;
     public final static int MIN_SNIPER_FIRE_RATE_MILLIS = 1000;
-    public final static float DEFAULT_SNIPER_BULLET_DAMAGE = 100;
-    public final static float DEFAULT_SNIPER_BULLET_PENETRATION = 10f;
+    public final static float DEFAULT_SNIPER_BULLET_DAMAGE = 400;
+    public final static float DEFAULT_SNIPER_BULLET_PENETRATION = 15.5f;
+    public final static float MAX_SNIPER_BULLET_PENETRATION = 40;
     
     // Grenade Launcher defaults
     public final static int DEFAULT_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 900;
     public final static int MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS = 700;
-    public final static float DEFAULT_GRENADE_LAUNCHER_GRENADE_DAMAGE = 80;
+    public final static float DEFAULT_GRENADE_LAUNCHER_GRENADE_DAMAGE = 100;
     public final static float DEFAULT_GRENADE_LAUNCHER_AOE_DISTANCE = 60;
     public final static float MAX_GRENADE_LAUNCHER_AOE_DISTANCE = 120;
     
@@ -60,7 +64,8 @@ public abstract class Config {
     public final static float DEFAULT_PLAYER_DASH_SPEED = 15000;
     public final static float DEFAULT_PLAYER_MAX_HEALTH = 100;
     public final static float DEFAULT_PLAYER_HEALTH = 100;
-    public final static float DEFAULT_PLAYER_HEALTH_REGEN_HEALTH = 0f;
+    public final static float DEFAULT_PLAYER_HEALTH_REGEN_HEALTH = 0;
+    public final static float MAX_PLAYER_HEALTH_REGEN_HEALTH = 0.1f;
     public final static int DEFAULT_PLAYER_MAX_XP = 50;
     public final static int DEFAULT_PLAYER_XP = 0;
     public final static int DEFAULT_PLAYER_MAX_LEVEL = 9999;
@@ -69,7 +74,7 @@ public abstract class Config {
     // Zombie
     public final static float DEFAULT_ZOMBIE_DAMAGE = 1;
     public final static float DEFAULT_ZOMBIE_SPEED = 200;
-    public final static float MAX_ZOMBIE_SPEED = 800;
+    public final static float MAX_ZOMBIE_SPEED = 600;
     public final static float DEFAULT_ZOMBIE_HEALTH = 100;
     public final static float DEFAULT_ZOMBIE_MAX_HEALTH = 100;
     
@@ -80,13 +85,9 @@ public abstract class Config {
     public final static float DEFAULT_DEVIL_HEALTH = 1000;
     public final static float DEFAULT_DEVIL_MAX_HEALTH = 1000;
     
-    // Projectiles max stats
-    public final static float MAX_BULLET_PENETRATION = 3;
-    public final static float MAX_INSTANT_BULLET_PENETRATION = 20;
-    
     // World
     public final static int DEFAULT_ZOMBIE_COUNT = 100;
-    public final static int MAX_ZOMBIE_COUNT = 600;
+    public final static int MAX_ZOMBIE_COUNT = 500;
     public final static int DEFAULT_DEVIL_COUNT = 1;
-    public final static int MAX_DEVIL_COUNT = 25;
+    public final static int MAX_DEVIL_COUNT = 50;
 }

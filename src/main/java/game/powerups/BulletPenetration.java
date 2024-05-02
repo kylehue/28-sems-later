@@ -11,28 +11,28 @@ public class BulletPenetration implements PowerUp {
     public void apply() {
         for (Gun gun : getUpgradableGuns()) {
             if (gun instanceof Pistol pistol) {
-                pistol.setPenetration(pistol.getPenetration() + 0.5f);
+                pistol.setPenetration(pistol.getPenetration() + 0.11f);
                 
-                if (pistol.getPenetration() > Config.MAX_BULLET_PENETRATION) {
-                    pistol.setPenetration(Config.MAX_BULLET_PENETRATION);
+                if (pistol.getPenetration() > Config.MAX_PISTOL_BULLET_PENETRATION) {
+                    pistol.setPenetration(Config.MAX_PISTOL_BULLET_PENETRATION);
                 }
             } else if (gun instanceof Rifle rifle) {
-                rifle.setPenetration(rifle.getPenetration() + 0.5f);
+                rifle.setPenetration(rifle.getPenetration() + 0.21f);
                 
-                if (rifle.getPenetration() > Config.MAX_BULLET_PENETRATION) {
-                    rifle.setPenetration(Config.MAX_BULLET_PENETRATION);
+                if (rifle.getPenetration() > Config.MAX_RIFLE_BULLET_PENETRATION) {
+                    rifle.setPenetration(Config.MAX_RIFLE_BULLET_PENETRATION);
                 }
             } else if (gun instanceof Shotgun shotgun) {
-                shotgun.setPenetration(shotgun.getPenetration() + 0.5f);
+                shotgun.setPenetration(shotgun.getPenetration() + 0.21f);
                 
-                if (shotgun.getPenetration() > Config.MAX_BULLET_PENETRATION) {
-                    shotgun.setPenetration(Config.MAX_BULLET_PENETRATION);
+                if (shotgun.getPenetration() > Config.MAX_SHOTGUN_BULLET_PENETRATION) {
+                    shotgun.setPenetration(Config.MAX_SHOTGUN_BULLET_PENETRATION);
                 }
             } else if (gun instanceof Sniper sniper) {
-                sniper.setPenetration(sniper.getPenetration() + 1f);
+                sniper.setPenetration(sniper.getPenetration() + 2.1f);
                 
-                if (sniper.getPenetration() > Config.MAX_INSTANT_BULLET_PENETRATION) {
-                    sniper.setPenetration(Config.MAX_INSTANT_BULLET_PENETRATION);
+                if (sniper.getPenetration() > Config.MAX_SNIPER_BULLET_PENETRATION) {
+                    sniper.setPenetration(Config.MAX_SNIPER_BULLET_PENETRATION);
                 }
             }
         }
@@ -43,28 +43,28 @@ public class BulletPenetration implements PowerUp {
         Pistol pistol = (Pistol) WeaponKind.PISTOL.get();
         if (
             Progress.UNLOCKED_WEAPONS.contains(WeaponKind.PISTOL) &&
-            pistol.getPenetration() < Config.MAX_BULLET_PENETRATION
+            pistol.getPenetration() < Config.MAX_PISTOL_BULLET_PENETRATION
         ) {
             upgradableGuns.add(pistol);
         }
         Rifle rifle = (Rifle) WeaponKind.RIFLE.get();
         if (
             Progress.UNLOCKED_WEAPONS.contains(WeaponKind.RIFLE) &&
-            rifle.getPenetration() < Config.MAX_BULLET_PENETRATION
+            rifle.getPenetration() < Config.MAX_RIFLE_BULLET_PENETRATION
         ) {
             upgradableGuns.add(rifle);
         }
         Shotgun shotgun = (Shotgun) WeaponKind.SHOTGUN.get();
         if (
             Progress.UNLOCKED_WEAPONS.contains(WeaponKind.SHOTGUN) &&
-            shotgun.getPenetration() < Config.MAX_BULLET_PENETRATION
+            shotgun.getPenetration() < Config.MAX_SHOTGUN_BULLET_PENETRATION
         ) {
             upgradableGuns.add(shotgun);
         }
         Sniper sniper = (Sniper) WeaponKind.SNIPER.get();
         if (
             Progress.UNLOCKED_WEAPONS.contains(WeaponKind.SNIPER) &&
-            sniper.getPenetration() < Config.MAX_INSTANT_BULLET_PENETRATION
+            sniper.getPenetration() < Config.MAX_SNIPER_BULLET_PENETRATION
         ) {
             upgradableGuns.add(sniper);
         }
