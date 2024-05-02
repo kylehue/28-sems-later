@@ -1,6 +1,7 @@
 package game.powerups;
 
 import game.Config;
+import game.Game;
 import game.Progress;
 
 public class HealthRegen implements PowerUp {
@@ -12,6 +13,8 @@ public class HealthRegen implements PowerUp {
                 Config.MAX_PLAYER_HEALTH_REGEN_HEALTH
             );
         }
+        
+        Game.scene.getMessages().add("Your health regen has been upgraded!");
     }
     
     public boolean isAllowedToUse() {

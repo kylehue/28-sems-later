@@ -1,6 +1,7 @@
 package game.powerups;
 
 import game.Config;
+import game.Game;
 import game.Progress;
 import game.weapons.*;
 
@@ -8,6 +9,8 @@ import java.util.HashSet;
 
 public class FireRate implements PowerUp {
     public void apply() {
+        StringBuilder message = new StringBuilder();
+        message.append("Fire rate has increased for ");
         for (Gun gun : getUpgradableGuns()) {
             gun.setFireRateInMillis(gun.getFireRateInMillis() - 10);
             
@@ -15,24 +18,42 @@ public class FireRate implements PowerUp {
                 if (pistol.getFireRateInMillis() < Config.MIN_PISTOL_FIRE_RATE_MILLIS) {
                     pistol.setFireRateInMillis(Config.MIN_PISTOL_FIRE_RATE_MILLIS);
                 }
+                
+                message.append("pistol, ");
             } else if (gun instanceof Rifle rifle) {
                 if (rifle.getFireRateInMillis() < Config.MIN_RIFLE_FIRE_RATE_MILLIS) {
                     rifle.setFireRateInMillis(Config.MIN_RIFLE_FIRE_RATE_MILLIS);
                 }
+                
+                message.append("rifle, ");
             } else if (gun instanceof Shotgun shotgun) {
                 if (shotgun.getFireRateInMillis() < Config.MIN_SHOTGUN_FIRE_RATE_MILLIS) {
                     shotgun.setFireRateInMillis(Config.MIN_SHOTGUN_FIRE_RATE_MILLIS);
                 }
+                
+                message.append("shotgun, ");
             } else if (gun instanceof Sniper sniper) {
                 if (sniper.getFireRateInMillis() < Config.MIN_SNIPER_FIRE_RATE_MILLIS) {
                     sniper.setFireRateInMillis(Config.MIN_SNIPER_FIRE_RATE_MILLIS);
                 }
+                
+                message.append("sniper, ");
             } else if (gun instanceof GrenadeLauncher grenadeLauncher) {
                 if (grenadeLauncher.getFireRateInMillis() < Config.MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS) {
                     grenadeLauncher.setFireRateInMillis(Config.MIN_GRENADE_LAUNCHER_FIRE_RATE_MILLIS);
                 }
+                
+                message.append("grenade launcher, ");
             }
         }
+        
+        if (!message.isEmpty()) {
+            message.delete(message.length() - 2, message.length());
+        }
+        
+        message.append("!");
+        
+        Game.scene.getMessages().add(message.toString());
     }
     
     private HashSet<Gun> getUpgradableGuns() {

@@ -1,6 +1,7 @@
 package game.powerups;
 
 import game.Config;
+import game.Game;
 import game.Progress;
 import game.weapons.GrenadeLauncher;
 import game.weapons.WeaponKind;
@@ -13,6 +14,8 @@ public class GrenadeAoe implements PowerUp {
         if (grenadeLauncher.getAoeDistance() > Config.MAX_GRENADE_LAUNCHER_AOE_DISTANCE) {
             grenadeLauncher.setAoeDistance(Config.MAX_GRENADE_LAUNCHER_AOE_DISTANCE);
         }
+        
+        Game.scene.getMessages().add("The grenade launcher's AOE has been upgraded!");
     }
     
     public boolean isAllowedToUse() {

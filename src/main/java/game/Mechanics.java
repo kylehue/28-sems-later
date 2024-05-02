@@ -130,7 +130,6 @@ public abstract class Mechanics {
         Game.scene.setPowerUpSelectionComponentVisible(true);
         Game.scene.setOnSelectPowerUp(selectedPowerUp -> {
             selectedPowerUp.get().apply();
-            Game.scene.getMessages().add("Your weapons has been upgraded!");
             Game.scene.setPowerUpSelectionComponentVisible(false);
             Game.world.play();
         });

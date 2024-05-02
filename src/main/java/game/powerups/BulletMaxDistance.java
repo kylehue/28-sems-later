@@ -1,6 +1,7 @@
 package game.powerups;
 
 import game.Config;
+import game.Game;
 import game.Progress;
 import game.weapons.*;
 
@@ -9,6 +10,8 @@ import java.util.HashSet;
 public class BulletMaxDistance implements PowerUp {
     @Override
     public void apply() {
+        StringBuilder message = new StringBuilder();
+        message.append("Bullet distance has increased for ");
         for (Gun gun : getUpgradableGuns()) {
             if (gun instanceof Pistol pistol) {
                 pistol.setMaxDistance(pistol.getMaxDistance() + 50);
@@ -16,20 +19,34 @@ public class BulletMaxDistance implements PowerUp {
                 if (pistol.getMaxDistance() > Config.MAX_PISTOL_MAX_BULLET_DISTANCE) {
                     pistol.setMaxDistance(Config.MAX_PISTOL_MAX_BULLET_DISTANCE);
                 }
+                
+                message.append("pistol, ");
             } else if (gun instanceof Rifle rifle) {
                 rifle.setMaxDistance(rifle.getMaxDistance() + 50);
                 
                 if (rifle.getMaxDistance() > Config.MAX_RIFLE_MAX_BULLET_DISTANCE) {
                     rifle.setMaxDistance(Config.MAX_RIFLE_MAX_BULLET_DISTANCE);
                 }
+                
+                message.append("rifle, ");
             } else if (gun instanceof Shotgun shotgun) {
                 shotgun.setMaxDistance(shotgun.getMaxDistance() + 50);
                 
                 if (shotgun.getMaxDistance() > Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE) {
                     shotgun.setMaxDistance(Config.MAX_SHOTGUN_MAX_BULLET_DISTANCE);
                 }
+                
+                message.append("shotgun, ");
             }
         }
+        
+        if (!message.isEmpty()) {
+            message.delete(message.length() - 2, message.length());
+        }
+        
+        message.append("!");
+        
+        Game.scene.getMessages().add(message.toString());
     }
     
     private HashSet<Gun> getUpgradableGuns() {

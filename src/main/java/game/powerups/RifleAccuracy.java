@@ -1,6 +1,7 @@
 package game.powerups;
 
 import game.Config;
+import game.Game;
 import game.Progress;
 import game.weapons.WeaponKind;
 import game.weapons.Rifle;
@@ -13,6 +14,8 @@ public class RifleAccuracy implements PowerUp {
         if (rifle.getAccuracy() > Config.MAX_RIFLE_ACCURACY) {
             rifle.setAccuracy(Config.MAX_RIFLE_ACCURACY);
         }
+        
+        Game.scene.getMessages().add("Rifle's accuracy has been upgraded!");
     }
     
     public boolean isAllowedToUse() {

@@ -65,21 +65,26 @@ public class GameScene extends GameApplicationScene {
     }
     
     private void setupMessageComponent() {
-        final int MAX_MESSAGES_SIZE = 5;
+        final int MAX_MESSAGES_SIZE = 6;
         final int MESSAGE_TIME_LIMIT_SECONDS = 10;
         
         VBox parent = new VBox();
         defaultRoot.getChildren().add(parent);
         parent.setMouseTransparent(true);
+        parent.setSpacing(5);
         StackPane.setMargin(parent, new Insets(120));
         parent.setAlignment(Pos.TOP_CENTER);
+        parent.maxWidthProperty().bind(Game.canvas.widthProperty().multiply(0.7));
         
         messages.addListener((ListChangeListener<String>) change -> {
             change.next();
             for (String message : change.getAddedSubList()) {
                 Label label = createPixelatedLabel(32);
                 label.setText(message);
-                label.setTextFill(Color.valueOf("#e4fa52"));
+                label.setWrapText(true);
+                label.setTextAlignment(TextAlignment.CENTER);
+                label.setTextFill(Color.valueOf("#eeff33"));
+                label.setLineSpacing(-12);
                 parent.getChildren().add(label);
                 CompletableFuture
                     .delayedExecutor(MESSAGE_TIME_LIMIT_SECONDS, TimeUnit.SECONDS)
