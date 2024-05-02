@@ -1,6 +1,13 @@
 package game;
 
+import java.util.Objects;
+
 public abstract class Config {
+    public final static boolean IS_DEV_MODE = Objects.equals(
+        System.getenv("MODE"),
+        "development"
+    );
+    
     // Grenade defaults
     public final static int DEFAULT_GRENADE_DETONATION_TIME_MILLIS = 1000;
     public final static float DEFAULT_GRENADE_AOE_DISTANCE = 60;

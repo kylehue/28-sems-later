@@ -5,6 +5,7 @@ import event.MouseHandler;
 import game.utils.GameLoop;
 import game.weapons.WeaponKind;
 import javafx.concurrent.Task;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,6 +18,7 @@ import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Game extends GameLoop {
@@ -224,7 +226,7 @@ public class Game extends GameLoop {
         scene.setGameOverComponentVisible(false);
         scene.setPauseComponentVisible(false);
         
-        if (System.getenv("MODE").equals("production")) {
+        if (!Config.IS_DEV_MODE) {
             Progress.reset();
         }
         
@@ -265,10 +267,12 @@ public class Game extends GameLoop {
         ctx.beginPath();
         ctx.setFill(Paint.valueOf("#00FF00"));
         ctx.setFont(Font.font(null, FontWeight.BOLD, 24));
-        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextAlign(TextAlignment.RIGHT);
+        ctx.setTextBaseline(VPos.BOTTOM);
         ctx.fillText(
-            String.valueOf(getFPS()), ctx.getCanvas().getWidth() - 30,
-            30,
+            String.valueOf((int) getFPS()),
+            ctx.getCanvas().getWidth() - 20,
+            ctx.getCanvas().getHeight() - 20,
             100
         );
         ctx.closePath();
@@ -281,7 +285,9 @@ public class Game extends GameLoop {
         clearCanvas();
         world.render(graphicsContext, alpha);
         
-        // renderFPS(graphicsContext);
+        if (Config.IS_DEV_MODE) {
+            renderFPS(graphicsContext);
+        }
     }
     
     @Override
