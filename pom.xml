@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.sample-game</groupId>
-    <artifactId>sample-game</artifactId>
+    <groupId>com.kylehue</groupId>
+    <artifactId>28-sems-later</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
 
@@ -82,9 +82,8 @@
                             <input>${project.build.directory}</input>
                             <destination>${project.build.directory}/installer</destination>
                             <name>28 Sems Later</name>
-                            <mainJar>sample-game-1.0.0.jar</mainJar>
+                            <mainJar>${project.build.finalName}.jar</mainJar>
                             <icon>${project.build.directory}/classes/icon/favicon.ico</icon>
-                            <!--suppress UnresolvedMavenProperty -->
                             <modulePaths>${env.JAVAFX_HOME}</modulePaths>
                             <addModules>javafx.base,javafx.controls,javafx.media</addModules>
                             <mainClass>main.Main</mainClass>
