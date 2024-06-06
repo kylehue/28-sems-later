@@ -33,10 +33,10 @@ public class ColliderWorld {
         collider.setColliderWorld(this);
     }
     
-    public void removeCollider(String id) {
+    public void removeCollider(int id) {
         for (int i = colliders.size() - 1; i >= 0; i--) {
             Collider collider = colliders.get(i);
-            if (!collider.getId().equals(id)) continue;
+            if (collider.getId() != id) continue;
             this.colliders.remove(i);
             collider.getContacts().remove(id);
         }
@@ -48,6 +48,12 @@ public class ColliderWorld {
     
     private void addColliderToQuadtree(Collider collider) {
         hashGrid.insert(collider);
+    }
+    
+    private String getPairHash(Collider colliderA, Collider colliderB) {
+        return colliderA.getId() > colliderB.getId() ?
+            colliderA.getId() + ":" + colliderB.getId() :
+            colliderB.getId() + ":" + colliderA.getId();
     }
     
     public void fixedUpdate(float deltaTime) {
@@ -64,7 +70,7 @@ public class ColliderWorld {
             // Resolve
             for (Collider colliderB : otherColliders) {
                 if (colliderB == null) continue;
-                if (colliderA.getId().equals(colliderB.getId())) continue;
+                if (colliderA.getId() == colliderB.getId()) continue;
                 if (colliderA.isAsleep() && colliderB.isAsleep()) {
                     continue;
                 }
@@ -78,13 +84,11 @@ public class ColliderWorld {
                  * already checked objectA vs. objectB, we don't have to
                  * check objectB vs. objectA
                  */
-                String combinationA = colliderA.getId() + colliderB.getId();
-                String combinationB = colliderB.getId() + colliderA.getId();
-                if (pairs.contains(combinationA) || pairs.contains(combinationB)) {
+                String pairHash = getPairHash(colliderA, colliderB);
+                if (pairs.contains(pairHash)) {
                     continue;
                 }
-                pairs.add(combinationA);
-                pairs.add(combinationB);
+                pairs.add(pairHash);
                 colliderA.resolveCollision(colliderB);
             }
         }

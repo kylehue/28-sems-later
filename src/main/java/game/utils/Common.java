@@ -3,8 +3,8 @@ package game.utils;
 public abstract class Common {
     private static int idAccumulator = 0;
     
-    public static String generateId() {
-        return "#" + (Common.idAccumulator++);
+    public static int generateId() {
+        return (Common.idAccumulator++);
     }
     
     public static float random(float min, float max) {

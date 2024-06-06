@@ -18,7 +18,7 @@ public abstract class Projectile implements Drawable {
     protected final Vector initialPosition = new Vector();
     protected final Vector position = new Vector();
     protected boolean isDisposed = false;
-    protected HashSet<String> markedEntities = new HashSet<>();
+    protected HashSet<Integer> markedEntities = new HashSet<>();
     
     public Projectile(World world, Vector initialPosition, float angle) {
         this.world = world;

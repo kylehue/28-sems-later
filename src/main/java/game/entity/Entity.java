@@ -12,7 +12,7 @@ import game.utils.Common;
 import game.utils.Vector;
 
 public abstract class Entity implements Drawable {
-    protected final String id = Common.generateId();
+    protected final int id = Common.generateId();
     protected final Vector position = new Vector();
     private final FloatProperty currentHealth = new SimpleFloatProperty(100);
     private final FloatProperty maxHealth = new SimpleFloatProperty(Float.MAX_VALUE);
@@ -93,7 +93,7 @@ public abstract class Entity implements Drawable {
         return position;
     }
     
-    public String getId() {
+    public int getId() {
         return id;
     }
     

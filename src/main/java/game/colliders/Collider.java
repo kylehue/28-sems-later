@@ -13,7 +13,7 @@ public abstract class Collider implements HashGrid.BoundedObject {
     
     /* Misc */
     private ColliderWorld colliderWorld = null;
-    private final String id = Common.generateId();
+    private final int id = Common.generateId();
     
     /* Physics */
     private final Vector position = new Vector();
@@ -26,7 +26,7 @@ public abstract class Collider implements HashGrid.BoundedObject {
     
     /* Collision */
     private boolean isCollidingInBounds = false;
-    private final HashSet<String> contacts = new HashSet<>();
+    private final HashSet<Integer> contacts = new HashSet<>();
     private ArrayList<Collider> nearColliders = new ArrayList<>();
     
     /* Grouping */
@@ -102,7 +102,7 @@ public abstract class Collider implements HashGrid.BoundedObject {
         return isCollidingInBounds;
     }
     
-    protected HashSet<String> getContacts() {
+    protected HashSet<Integer> getContacts() {
         return contacts;
     }
     
@@ -296,7 +296,7 @@ public abstract class Collider implements HashGrid.BoundedObject {
         return this.colliderWorld;
     }
     
-    public String getId() {
+    public int getId() {
         return id;
     }
     

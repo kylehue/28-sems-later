@@ -68,7 +68,7 @@ public class InstantBullet extends Projectile {
     
     private void handleEntityCollision() {
         // Get entities that intersects the trajectory of the bullet
-        HashMap<String, Vector> entitiesIntersectionMap = new HashMap<>();
+        HashMap<Integer, Vector> entitiesIntersectionMap = new HashMap<>();
         ArrayList<Entity> entities = new ArrayList<>();
         for (Entity entity : world.getEntities(false)) {
             Vector intersection = CollisionResolvers.getLineToBoundsIntersectionPoint(

@@ -101,7 +101,7 @@ public class PathFinder {
             if (a.fCost == b.fCost) return a.hCost - b.hCost;
             return a.fCost - b.fCost;
         });
-        HashSet<String> closedNodes = new HashSet<>();
+        HashSet<Integer> closedNodes = new HashSet<>();
         openNodes.add(startNode);
         
         while (!openNodes.isEmpty()) {
@@ -254,7 +254,7 @@ public class PathFinder {
     }
     
     
-    HashMap<String, ArrayList<Node>> cachedNeighbors = new HashMap<>();
+    HashMap<Integer, ArrayList<Node>> cachedNeighbors = new HashMap<>();
     
     private ArrayList<Node> getNodeNeighbors(Node node) {
         ArrayList<Node> cached = cachedNeighbors.get(node.id);
@@ -319,7 +319,7 @@ public class PathFinder {
     }
     
     private static class Node {
-        public final String id = Common.generateId();
+        public final int id = Common.generateId();
         public int x = 0;
         public int y = 0;
         public int fCost = 0;

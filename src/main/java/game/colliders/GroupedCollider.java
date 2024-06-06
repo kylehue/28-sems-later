@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class GroupedCollider extends Collider {
     private final ArrayList<Collider> colliders = new ArrayList<>();
-    private final HashMap<String, Vector> constraints = new HashMap<>();
+    private final HashMap<Integer, Vector> constraints = new HashMap<>();
     private float width = 0;
     private float height = 0;
     
