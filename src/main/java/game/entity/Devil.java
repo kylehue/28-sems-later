@@ -41,10 +41,12 @@ public class Devil extends Seeker {
         setMaxHealth(Config.DEFAULT_DEVIL_MAX_HEALTH);
         
         // Initialize colliders
-        collider.setGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.setCategory(Game.CollisionCategory.MOBS.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
         collider.setRadius(6);
         collider.setMass(5);
         Game.world.getColliderWorld().addCollider(collider);

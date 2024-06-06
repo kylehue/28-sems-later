@@ -13,7 +13,6 @@ import game.utils.Vector;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class Fireball extends Projectile {
     private final float knockBackForce = 15000;
@@ -30,13 +29,17 @@ public class Fireball extends Projectile {
     
     private void initCollider() {
         collider.setPosition(initialPosition);
-        collider.setGroup(Game.CollisionGroup.PROJECTILES);
-        collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.PLAYER);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.MAP);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.PLAYER);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.MOBS);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.setCategory(Game.CollisionCategory.PROJECTILES.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.PLAYER.get()
+        );
+        collider.setSkipResolutionMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.PLAYER.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
         collider.setRadius(3);
         collider.setFriction(0.9f);
         collider.setMass(1);

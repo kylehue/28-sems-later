@@ -74,12 +74,15 @@ public class Player extends Entity {
         setDashIntervalInMillis(Config.DEFAULT_PLAYER_DASH_INTERVAL_MILLIS);
         
         // Initialize collider
-        this.collider.setGroup(Game.CollisionGroup.PLAYER);
-        this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.MAP);
-        this.collider.addToGroup(Game.CollisionGroup.MOBS);
-        this.collider.setMass(5);
-        this.collider.setRadius(5);
+        collider.setCategory(Game.CollisionCategory.PLAYER.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
+        
+        collider.setMass(5);
+        collider.setRadius(5);
         Game.world.getColliderWorld().addCollider(
             this.collider
         );

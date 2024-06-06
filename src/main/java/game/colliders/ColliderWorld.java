@@ -63,8 +63,13 @@ public class ColliderWorld {
             
             // Resolve
             for (Collider colliderB : otherColliders) {
+                if (colliderB == null) continue;
                 if (colliderA.getId().equals(colliderB.getId())) continue;
                 if (colliderA.isAsleep() && colliderB.isAsleep()) {
+                    continue;
+                }
+                
+                if (!colliderA.shouldCollideWith(colliderB)) {
                     continue;
                 }
                 

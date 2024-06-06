@@ -107,8 +107,8 @@ public class GroupedCollider extends Collider {
             collider.setMass(getMass());
             collider.setFriction(getFriction());
             collider.setStatic(isStatic());
-            collider.setGroup(getGroup());
-            collider.getGroups().addAll(getGroups());
+            collider.setMask(getMask());
+            collider.setCategory(getCategory());
             collider.setColliderWorld(getColliderWorld());
         }
     }
@@ -144,8 +144,8 @@ public class GroupedCollider extends Collider {
         clone.setMass(getMass());
         clone.setFriction(getFriction());
         clone.setStatic(isStatic());
-        clone.setGroup(getGroup());
-        clone.getGroups().addAll(getGroups());
+        clone.setMask(getMask());
+        clone.setCategory(getCategory());
         
         return clone;
     }

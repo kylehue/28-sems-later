@@ -156,7 +156,9 @@ public class World {
             if (isSeeThrough) ctx.restore();
         }
         
-        // this.renderMeta(ctx);
+        if (Config.IS_DEV_MODE) {
+            this.renderMeta(ctx);
+        }
         
         if (!debugRender.isEmpty()) {
             debugRender.forEach((key, run) -> {

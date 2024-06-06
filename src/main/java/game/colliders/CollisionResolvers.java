@@ -174,8 +174,6 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
-        if (!circleA.isGroupedWith(circleB) && !circleB.isGroupedWith(circleA)) return;
-        
         // Detect (AABB)
         boolean isCollidingAABB = testAABB(
             circleA.getPosition().getX() - circleA.getWidth() / 2,
@@ -205,7 +203,7 @@ public abstract class CollisionResolvers {
         circleA.getContacts().add(circleB.getId());
         circleB.getContacts().add(circleA.getId());
         
-        if (circleB.isResolutionExcludedFromGroup(circleA.getGroup()) || circleA.isResolutionExcludedFromGroup(circleB.getGroup())) {
+        if (circleA.shouldSkipResolutionWith(circleB)) {
             return;
         }
         
@@ -233,8 +231,6 @@ public abstract class CollisionResolvers {
         CircleCollider circle,
         PolygonCollider polygon
     ) {
-        if (!circle.isGroupedWith(polygon) && !polygon.isGroupedWith(circle)) return;
-        
         // Detect (AABB)
         boolean isCollidingAABB = testAABB(
             circle.getPosition().getX() - circle.getWidth() / 2,
@@ -361,7 +357,7 @@ public abstract class CollisionResolvers {
         circle.getContacts().add(polygon.getId());
         polygon.getContacts().add(circle.getId());
         
-        if (circle.isResolutionExcludedFromGroup(polygon.getGroup()) || polygon.isResolutionExcludedFromGroup(circle.getGroup())) {
+        if (circle.shouldSkipResolutionWith(polygon)) {
             return;
         }
         
@@ -400,8 +396,6 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
-        if (!polygonA.isGroupedWith(polygonB) && !polygonB.isGroupedWith(polygonA)) return;
-        
         // Detect (AABB)
         boolean isCollidingAABB = testAABB(
             polygonA.getPosition().getX() - polygonA.getWidth() / 2,
@@ -490,7 +484,7 @@ public abstract class CollisionResolvers {
         polygonA.getContacts().add(polygonB.getId());
         polygonB.getContacts().add(polygonA.getId());
         
-        if (polygonA.isResolutionExcludedFromGroup(polygonB.getGroup()) || polygonB.isResolutionExcludedFromGroup(polygonA.getGroup())) {
+        if (polygonA.shouldSkipResolutionWith(polygonB)) {
             return;
         }
         

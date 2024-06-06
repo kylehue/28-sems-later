@@ -31,15 +31,18 @@ public class Grenade extends Projectile {
     
     private void initCollider() {
         collider.setPosition(initialPosition);
-        collider.setGroup(Game.CollisionGroup.PROJECTILES);
-        collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
-        collider.addToGroup(Game.CollisionGroup.PLAYER);
+        collider.setCategory(Game.CollisionCategory.PROJECTILES.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get() |
+                Game.CollisionCategory.PLAYER.get()
+        );
         collider.setRadius(3);
         collider.setFriction(0.05f);
         collider.setMass(1);
         aoeCollider.setRadius(aoeDistance);
+        aoeCollider.setSkipResolutionMask(0xffff); // skip all collision
     }
     
     @Override

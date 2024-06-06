@@ -18,15 +18,27 @@ import main.GameApplication;
 import scenes.GameScene;
 import utils.Async;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class Game extends GameLoop {
-    public enum CollisionGroup {
+    public enum CollisionCategory {
         MAP,
         PLAYER,
         MOBS,
-        PROJECTILES,
+        PROJECTILES;
+        
+        private static class Accumulators {
+            private static int lastBit = 1;
+        }
+        
+        private final int bit;
+        
+        CollisionCategory() {
+            this.bit = Accumulators.lastBit;
+            Accumulators.lastBit <<= 1;
+        }
+        
+        public int get() {
+            return bit;
+        }
     }
     
     public static class ZIndex {

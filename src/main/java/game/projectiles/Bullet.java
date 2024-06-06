@@ -1,12 +1,9 @@
 package game.projectiles;
 
-import game.Config;
 import game.Game;
-import game.Progress;
 import game.World;
 import game.colliders.CircleCollider;
 import game.colliders.Collider;
-import game.colliders.GroupedCollider;
 import game.entity.Entity;
 import game.map.Layer;
 import game.map.Material;
@@ -32,13 +29,17 @@ public class Bullet extends Projectile {
     
     private void initCollider() {
         collider.setPosition(initialPosition);
-        collider.setGroup(Game.CollisionGroup.PROJECTILES);
-        collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.MAP);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.MOBS);
-        collider.excludeResolutionToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.setCategory(Game.CollisionCategory.PROJECTILES.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
+        collider.setSkipResolutionMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
         collider.setRadius(2);
         collider.setFriction(0.9f);
         collider.setMass(1);

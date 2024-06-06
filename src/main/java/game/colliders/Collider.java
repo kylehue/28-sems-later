@@ -30,9 +30,9 @@ public abstract class Collider implements HashGrid.BoundedObject {
     private ArrayList<Collider> nearColliders = new ArrayList<>();
     
     /* Grouping */
-    private final HashSet<Object> groups = new HashSet<>();
-    private final HashSet<Object> excludedResolutions = new HashSet<>();
-    private Object groupId = null;
+    private int category = 0xffff;
+    private int mask = 0xffff;
+    private int skipResolutionMask = 0;
     
     public void updateNearColliders(HashGrid<Collider> hashGrid) {
         Async.queue2.submit(() -> {
@@ -65,36 +65,36 @@ public abstract class Collider implements HashGrid.BoundedObject {
     }
     
     /* Grouping */
-    public void addToGroup(Object groupKey) {
-        groups.add(groupKey);
+    public void setCategory(int category) {
+        this.category = category;
     }
     
-    public void removeFromGroup(Object groupKey) {
-        groups.remove(groupKey);
+    public void setMask(int mask) {
+        this.mask = mask;
     }
     
-    protected HashSet<Object> getGroups() {
-        return groups;
+    public void setSkipResolutionMask(int skipResolutionMask) {
+        this.skipResolutionMask = skipResolutionMask;
     }
     
-    public void setGroup(Object groupKey) {
-        this.groupId = groupKey;
+    public boolean shouldSkipResolutionWith(Collider collider) {
+        return (collider.category & this.skipResolutionMask) != 0 || (collider.skipResolutionMask & this.category) != 0;
     }
     
-    protected Object getGroup() {
-        return groupId;
+    public boolean shouldCollideWith(Collider collider) {
+        return (collider.category & this.mask) != 0 || (collider.mask & this.category) != 0;
     }
     
-    public boolean isGroupedWith(Collider collider) {
-        return groups.contains(collider.groupId);
+    public int getCategory() {
+        return category;
     }
     
-    public void excludeResolutionToGroup(Object groupId) {
-        excludedResolutions.add(groupId);
+    public int getMask() {
+        return mask;
     }
     
-    public boolean isResolutionExcludedFromGroup(Object groupId) {
-        return excludedResolutions.contains(groupId);
+    public int getSkipResolutionMask() {
+        return skipResolutionMask;
     }
     
     /* Contacts / collisions */
@@ -301,10 +301,10 @@ public abstract class Collider implements HashGrid.BoundedObject {
     }
     
     protected void copyAttributesToCollider(Collider collider) {
-        collider.groupId = groupId;
         collider.isStatic = isStatic;
-        collider.groups.addAll(groups);
-        collider.groupId = groupId;
+        collider.mask = mask;
+        collider.category = category;
+        collider.skipResolutionMask = skipResolutionMask;
         collider.mass = mass;
         collider.friction = friction;
         collider.position.set(this.position);

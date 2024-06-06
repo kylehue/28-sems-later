@@ -23,7 +23,7 @@ public class CityMap extends Map {
             new Vector(halfTile, roomWallThickness),
             new Vector(-halfTile, roomWallThickness)
         });
-        roomWallBottomCollider.setGroup(Game.CollisionGroup.MAP);
+        roomWallBottomCollider.setCategory(Game.CollisionCategory.MAP.get());
         roomWallBottomCollider.setStatic(true);
         roomWallBottomCollider.getPosition().setY(halfTile - roomWallThickness);
         
@@ -33,7 +33,7 @@ public class CityMap extends Map {
             new Vector(roomWallThickness, halfTile),
             new Vector(-roomWallThickness, halfTile)
         });
-        roomWallLeftCollider.setGroup(Game.CollisionGroup.MAP);
+        roomWallLeftCollider.setCategory(Game.CollisionCategory.MAP.get());
         roomWallLeftCollider.setStatic(true);
         roomWallLeftCollider.getPosition().setX(-halfTile + roomWallThickness);
         
@@ -44,14 +44,14 @@ public class CityMap extends Map {
             roomWallLeftCollider.clone(),
             roomWallBottomCollider.clone()
         });
-        roomWallBottomLeftCollider.setGroup(Game.CollisionGroup.MAP);
+        roomWallBottomLeftCollider.setCategory(Game.CollisionCategory.MAP.get());
         roomWallBottomLeftCollider.setStatic(true);
         
         GroupedCollider roomWallBottomRightCollider = new GroupedCollider(new Collider[]{
             roomWallRightCollider.clone(),
             roomWallBottomCollider.clone()
         });
-        roomWallBottomRightCollider.setGroup(Game.CollisionGroup.MAP);
+        roomWallBottomRightCollider.setCategory(Game.CollisionCategory.MAP.get());
         roomWallBottomRightCollider.setStatic(true);
         
         PolygonCollider roomWallTurnLeftCollider = new PolygonCollider(new Vector[]{
@@ -60,7 +60,7 @@ public class CityMap extends Map {
             new Vector(roomWallThickness, roomWallThickness),
             new Vector(-roomWallThickness, roomWallThickness)
         });
-        roomWallTurnLeftCollider.setGroup(Game.CollisionGroup.MAP);
+        roomWallTurnLeftCollider.setCategory(Game.CollisionCategory.MAP.get());
         roomWallTurnLeftCollider.setStatic(true);
         roomWallTurnLeftCollider.getPosition().setX(halfTile - roomWallThickness);
         roomWallTurnLeftCollider.getPosition().setY(halfTile - roomWallThickness);
@@ -75,7 +75,7 @@ public class CityMap extends Map {
             new Vector(halfTile, fenceThickness),
             new Vector(-halfTile, fenceThickness)
         });
-        fenceBottomCollider.setGroup(Game.CollisionGroup.MAP);
+        fenceBottomCollider.setCategory(Game.CollisionCategory.MAP.get());
         fenceBottomCollider.setStatic(true);
         fenceBottomCollider.getPosition().setY(halfTile - fenceThickness);
         
@@ -85,7 +85,7 @@ public class CityMap extends Map {
             new Vector(fenceThickness, halfTile),
             new Vector(-fenceThickness, halfTile)
         });
-        fenceLeftCollider.setGroup(Game.CollisionGroup.MAP);
+        fenceLeftCollider.setCategory(Game.CollisionCategory.MAP.get());
         fenceLeftCollider.setStatic(true);
         fenceLeftCollider.getPosition().setX(-halfTile + fenceThickness);
         
@@ -96,21 +96,21 @@ public class CityMap extends Map {
             fenceRightCollider.clone(),
             fenceBottomCollider.clone()
         });
-        fenceBottomRightCollider.setGroup(Game.CollisionGroup.MAP);
+        fenceBottomRightCollider.setCategory(Game.CollisionCategory.MAP.get());
         fenceBottomRightCollider.setStatic(true);
         
         GroupedCollider fenceTurnLeftCollider = new GroupedCollider(new Collider[]{
             fenceLeftCollider.clone(),
             fenceBottomCollider.clone()
         });
-        fenceTurnLeftCollider.setGroup(Game.CollisionGroup.MAP);
+        fenceTurnLeftCollider.setCategory(Game.CollisionCategory.MAP.get());
         fenceTurnLeftCollider.setStatic(true);
         
         GroupedCollider fenceTurnRightCollider = new GroupedCollider(new Collider[]{
             fenceRightCollider.clone(),
             fenceBottomCollider.clone()
         });
-        fenceTurnRightCollider.setGroup(Game.CollisionGroup.MAP);
+        fenceTurnRightCollider.setCategory(Game.CollisionCategory.MAP.get());
         fenceTurnRightCollider.setStatic(true);
         
         // MATERIALS (LOW)
@@ -412,7 +412,7 @@ public class CityMap extends Map {
         stopSign.setRenderPosition(7, 35);
         CircleCollider stopSignCollider = new CircleCollider();
         stopSignCollider.setRadius(3);
-        stopSignCollider.setGroup(Game.CollisionGroup.MAP);
+        stopSignCollider.setCategory(Game.CollisionCategory.MAP.get());
         stopSignCollider.setStatic(true);
         stopSign.setCollider(stopSignCollider);
         
@@ -421,7 +421,7 @@ public class CityMap extends Map {
         streetLamp.setRenderPosition(20, 103);
         CircleCollider streetLampCollider = new CircleCollider();
         streetLampCollider.setRadius(3);
-        streetLampCollider.setGroup(Game.CollisionGroup.MAP);
+        streetLampCollider.setCategory(Game.CollisionCategory.MAP.get());
         streetLampCollider.setStatic(true);
         streetLamp.setCollider(streetLampCollider);
         
@@ -430,8 +430,8 @@ public class CityMap extends Map {
         trashCan.setRenderPosition(7, 12);
         CircleCollider trashCanCollider = new CircleCollider();
         trashCanCollider.setRadius(5);
-        trashCanCollider.setGroup(Game.CollisionGroup.MAP);
-        trashCanCollider.addToGroup(Game.CollisionGroup.MAP);
+        trashCanCollider.setCategory(Game.CollisionCategory.MAP.get());
+        trashCanCollider.setMask(Game.CollisionCategory.MAP.get());
         trashCanCollider.setMass(1);
         trashCan.setCollider(trashCanCollider);
         
@@ -440,8 +440,8 @@ public class CityMap extends Map {
         barrel.setRenderPosition(9, 18);
         CircleCollider barrelCollider = new CircleCollider();
         barrelCollider.setRadius(8);
-        barrelCollider.setGroup(Game.CollisionGroup.MAP);
-        barrelCollider.addToGroup(Game.CollisionGroup.MAP);
+        barrelCollider.setCategory(Game.CollisionCategory.MAP.get());
+        barrelCollider.setMask(Game.CollisionCategory.MAP.get());
         barrelCollider.setMass(4);
         barrel.setCollider(barrelCollider);
         
@@ -456,8 +456,8 @@ public class CityMap extends Map {
             new Vector(carWidthHalf, carHeightHalf),
             new Vector(-carWidthHalf, carHeightHalf)
         });
-        carCollider.setGroup(Game.CollisionGroup.MAP);
-        carCollider.addToGroup(Game.CollisionGroup.MAP);
+        carCollider.setCategory(Game.CollisionCategory.MAP.get());
+        carCollider.setMask(Game.CollisionCategory.MAP.get());
         carCollider.setStatic(true);
         car.setCollider(carCollider);
         
@@ -605,7 +605,7 @@ public class CityMap extends Map {
         layerHigh.registerMaterial("plank-right.png", plankRight);
         layerHigh.registerMaterial("plank-top.png", plankTop);
         layerHigh.distributeMaterials();
-
+        
         Layer layerHigher = this.addLayer();
         layerHigher.setZIndex(Game.ZIndex.MAP_HIGH + 1);
         layerHigher.setMatrix("/maps/city/layers/higher.txt", " ");

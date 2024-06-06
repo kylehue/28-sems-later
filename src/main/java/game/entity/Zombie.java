@@ -36,10 +36,12 @@ public class Zombie extends Seeker {
         setMaxHealth(Config.DEFAULT_ZOMBIE_MAX_HEALTH);
         
         // Initialize colliders
-        collider.setGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.MAP);
-        collider.addToGroup(Game.CollisionGroup.MOBS);
-        collider.addToGroup(Game.CollisionGroup.PROJECTILES);
+        collider.setCategory(Game.CollisionCategory.MOBS.get());
+        collider.setMask(
+            Game.CollisionCategory.MAP.get() |
+                Game.CollisionCategory.MOBS.get() |
+                Game.CollisionCategory.PROJECTILES.get()
+        );
         collider.setRadius(5);
         collider.setMass(1);
         Game.world.getColliderWorld().addCollider(collider);
