@@ -192,11 +192,11 @@ public abstract class CollisionResolvers {
         }
         
         // Detect (Pythagorean Theorem)
-        float distance = circleA
+        float distanceSquared = circleA
             .getPosition()
-            .getDistanceFrom(circleB.getPosition());
+            .getDistanceSquaredFrom(circleB.getPosition());
         float radiusSum = circleA.getRadius() + circleB.getRadius();
-        boolean isColliding = distance < radiusSum;
+        boolean isColliding = distanceSquared < radiusSum * radiusSum;
         
         if (!isColliding) {
             return;
@@ -210,13 +210,10 @@ public abstract class CollisionResolvers {
         }
         
         // Resolve collision
+        float distance = (float) Math.sqrt(distanceSquared);
         float overlap = radiusSum - distance;
-        float angle = circleA.getPosition().getAngle(circleB.getPosition());
-        
-        Vector displacement = new Vector(
-            (float) Math.cos(angle),
-            (float) Math.sin(angle)
-        ).scale(overlap);
+        Vector collisionNormal = circleB.getPosition().clone().subtract(circleA.getPosition()).divide(distance);
+        Vector displacement = collisionNormal.scale(overlap);
         
         if (!circleA.isStatic() && !circleB.isStatic()) {
             float totalMass = (circleA.getMass() + circleB.getMass()) * (circleA.getContacts().size() + circleB.getContacts().size());

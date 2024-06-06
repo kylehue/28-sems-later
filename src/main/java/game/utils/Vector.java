@@ -123,6 +123,10 @@ public class Vector {
         return (float) Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
     
+    public float getMagnitudeSquared() {
+        return (float) (Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+    
     public Vector normalize() {
         return this.setMagnitude(1);
     }
@@ -133,6 +137,14 @@ public class Vector {
     
     public float getDistanceFrom(Vector vector) {
         return this.getDistanceFrom(vector.getX(), vector.getY());
+    }
+    
+    public float getDistanceSquaredFrom(float x, float y) {
+        return (float) (Math.pow(x - this.getX(), 2) + Math.pow(y - this.getY(), 2));
+    }
+    
+    public float getDistanceSquaredFrom(Vector vector) {
+        return this.getDistanceSquaredFrom(vector.getX(), vector.getY());
     }
     
     public Vector lerpX(float x, float weight) {

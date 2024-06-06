@@ -34,7 +34,7 @@ public class World {
     private final ArrayList<Projectile> projectiles = new ArrayList<>();
     private final Camera camera;
     private final Map map = new CityMap();
-    private final Quadtree<Collider> quadtree;
+    private final HashGrid<Collider> hashgrid;
     private final ColliderWorld colliderWorld;
     private final PathFinder pathFinder;
     private final ArrayList<SpriteAnimation> oneTimeSpriteAnimations = new ArrayList<>();
@@ -69,17 +69,13 @@ public class World {
             map.getTotalWidth(),
             map.getTotalHeight()
         );
-        this.quadtree = new Quadtree<>(
-            mapBounds,
-            15,
-            30
-        );
+        this.hashgrid = new HashGrid<>();
         pathFinder = new PathFinder(
             map.getTileSize() / 2,
             map.getTotalWidth(),
             map.getTotalHeight()
         );
-        this.colliderWorld = new ColliderWorld(quadtree);
+        this.colliderWorld = new ColliderWorld(hashgrid);
         this.colliderWorld.setBounds(mapBounds);
         this.camera = new Camera(Game.graphicsContext);
         map.addCollidersToWorld(colliderWorld);
@@ -96,7 +92,6 @@ public class World {
     }
     
     public void renderMeta(GraphicsContext ctx) {
-        this.quadtree.render(ctx);
         for (Collider collider : colliderWorld.getColliders()) {
             collider.render(ctx);
         }
@@ -193,7 +188,7 @@ public class World {
     
     public void fixedUpdate(float deltaTime) {
         if (isPaused()) return;
-        this.quadtree.clear();
+        this.hashgrid.clear();
         map.fixedUpdate(deltaTime);
         
         List<Entity> entities = getEntities(true);
@@ -318,6 +313,7 @@ public class World {
     }
     
     private int pauseCounter = 0;
+    
     public void pause() {
         pauseCounter++;
         isPaused.set(true);
@@ -412,8 +408,8 @@ public class World {
         return pathFinder;
     }
     
-    public Quadtree<Collider> getQuadtree() {
-        return quadtree;
+    public HashGrid<Collider> getHashgrid() {
+        return hashgrid;
     }
     
     public ColliderWorld getColliderWorld() {

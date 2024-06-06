@@ -94,7 +94,7 @@ public abstract class Config {
     
     // World
     public final static int DEFAULT_ZOMBIE_COUNT = 100;
-    public final static int MAX_ZOMBIE_COUNT = 500;
+    public final static int MAX_ZOMBIE_COUNT = 1000;
     public final static int DEFAULT_DEVIL_COUNT = 1;
     public final static int MAX_DEVIL_COUNT = 50;
 }

@@ -1,16 +1,14 @@
 package game.colliders;
 
-import game.utils.Bounds;
+import game.utils.*;
 import game.utils.Common;
-import game.utils.Quadtree;
-import game.utils.Vector;
 import javafx.scene.canvas.GraphicsContext;
 import utils.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public abstract class Collider {
+public abstract class Collider implements HashGrid.BoundedObject {
     public static final float VELOCITY_LIMIT = 8.0f;
     
     /* Misc */
@@ -36,36 +34,29 @@ public abstract class Collider {
     private final HashSet<Object> excludedResolutions = new HashSet<>();
     private Object groupId = null;
     
-    public void updateNearColliders(Quadtree<Collider> quadtree) {
+    public void updateNearColliders(HashGrid<Collider> hashGrid) {
         Async.queue2.submit(() -> {
-            updateNearCollidersImmediate(quadtree);
+            updateNearCollidersImmediate(hashGrid);
         });
     }
     
-    public void updateNearCollidersImmediate(Quadtree<Collider> quadtree) {
-        float width = getWidth();
-        float height = getHeight();
-        nearColliders = new ArrayList<>(
-            quadtree.retrieve(
-                getPosition().getX() - width / 2,
-                getPosition().getY() - height / 2,
-                width,
-                height
-            ).stream().map(e -> e.object).toList()
+    public void updateNearCollidersImmediate(HashGrid<Collider> hashGrid) {
+        nearColliders = hashGrid.retrieve(
+            this
         );
     }
     
     public ArrayList<Collider> getAndUpdateNearColliders(
-        Quadtree<Collider> quadtree
+        HashGrid<Collider> hashGrid
     ) {
-        updateNearColliders(quadtree);
+        updateNearColliders(hashGrid);
         return nearColliders;
     }
     
     public ArrayList<Collider> getAndUpdateNearCollidersImmediate(
-        Quadtree<Collider> quadtree
+        HashGrid<Collider> hashGrid
     ) {
-        updateNearCollidersImmediate(quadtree);
+        updateNearCollidersImmediate(hashGrid);
         return nearColliders;
     }
     

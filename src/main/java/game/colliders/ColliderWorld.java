@@ -1,19 +1,19 @@
 package game.colliders;
 
 import game.utils.Bounds;
+import game.utils.HashGrid;
 import game.utils.Quadtree;
-import utils.Async;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ColliderWorld {
     private final ArrayList<Collider> colliders = new ArrayList<>();
-    private final Quadtree<Collider> quadtree;
+    private final HashGrid<Collider> hashGrid;
     private Bounds bounds = new Bounds();
     
-    public ColliderWorld(Quadtree<Collider> quadtree) {
-        this.quadtree = quadtree;
+    public ColliderWorld(HashGrid<Collider> hashGrid) {
+        this.hashGrid = hashGrid;
     }
     
     public void setBounds(Bounds bounds) {
@@ -47,15 +47,7 @@ public class ColliderWorld {
     }
     
     private void addColliderToQuadtree(Collider collider) {
-        quadtree.insert(
-            collider,
-            new Bounds(
-                collider.getPosition().getX() - collider.getWidth() / 2f,
-                collider.getPosition().getY() - collider.getHeight() / 2f,
-                collider.getWidth(),
-                collider.getHeight()
-            )
-        );
+        hashGrid.insert(collider);
     }
     
     public void fixedUpdate(float deltaTime) {
@@ -67,7 +59,7 @@ public class ColliderWorld {
         
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
-            ArrayList<Collider> otherColliders = colliderA.getAndUpdateNearColliders(quadtree);
+            ArrayList<Collider> otherColliders = colliderA.getAndUpdateNearColliders(hashGrid);
             
             // Resolve
             for (Collider colliderB : otherColliders) {
