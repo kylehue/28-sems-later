@@ -63,11 +63,11 @@ public class ColliderWorld {
             addColliderToQuadtree(collider);
         }
         
+        // Broad-phase collision check
         HashSet<String> pairs = new HashSet<>();
         for (Collider colliderA : this.colliders) {
             ArrayList<Collider> otherColliders = colliderA.getAndUpdateNearColliders(hashGrid);
             
-            // Resolve
             for (Collider colliderB : otherColliders) {
                 if (colliderB == null) continue;
                 if (colliderA.getId() == colliderB.getId()) continue;
@@ -76,6 +76,21 @@ public class ColliderWorld {
                 }
                 
                 if (!colliderA.shouldCollideWith(colliderB)) {
+                    continue;
+                }
+                
+                // Detect (AABB)
+                boolean isCollidingAABB = CollisionResolvers.testAABB(
+                    colliderA.getPosition().getX() - colliderA.getWidth() / 2,
+                    colliderA.getPosition().getY() - colliderA.getHeight() / 2,
+                    colliderA.getWidth(),
+                    colliderA.getHeight(),
+                    colliderB.getPosition().getX() - colliderB.getWidth() / 2,
+                    colliderB.getPosition().getY() - colliderB.getHeight() / 2,
+                    colliderB.getWidth(),
+                    colliderB.getHeight()
+                );
+                if (!isCollidingAABB) {
                     continue;
                 }
                 

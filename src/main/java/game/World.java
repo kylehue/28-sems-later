@@ -157,7 +157,7 @@ public class World {
         }
         
         if (Config.IS_DEV_MODE) {
-            this.renderMeta(ctx);
+            // this.renderMeta(ctx);
         }
         
         if (!debugRender.isEmpty()) {

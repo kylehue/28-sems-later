@@ -174,21 +174,6 @@ public abstract class CollisionResolvers {
         CircleCollider circleA,
         CircleCollider circleB
     ) {
-        // Detect (AABB)
-        boolean isCollidingAABB = testAABB(
-            circleA.getPosition().getX() - circleA.getWidth() / 2,
-            circleA.getPosition().getY() - circleA.getHeight() / 2,
-            circleA.getWidth(),
-            circleA.getHeight(),
-            circleB.getPosition().getX() - circleB.getWidth() / 2,
-            circleB.getPosition().getY() - circleB.getHeight() / 2,
-            circleB.getWidth(),
-            circleB.getHeight()
-        );
-        if (!isCollidingAABB) {
-            return;
-        }
-        
         // Detect (Pythagorean Theorem)
         float distanceSquared = circleA
             .getPosition()
@@ -231,21 +216,6 @@ public abstract class CollisionResolvers {
         CircleCollider circle,
         PolygonCollider polygon
     ) {
-        // Detect (AABB)
-        boolean isCollidingAABB = testAABB(
-            circle.getPosition().getX() - circle.getWidth() / 2,
-            circle.getPosition().getY() - circle.getHeight() / 2,
-            circle.getWidth(),
-            circle.getHeight(),
-            polygon.getPosition().getX() - polygon.getWidth() / 2,
-            polygon.getPosition().getY() - polygon.getHeight() / 2,
-            polygon.getWidth(),
-            polygon.getHeight()
-        );
-        if (!isCollidingAABB) {
-            return;
-        }
-        
         // Detect (Separating Axes Theorem)
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;
@@ -294,7 +264,7 @@ public abstract class CollisionResolvers {
             float overlap = Math.abs(Math.min(circleMax, polygonMax) - Math.max(circleMin, polygonMin));
             if (overlap < minOverlap) {
                 minOverlap = overlap;
-                mtv = normal.clone().normalize().scale(minOverlap);
+                mtv = normal;
             }
         }
         
@@ -311,7 +281,7 @@ public abstract class CollisionResolvers {
             Vector transformedVertex = vertex.clone().add(
                 polygon.getPosition()
             );
-            float distance = transformedVertex.getDistanceFrom(
+            float distance = transformedVertex.getDistanceSquaredFrom(
                 circle.getPosition()
             );
             if (distance < minDistance) {
@@ -328,7 +298,7 @@ public abstract class CollisionResolvers {
         
         // Get projection of circle to axis
         Vector normal = pointB.clone().subtract(pointA);
-        float lineLength = pointA.getDistanceFrom(pointB);
+        float lineLength = (float) Math.sqrt(minDistance);
         float circleDot = circle.getPosition().clone().dot(normal) / lineLength;
         float circleMin = circleDot - circle.getRadius();
         float circleMax = circleDot + circle.getRadius();
@@ -365,30 +335,30 @@ public abstract class CollisionResolvers {
         float overlap = Math.abs(Math.min(circleMax, polygonMax) - Math.max(circleMin, polygonMin));
         if (overlap < minOverlap) {
             minOverlap = overlap;
-            mtv = normal.clone().normalize().scale(minOverlap);
+            mtv = normal;
         }
         
         // Resolve
-        if (mtv != null) {
-            Vector centerToCenter = polygon.getPosition().clone().subtract(
-                circle.getPosition()
-            );
-            float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
+        if (mtv == null) return;
+        mtv.normalize().scale(minOverlap);
+        Vector centerToCenter = polygon.getPosition().clone().subtract(
+            circle.getPosition()
+        );
+        float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
+        
+        mtv.scale(direction);
+        if (!circle.isStatic() && !polygon.isStatic()) {
+            float totalMass = (circle.getMass() + polygon.getMass()) * (circle.getContacts().size() + polygon.getContacts().size());
+            float ratioA = (polygon.getMass() * polygon.getContacts().size()) / totalMass;
+            float ratioB = (circle.getMass() * circle.getContacts().size()) / totalMass;
             
-            mtv.scale(direction);
-            if (!circle.isStatic() && !polygon.isStatic()) {
-                float totalMass = (circle.getMass() + polygon.getMass()) * (circle.getContacts().size() + polygon.getContacts().size());
-                float ratioA = (polygon.getMass() * polygon.getContacts().size()) / totalMass;
-                float ratioB = (circle.getMass() * circle.getContacts().size()) / totalMass;
-                
-                // Apply MTV based on mass ratios
-                circle.getPosition().add(mtv.clone().scale(ratioA));
-                polygon.getPosition().subtract(mtv.clone().scale(ratioB));
-            } else if (!circle.isStatic()) {
-                circle.getPosition().add(mtv);
-            } else if (!polygon.isStatic()) {
-                polygon.getPosition().subtract(mtv);
-            }
+            // Apply MTV based on mass ratios
+            circle.getPosition().add(mtv.clone().scale(ratioA));
+            polygon.getPosition().subtract(mtv.clone().scale(ratioB));
+        } else if (!circle.isStatic()) {
+            circle.getPosition().add(mtv);
+        } else if (!polygon.isStatic()) {
+            polygon.getPosition().subtract(mtv);
         }
     }
     
@@ -396,21 +366,6 @@ public abstract class CollisionResolvers {
         PolygonCollider polygonA,
         PolygonCollider polygonB
     ) {
-        // Detect (AABB)
-        boolean isCollidingAABB = testAABB(
-            polygonA.getPosition().getX() - polygonA.getWidth() / 2,
-            polygonA.getPosition().getY() - polygonA.getHeight() / 2,
-            polygonA.getWidth(),
-            polygonA.getHeight(),
-            polygonB.getPosition().getX() - polygonB.getWidth() / 2,
-            polygonB.getPosition().getY() - polygonB.getHeight() / 2,
-            polygonB.getWidth(),
-            polygonB.getHeight()
-        );
-        if (!isCollidingAABB) {
-            return;
-        }
-        
         // Detect (Separating Axes Theorem)
         Vector mtv = null;
         float minOverlap = Float.MAX_VALUE;
@@ -462,7 +417,7 @@ public abstract class CollisionResolvers {
             float overlap = Math.abs(Math.min(polygonAMax, polygonBMax) - Math.max(polygonAMin, polygonBMin));
             if (overlap < minOverlap) {
                 minOverlap = overlap;
-                mtv = normal.clone().normalize().scale(minOverlap);
+                mtv = normal;
             }
             
             // Check other way around if the last axis still intersects
@@ -489,26 +444,26 @@ public abstract class CollisionResolvers {
         }
         
         // Resolve
-        if (mtv != null) {
-            Vector centerToCenter = polygonB.getPosition().clone().subtract(
-                polygonA.getPosition()
-            );
-            float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
-            mtv.scale(direction);
+        if (mtv == null) return;
+        mtv.normalize().scale(minOverlap);
+        Vector centerToCenter = polygonB.getPosition().clone().subtract(
+            polygonA.getPosition()
+        );
+        float direction = mtv.dot(centerToCenter) < 0 ? 1 : -1;
+        mtv.scale(direction);
+        
+        if (!polygonA.isStatic() && !polygonB.isStatic()) {
+            float totalMass = (polygonA.getMass() + polygonB.getMass()) * (polygonA.getContacts().size() + polygonB.getContacts().size());
+            float ratioA = (polygonB.getMass() * polygonB.getContacts().size()) / totalMass;
+            float ratioB = (polygonA.getMass() * polygonA.getContacts().size()) / totalMass;
             
-            if (!polygonA.isStatic() && !polygonB.isStatic()) {
-                float totalMass = (polygonA.getMass() + polygonB.getMass()) * (polygonA.getContacts().size() + polygonB.getContacts().size());
-                float ratioA = (polygonB.getMass() * polygonB.getContacts().size()) / totalMass;
-                float ratioB = (polygonA.getMass() * polygonA.getContacts().size()) / totalMass;
-                
-                // Apply MTV based on mass ratios
-                polygonA.getPosition().add(mtv.clone().scale(ratioA));
-                polygonB.getPosition().subtract(mtv.clone().scale(ratioB));
-            } else if (!polygonA.isStatic()) {
-                polygonA.getPosition().add(mtv);
-            } else if (!polygonB.isStatic()) {
-                polygonB.getPosition().subtract(mtv);
-            }
+            // Apply MTV based on mass ratios
+            polygonA.getPosition().add(mtv.clone().scale(ratioA));
+            polygonB.getPosition().subtract(mtv.clone().scale(ratioB));
+        } else if (!polygonA.isStatic()) {
+            polygonA.getPosition().add(mtv);
+        } else if (!polygonB.isStatic()) {
+            polygonB.getPosition().subtract(mtv);
         }
     }
 }
